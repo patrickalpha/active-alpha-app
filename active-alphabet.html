@@ -492,16 +492,6 @@
     </div>
 
 
-    <div class="card draft noprint" style="--accent:var(--amber)">
-      <h2>Draft preview only</h2>
-      <p class="muted">This card is here so you can see every report with data in it. It will be removed before the app goes to teachers. Loading preview data turns off all sending to Active Alphabet.</p>
-      <div class="row" style="margin-top:12px">
-        <button class="btn ghost" id="loadDemo">Load preview data</button>
-        <button class="btn danger" id="clearAll">Clear everything</button>
-        <button class="btn ghost" id="previewSurvey">Preview the check-in survey</button>
-      </div>
-      <p class="tiny" id="demoNote" style="margin-top:10px"></p>
-    </div>
   </section>
 
   <!-- ===================== ASSESS ===================== -->
@@ -755,6 +745,11 @@
           <div class="row" style="margin-top:10px"><div><label for="delWord">Type DELETE to confirm</label><input id="delWord" type="text" autocomplete="off" autocapitalize="characters"></div>
           <button class="btn danger" id="delGo">Delete my data</button></div>
           <div class="tiny" id="delMsg" style="margin-top:8px"></div>
+        </div>
+        <div class="note warn" style="margin-top:12px">
+          <b>Clear everything</b><br>
+          This removes every student and every result from this iPad and from your account. It cannot be undone.
+          <div class="row" style="margin-top:10px"><button class="btn danger" id="clearAll">Clear everything</button></div>
         </div>
       </details>
     </div>
@@ -1030,7 +1025,7 @@ const CLIPS={"A":{"frame":[700,886],"letters":{"A":{"cx":21.71,"cy":84.71,"h":15
 /* ============ state and storage ============ */
 /* Version 4 has its own storage name, so it never reads or overwrites round 1 data on the same iPad. */
 const KEY="aa-assess-v4-round2";
-const APP_VERSION="5.7";
+const APP_VERSION="5.8";
 $("#verShow").textContent=APP_VERSION;
 const SCHEMA=2;                         /* data layout version, so a future version knows how to read this data */
 /* Shared app key. Must match APP_KEY in the Apps Script. */
@@ -3176,7 +3171,7 @@ function showLastSync(){
 }
 $("#btnPush").onclick=()=>pushToSheet(false);
 async function pushToSheet(quiet){
-  if(S.sample){ if(!quiet) dataMsg("Preview data is loaded, so sending is turned off. Clear it in the Draft preview card first."); return; }
+  if(S.sample){ if(!quiet) dataMsg("Preview data is loaded, so sending is turned off."); return; }
   if(!S.classCode){ if(!quiet) dataMsg("Please finish signing up first."); return; }
   if(!SCRIPT_URL.startsWith("https://")){ if(!quiet) dataMsg("This draft is not connected to Active Alphabet yet."); return; }
   if(S.optedOut){ if(!quiet) dataMsg("This device no longer sends results, because you deleted your shared data."); return; }
@@ -3412,58 +3407,6 @@ $("#btnRestore").onchange=e=>{
   r.readAsText(f);
 };
 
-/* ============ DRAFT ONLY: preview data (remove before release) ============ */
-const DEMO_NAMES=["Sofia M.","Marcus T.","Aaliyah B.","Diego R.","Nora K.","Jayden P.","Isabella C.","Owen L.",
-  "Priya S.","Ethan W.","Zoe H.","Amara O.","Liam G.","Mei C.","Tobias N.","Ruby A."];
-function seeded(n){ let x=n; return ()=>{x=(x*1103515245+12345)%2147483648; return x/2147483648;}; }
-$("#loadDemo").onclick=async()=>{
-  if(S.students.length){ const r=await ask("Replace what is here?","Preview data replaces the students and results in the app right now.",
-    [{t:"Cancel",v:0,ghost:true},{t:"Load preview data",v:1}]); if(!r.v) return; }
-  const rnd=seeded(20261113);
-  S.schoolName=S.schoolName||"Sample Early Learning Center";
-  S.className=S.className||"Room 4";
-  S.teacherName=S.teacherName||"Ms. Rivera";
-  if(!S.classCode) S.classCode=makeCode();
-  S.letters=["A","B","C","D","M","S","T","P","O","E"];
-  S.students=DEMO_NAMES.map((n,i)=>({id:"demo"+i,name:n,num:i+1,stage:["two","one","one","k"][i%4],lang:i===3?"es":i===5?"zh":"en"})); S.nextNum=DEMO_NAMES.length+1; S.paused=[]; S.obs=[];
-  S.sessions=[]; S.sample=true;
-  const hard={Q:.45,X:.4,U:.55,V:.5,Y:.55,W:.6,J:.65,Z:.6,G:.7,I:.7,L:.75,K:.75};
-  const dates={BOY:"2026-09-24T14:10:00.000Z",MOY:"2027-01-21T15:10:00.000Z",EOY:"2027-05-13T14:10:00.000Z"};
-  const modeDiff={upper:0,lower:-.10,both:-.22};
-  S.students.forEach((stu,si)=>{
-    const ability=.12+rnd()*.5;
-    BENCH.forEach((c,di)=>{
-      if(c==="EOY" && si>=10) return;   // some children not yet at EOY, to show the who's left view
-      MODEKEYS.forEach(m=>{
-        const marks={}; let streak=0,stopped=false;
-        const order=ALPHA.slice();
-        for(let i=order.length-1;i>0;i--){const j=Math.floor(rnd()*(i+1));[order[i],order[j]]=[order[j],order[i]];}
-        for(const L of order){
-          const p=Math.min(.97, Math.max(.02, ability + di*.22 + modeDiff[m] + ((hard[L]??.9)-.9)));
-          const ok=rnd()<p?1:0; marks[L]=ok; streak=ok?0:streak+1;
-          if(streak>=STOP_AFTER){ stopped=true; break; }
-        }
-        const done=Object.keys(marks);
-        S.sessions.push({id:"d"+si+c+m,sid:stu.id,mode:m,cp:c,ts:new Date(new Date(dates[c]).getTime()+si*36e5).toISOString(),
-          marks,attempted:done.length,total:26,correct:done.filter(L=>marks[L]===1).length,stopped,anim:rnd()<.7?"every":"correct",
-          secs:Math.round(done.length*(3.5+rnd()*2.5)+20),
-          note:(si===3&&c==="BOY"&&m==="upper")?"tired, first week of school":""});
-      });
-    });
-    if(si%2===0){ // a formative check-in for some children
-      const marks={}; S.letters.forEach(L=>marks[L]=rnd()<.6?1:0);
-      S.sessions.push({id:"f"+si,sid:stu.id,mode:"upper",cp:"F",ts:"2026-11-05T15:00:00.000Z",marks,
-        attempted:S.letters.length,total:S.letters.length,correct:Object.values(marks).filter(v=>v===1).length,stopped:false,anim:"every",note:""});
-    }
-  });
-  await save();
-  fillSetup(); renderStudents(); renderPicker(); renderBanner(); showLastSync();
-  $("#demoNote").textContent=`Loaded ${S.students.length} children with BOY and MOY, EOY for 10 of them, and some formative check-ins. Open Assess, Results and Reports.`;
-};
-$("#previewSurvey").onclick=async()=>{
-  const r=await ask("Preview the check-in","Which check-in would you like to see?",[{t:"3 months",v:3},{t:"6 months",v:6},{t:"9 months",v:9}]);
-  checkSurvey(r.v);
-};
 $("#clearAll").onclick=async()=>{
   const r=await ask("Clear everything?",acctGet()?"This removes every student and every result from this iPad and from your account.":"This removes every student and every result saved in this app on this iPad, and takes you back to the welcome screen.",
     [{t:"Cancel",v:0,ghost:true},{t:"Clear everything",v:1,danger:true}]);
@@ -3474,8 +3417,12 @@ $("#clearAll").onclick=async()=>{
 /* ============ boot ============ */
 (async function boot(){
   await load();
+  /* 5.8: preview data is gone from the app. An iPad that still has it loaded starts clean, and the
+     teacher's own class comes back from the account (preview data never went into the account). */
+  const hadSample=!!S.sample;
+  if(hadSample){ S=blank(); await save(); }
   S.schema=SCHEMA; S.appVersion=APP_VERSION;
-  prunePhotos();
+  if(!hadSample) prunePhotos();
   fillSetup(); showLastSync(); renderBanner();
   sortStudents(); $("#sortBy").value=S.sortBy||"last";
   acctBoot();
