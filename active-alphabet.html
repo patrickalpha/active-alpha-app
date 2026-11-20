@@ -540,6 +540,12 @@
         <select id="sortBy" style="min-width:0"><option value="last">Last initial, then first name</option><option value="first">First name</option><option value="added">Order added</option></select></div>
       <div id="studentList" style="margin-top:10px"></div>
     </div>
+    <div class="card" style="--accent:var(--c-coral)">
+      <h2>Reader's License</h2>
+      <p class="muted">When a child knows enough of their letters and sounds, the app lets you know their Reader's License is ready to print. It counts the newest answer for all 78: 26 uppercase, 26 lowercase and 26 letter sounds, including your observations.</p>
+      <div class="row" style="margin-top:12px;align-items:center;gap:10px"><label for="licGoal" style="margin:0">Reader's License goal</label>
+        <select id="licGoal" style="min-width:0"><option value="100">100% (all 78)</option><option value="95">95%</option><option value="90">90%</option><option value="85">85%</option><option value="80">80%</option></select></div>
+    </div>
 
 
   </section>
@@ -797,20 +803,6 @@
       <div class="row" style="margin-top:8px"><button class="btn ghost small" id="btnEmail">Change my email</button></div>
       <div id="emailMsg" class="tiny" style="margin-top:10px"></div>
     </div>
-    <div class="card" style="--accent:var(--c-green)">
-      <h2>Sharing</h2>
-      <p class="muted">Your students' names and results are saved on this device. Children's names are never sent to Active Alphabet.</p>
-      <label class="opt" style="margin-top:8px" id="shareRow"><input type="checkbox" id="shareBox" style="accent-color:var(--blue)"> Share anonymous results with Active Alphabet (no children's names, ever)</label>
-      <p class="tiny" id="lastSync" style="margin-top:8px"></p>
-      <div class="row" style="margin-top:8px"><button class="btn ghost small" id="btnPush">Send now</button></div>
-      <div id="dataMsg" class="tiny" style="margin-top:10px"></div>
-    </div>
-    <div class="card" style="--accent:var(--c-coral)">
-      <h2>Reader's License</h2>
-      <p class="muted">When a child knows enough of their letters and sounds, the app lets you know their Reader's License is ready to print. It counts the newest answer for all 78: 26 uppercase, 26 lowercase and 26 letter sounds, including your observations.</p>
-      <div class="row" style="margin-top:12px;align-items:center;gap:10px"><label for="licGoal" style="margin:0">Reader's License goal</label>
-        <select id="licGoal" style="min-width:0"><option value="100">100% (all 78)</option><option value="95">95%</option><option value="90">90%</option><option value="85">85%</option><option value="80">80%</option></select></div>
-    </div>
     <div class="card" style="--accent:var(--c-orange)">
       <h2>Backup</h2>
       <p class="muted">A backup is a safety copy of everything in the app on this device. Use it to move your class to a new device, or to bring it back if this one is reset. Download one about once a month and email it to yourself.</p>
@@ -825,7 +817,15 @@
     </div>
     <div class="card" style="--accent:var(--c-purple)">
       <details class="more"><summary>More options</summary>
-        <div class="note warn" style="margin-top:4px">
+        <div class="note" style="margin-top:4px">
+          <b>Sharing</b>
+          <p class="muted">Your students' names and results are saved on this device. Children's names are never sent to Active Alphabet.</p>
+          <label class="opt" style="margin-top:8px" id="shareRow"><input type="checkbox" id="shareBox" style="accent-color:var(--blue)"> Share anonymous results with Active Alphabet (no children's names, ever)</label>
+          <p class="tiny" id="lastSync" style="margin-top:8px"></p>
+          <div class="row" style="margin-top:8px"><button class="btn ghost small" id="btnPush">Send now</button></div>
+          <div id="dataMsg" class="tiny" style="margin-top:10px"></div>
+        </div>
+        <div class="note warn" style="margin-top:12px">
           <b>Delete my classroom's data from Active Alphabet</b><br>
           This removes your classroom's shared results from Active Alphabet's records only. Everything on this device stays exactly as it is.
           After this, this device will never send results to Active Alphabet again.
@@ -2251,7 +2251,8 @@ function tab(t){
   if(t==="assess") renderAssess();
   if(t==="results") renderResults();
   if(t==="reports") renderReports();
-  if(t==="settings"){ showLastSync(); renderAcct(); $("#licGoal").value=String(licGoal()); }
+  if(t==="settings"){ showLastSync(); renderAcct(); }
+  if(t==="setup") $("#licGoal").value=String(licGoal());
   window.scrollTo(0,0);
 }
 function renderBanner(){ $("#sampleBanner").classList.toggle("hide",!S.sample); }
@@ -3782,7 +3783,7 @@ function printLicenses(ids){
 }
 function renderLicList(){
   const el=$("#licList"); if(!el) return;
-  $("#licIntro").textContent=`Your goal is ${licGoal()}% of all 78 letters and sounds. You can change it in Settings.`;
+  $("#licIntro").textContent=`Your goal is ${licGoal()}% of all 78 letters and sounds. You can change it at the bottom of Class setup.`;
   const kids=S.students.filter(x=>licReady(x.id));
   if(!kids.length){ el.innerHTML='<p class="muted">No one has reached the goal yet. Keep going!</p>'; return; }
   el.innerHTML=`<div class="chips" style="margin-bottom:10px">${kids.map(x=>`<button class="btn ghost small" data-lic="${x.id}">${esc(x.name)}</button>`).join("")}</div>
