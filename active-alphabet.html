@@ -268,6 +268,11 @@
   /* 5.10: Reader's License, printed at its real size (6 by 4 inches), front over back, ready to cut and fold */
   #printArea .licsheet{width:6in;margin:0 auto;page-break-after:always;break-after:page}
   #printArea .licsheet:last-child{page-break-after:auto;break-after:auto}
+  #famPages .licsheet{width:6in;margin:0 auto 22px;background:#fff;padding:12px;border-radius:12px;box-shadow:0 2px 10px rgba(22,35,60,.08)}
+  #famPages .licsheet .lic,#famPages .licsheet .licfold,#famPages .licsheet .licnote{margin-left:auto;margin-right:auto}
+  @media screen and (max-width:640px){ #famPages .licsheet{zoom:.55} }
+  @media print{ #famPages .licsheet{box-shadow:none;padding:0;margin:0 auto;border-radius:0;page-break-after:always;break-after:page}
+    #famPages .licsheet:last-child{page-break-after:auto;break-after:auto} }
   .lic{position:relative;width:6in;height:4in;border:1px dashed #9AA6B8;box-sizing:content-box}
   .lic img.art{position:absolute;inset:0;width:100%;height:100%}
   .lic .oval{position:absolute;left:8.6%;top:26.8%;width:29.3%;height:62.0%;border-radius:50%;overflow:hidden}
@@ -3773,7 +3778,7 @@ async function showReady(){
   S.readyShown=new Date().toISOString(); await save();
   await ask("You're all set!",`<p>You're ready to bring Active Alphabet to life in your classroom.</p>
     <p>Everything you need is in the Resources tab: the Teacher Guide, Character Cards, Letter Chart and more. Print them, laminate them in different sizes, and use them to decorate your wall, make flip charts or play games.</p>
-    <p><b>Coming in 2027-2028:</b> a print version with magnetic letters and magnetic character cards.</p>`,[{t:"Let's Go!",v:1}]);
+    <p><b>Coming in 2027-2028:</b> a print version of everything you need, with magnetic uppercase and lowercase letters, magnetic character cards, and an interactive letter wall board. You can reserve your classroom kit on the Resources tab.</p>`,[{t:"Let's Go!",v:1}]);
 }
 
 /* ============ 5.10: Reader's License ============ */
@@ -3814,17 +3819,14 @@ function licCard(sid){
     <p class="licnote">Cut along the dashed lines and fold in the middle. ${ph?"":"The oval is empty, so the child can draw a self-portrait. "}The child writes in their own name, age, height and eye color.</p>
   </div>`;
 }
-function printLicenses(ids){
-  if(!ids.length) return;
-  const area=$("#printArea");
-  area.innerHTML=ids.map(licCard).join("");
-  setPage("portrait");
-  document.body.classList.add("printing");
-  const done=()=>{ document.body.classList.remove("printing"); window.removeEventListener("afterprint",done); };
-  window.addEventListener("afterprint",done);
-  /* wait for the pictures so the first page is never blank */
-  const imgs=[...area.querySelectorAll("img")];
-  Promise.all(imgs.map(i=>i.complete?1:new Promise(r=>{ i.onload=i.onerror=r; }))).then(()=>{ window.print(); setTimeout(done,1500); });
+/* 5.12: show the licenses on screen first (like Passports and progress reports), with Back and Print.
+   Before, the buttons went straight to the print window, and on a home screen app nothing appeared at all. */
+function printLicenses(ids,ret){
+  ids=(ids||[]).filter(id=>S.students.some(x=>x.id===id)); if(!ids.length) return;
+  famReturn=ret||(!$("#tab-student").classList.contains("hide")?"student":"reports");
+  $("#famPages").innerHTML=`<div class="card noprint"><p class="muted">${ids.length===1?"Here is the Reader's License.":`Here are ${ids.length} Reader's Licenses.`} Tap <b>Print</b> at the top. Each one prints on its own page.</p></div>`
+    +ids.map(licCard).join("");
+  tab("family"); window.scrollTo(0,0);
 }
 function renderLicList(){
   const el=$("#licList"); if(!el) return;
