@@ -781,6 +781,14 @@
       <p class="tiny" id="cvMsg" style="margin-top:10px"></p>
       <p class="tiny" style="margin-top:6px">Children's photos stay on this device. The song plays with sound, so turn the volume up.</p>
     </div>
+    <div class="card" style="--accent:var(--c-orange)">
+      <h2>Active Alphabet with Mr. Patrick</h2>
+      <p class="muted">See how to bring Active Alphabet to your whole class with the flip chart. Watch Mr. Patrick lead a group of children through the letters, then try it with your own class.</p>
+      <div class="row" style="margin-top:12px"><button class="btn" id="mpPlay">Watch the video</button></div>
+      <video id="mpVideo" class="hide" controls playsinline preload="metadata" style="width:100%;margin-top:12px;border-radius:12px;background:#000"></video>
+      <p class="tiny" id="mpMsg" style="margin-top:10px"></p>
+      <p class="tiny" style="margin-top:6px">About 4 minutes. This video is for teachers with Active Alphabet access. Please don't share or post it.</p>
+    </div>
   </section>
   <section id="tab-resources" class="hide">
     <div class="card" style="--accent:var(--c-sky)">
@@ -2264,6 +2272,7 @@ $$("nav button").forEach(b=>b.onclick=()=>tab(b.dataset.tab));
 function tab(t){
   $$("nav button").forEach(b=>b.setAttribute("aria-current", String(b.dataset.tab===t)));
   ["setup","assess","results","reports","video","resources","settings","student","family"].forEach(x=>$("#tab-"+x).classList.toggle("hide",x!==t));
+  if(t!=="video"){ const mv=$("#mpVideo"); if(mv&&!mv.paused) mv.pause(); }
   if(t==="resources"){ renderResources(); showKit(); }
   setTimeout(licCheck,400);
   if(t==="video") renderVideoTab();
@@ -3762,6 +3771,28 @@ async function openResource(file,msgSel){
       : "The resources open while your access is active and you're online. Please try again in a moment.";
   }
 }
+/* 5.12: "Active Alphabet with Mr. Patrick", a whole-class flip chart lesson. It shows children, so it lives in the
+   private "resources" folder and plays only for signed-in teachers with good access, through a one-hour link. */
+const MP_VIDEO="Active Alphabet with Mr. Patrick.mp4";
+$("#mpPlay").onclick=async()=>{
+  const msg=$("#mpMsg"), v=$("#mpVideo"); msg.textContent="";
+  if(!acctGet()){ msg.textContent="Sign in to watch the video."; return; }
+  if(!navigator.onLine){ msg.textContent="You're offline. Connect to the internet to watch the video."; return; }
+  msg.textContent="Loading...";
+  try{
+    const r=await sb.storage.from(RES_BUCKET).createSignedUrl(MP_VIDEO,3600);
+    if(r.error||!r.data||!r.data.signedUrl) throw r.error||new Error("no link");
+    v.src=r.data.signedUrl; v.classList.remove("hide"); msg.textContent="";
+    try{ await v.play(); }catch(e){}
+  }catch(e){
+    const m=String((e&&e.message)||e||"").toLowerCase();
+    msg.textContent=(m.includes("not found")||m.includes("object"))
+      ? "The video couldn't be opened. Please try again later, or contact Active Alphabet."
+      : "The video plays while your access is active and you're online. Please try again in a moment.";
+  }
+};
+/* stop the video when leaving the tab */
+document.addEventListener("visibilitychange",()=>{ if(document.hidden){ try{ $("#mpVideo").pause(); }catch(e){} } });
 /* Family pages: the beginning-of-year family guide, one button for each family language in the class */
 function renderFamGuide(){
   const el=$("#famGuide"); if(!el) return;
