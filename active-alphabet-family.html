@@ -721,6 +721,26 @@
     background:#ff5e5e;box-shadow:0 10px 30px rgba(255,94,94,.45);z-index:9;cursor:pointer;animation:fdPulse 1.2s ease-in-out infinite;padding:0}
   .fdPlay svg{width:70%;height:70%;display:block;margin:auto}
   @keyframes fdPulse{50%{box-shadow:0 0 0 18px rgba(255,94,94,.18),0 10px 30px rgba(255,94,94,.45)}}
+  /* 2.0 */
+  .kidRow{display:flex;flex-wrap:wrap;gap:18px;margin-top:4px}
+  .kidTile{display:flex;flex-direction:column;align-items:center;gap:6px;background:none;border:0;cursor:pointer;font:inherit;padding:4px;min-width:86px}
+  .bigAv{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;color:#fff;font:700 30px Fredoka,sans-serif;background-size:cover;background-position:center;box-shadow:0 0 0 3px #fff,0 3px 10px rgba(22,35,60,.18)}
+  .kidTile .nm{font-weight:700;font-size:16px;color:var(--ink)}
+  .kidTile .open{font-size:13px;font-weight:600;color:#2f6fdc}
+  .kidTile:active .bigAv{transform:scale(.95)}
+  .kTwo{display:flex;gap:12px}
+  .kTwo>div{flex:1 1 0;min-width:0}
+  .kTwo input,.kTwo select{width:100%}
+  .speedSet{margin-top:14px}
+  .speedSet label{display:block;font-weight:700;margin-bottom:4px}
+  .speedRow{display:flex;align-items:center;gap:10px;max-width:420px}
+  .speedRow span{font-size:13px;color:var(--ink-soft);font-weight:600}
+  .speedRow input{flex:1 1 auto;accent-color:#ff5e5e}
+  .rbLines{display:flex;flex-direction:column;gap:10px;margin-top:8px}
+  .rbRow{display:flex;align-items:center;gap:12px}
+  .rbLab{width:110px;font-size:14px;font-weight:600;color:var(--ink)}
+  .rbTrack{flex:1 1 auto;height:14px;border-radius:8px;background:#EEF1F6;overflow:hidden}
+  .rbFill{height:100%;border-radius:8px;background:linear-gradient(90deg,#ff5e5e,#ff9c41,#FFD23F,#5cb82e,#41b8ef,#b475f2);background-size:calc(100% * 100 / var(--p)) 100%}
 </style>
 
 <div class="wrap">
@@ -735,7 +755,7 @@
       <nav id="tabs">
         <button data-go="setup" aria-current="true">Our family</button>
         <button data-go="play">Play</button>
-        <button data-go="video">Watch</button>
+        <button data-go="video">Dance</button>
         <button data-go="checkin">Check-in</button>
         <button data-go="extras">Resources</button>
       </nav>
@@ -807,15 +827,15 @@
   <!-- ===================== VIDEO ===================== -->
   <section id="tab-video" class="hide">
     <div class="card" style="--accent:var(--c-purple)">
-      <h2>The Active Alphabet song</h2>
-      <p class="muted">Watch the whole song with your family's faces on the characters, or just the animation. With faces on, each photo gets one character, picked at random every time. Any characters left over keep their own faces.</p>
+      <h2>Dance with the Active Alphabet animation</h2>
+      <p class="muted">Dance along to the whole animation with your family's faces on the characters, or without faces. With faces on, each photo gets one character, picked at random every time. Any characters left over keep their own faces.</p>
       <p id="cvWho" style="margin-top:12px"></p>
       <div class="row" style="margin-top:12px">
         <button class="btn" id="cvPlay">Play with our faces</button>
-        <button class="btn ghost" id="cvPlainBtn">Play just the animation</button>
+        <button class="btn ghost" id="cvPlainBtn">Play without faces</button>
       </div>
       <p class="tiny" id="cvMsg" style="margin-top:10px"></p>
-      <p class="tiny" style="margin-top:6px">The song plays with sound, so turn the volume up.</p>
+      <p class="tiny" style="margin-top:6px">The animation plays with sound, so turn the volume up.</p>
     </div>
   </section>
 
@@ -826,6 +846,10 @@
       <p class="muted">A letter lands with its ride and a red circle starts drawing around it. After a second the letter dashes off. Once the circle closes, your child catches it to hear its name, then swipes it off the screen. Faster for older children.</p>
       <h3 style="margin-top:14px">What to practice</h3>
       <div class="modes pomodes" id="poModes"></div>
+      <div class="row" style="margin-top:12px;align-items:center;gap:10px"><label for="poCount" style="margin:0">How many letters</label>
+        <select id="poCount" style="min-width:0"><option value="5">5</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="26">The whole alphabet</option></select></div>
+      <div class="speedSet"><label for="poSpeed">Speed</label><div class="speedRow"><span>Slower</span><input type="range" id="poSpeed" min="-4" max="4" step="1" value="0"><span>Faster</span></div>
+        <p class="tiny">The middle is the speed we picked for your child's age. Slide left to make it slower or right to make it faster.</p></div>
       <div class="row" style="margin-top:16px"><button class="btn" id="poGo">Play Letter Chase</button></div>
     </div>
 
@@ -836,6 +860,8 @@
       <div class="modes pomodes" id="lhModes"></div>
       <div class="row" style="margin-top:12px;align-items:center;gap:10px"><label for="lhCount" style="margin:0">How many letters</label>
         <select id="lhCount" style="min-width:0"><option value="5">5</option><option value="10">10</option><option value="15">15</option><option value="20">20</option><option value="26">The whole alphabet</option></select></div>
+      <div class="speedSet"><label for="lhSpeed">Speed</label><div class="speedRow"><span>Slower</span><input type="range" id="lhSpeed" min="-4" max="4" step="1" value="0"><span>Faster</span></div>
+        <p class="tiny">The middle is the speed we picked for your child's age. Slide left to make it slower or right to make it faster.</p></div>
       <div class="row" style="margin-top:16px"><button class="btn" id="lhGo">Play Letter Hunt</button></div>
     </div>
 
@@ -1200,13 +1226,13 @@ function plateSrc(L){ const k="F"+L; return BLOBS[k]||(BLOBS[k]=b64blob(FACE_PLA
 /* ============ state and storage ============
    The family app keeps its own storage names, so it never touches the Classroom App on the same device. */
 const KEY="aa-family-v1";
-const APP_VERSION="1.9";
+const APP_VERSION="2.0";
 $("#verShow").textContent=APP_VERSION;
 const SCHEMA=1;
 const TEST_KEY=KEY+"-test";
 const isTest=()=>{ try{ return localStorage.getItem(TEST_KEY)==="1"; }catch(e){ return false; } };
 const blank=()=>({schema:SCHEMA,appVersion:APP_VERSION,parentName:"",email:"",city:"",state:"",kids:[],nextNum:1,sessions:[],
-  licGoal:100,licDone:{},rev:0,opts:{poMode:"upper",poFace:"child",poVoice:"aa",poSound:"on",lhMode:"upper",lhCount:10,fdCount:10,ciMode:"upper",ciSet:"all",ciFace:"child",picked:[]}});
+  licGoal:100,licDone:{},rev:0,opts:{poMode:"upper",poFace:"child",poVoice:"aa",poSound:"on",poCount:10,poSpeed:0,lhMode:"upper",lhCount:10,lhSpeed:0,ciMode:"upper",ciSet:"all",ciFace:"child",picked:[]}});
 const STATES=["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia",
   "Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota",
   "Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico","New York","North Carolina","North Dakota",
@@ -1283,6 +1309,9 @@ function faceOptions(sel,val){
   sel.innerHTML=`<option value="child">Only the child who's playing</option><option value="mix">A mix of all our family photos</option><option value="none">No faces</option>`;
   sel.value=val||"child";
 }
+const AV_COLORS=["#ff5e5e","#ff9c41","#5cb82e","#41b8ef","#b475f2"];
+function bigAvatar(k,i){ const p=kidPic(k.id);
+  return `<span class="bigAv" style="${p?`background-image:url(${p})`:`background:${AV_COLORS[i%5]}`}">${p?"":esc(initial(k.name))}</span>`; }
 function avatarHTML(k,cls){ const p=kidPic(k.id);
   return p?`<div class="avatar photo ${cls||""}" style="background-image:url(${p})">${esc(initial(k.name))}</div>`:`<div class="avatar ${cls||""}">${esc(initial(k.name))}</div>`; }
 
@@ -1484,10 +1513,7 @@ function renderSetup(){ renderKids(); renderFamPhotos(); renderAcct(); renderChi
 async function renderStudioKids(){
   const el=$("#studioKids"); if(!el) return;
   if(!S.kids.length){ el.innerHTML='<p class="muted" style="margin:0">Add a child first.</p>'; return; }
-  const sets={}; for(const k of S.kids) sets[k.id]=await kidRecSet(k.id);
-  el.innerHTML=S.kids.map(k=>{ const s=sets[k.id], n=s.name.size+s.sound.size;
-    return `<div class="stuKid">${avatarHTML(k)}<span class="nm">${esc(first(k))}</span><span class="tiny">${n?`${s.name.size} names and ${s.sound.size} sounds recorded`:"Nothing recorded yet"}</span>
-      <button class="btn small" data-studio="${k.id}">Open studio</button></div>`; }).join("");
+  el.innerHTML=`<div class="kidRow">${S.kids.map((k,i)=>`<button class="kidTile" data-studio="${k.id}">${bigAvatar(k,i)}<span class="nm">${esc(first(k))}</span><span class="open">Open studio</span></button>`).join("")}</div>`;
   $$("#studioKids [data-studio]").forEach(b=>b.onclick=()=>openStudio(b.dataset.studio));
 }
 
@@ -1520,10 +1546,7 @@ function renderKids(){
   if(S.kids.length>=MAX_KIDS) showAddKid(false); else $("#addKidBtnRow").classList.toggle("hide",!$("#addKidRow").classList.contains("hide"));
   if(S.kids.length>=MAX_KIDS){ $("#kidNote").textContent="Your family has 4 children, the most an account holds. Tap a name to make changes."; $("#kidNote").style.color=""; }
   if(!S.kids.length){ el.innerHTML='<p class="muted">No children yet. Tap Add child to add your first one.</p>'; return; }
-  el.innerHTML=S.kids.map(k=>{ const n=kidPhotos(k.id).length;
-    return `<div class="stu">${avatarHTML(k)}
-      <div class="name"><button class="linkname" data-kid="${k.id}">${esc(k.name)}</button></div>
-      <div class="tiny" style="flex:1 1 auto">${STAGE[k.stage]||""} &middot; ${n} photo${n===1?"":"s"}${k.lang&&k.lang!=="en"?` &middot; ${LANGS[k.lang]}`:""}</div></div>`; }).join("");
+  el.innerHTML=`<div class="kidRow">${S.kids.map((k,i)=>`<button class="kidTile" data-kid="${k.id}">${bigAvatar(k,i)}<span class="nm">${esc(first(k))}</span></button>`).join("")}</div>`;
   $$("#kidList [data-kid]").forEach(b=>b.onclick=()=>openKid(b.dataset.kid));
 }
 /* one page per child: years until kindergarten, family language, up to 5 photos, and Remove at the bottom */
@@ -1540,11 +1563,11 @@ async function openKid(sid){
     $("#kStudio").onclick=()=>{ after="studio"; $$("#mBtns button")[0].click(); };
   };
   setTimeout(wire,0);
-  const r=await ask(k.name,`<label for="kName">First name</label><input id="kName" type="text" value="${esc(k.name)}" style="width:100%">
+  const r=await ask(k.name,`<div class="kTwo"><div><label for="kName">First name</label><input id="kName" type="text" value="${esc(k.name)}"></div>
+    <div><label for="kLang">Family language</label><select id="kLang">${Object.keys(LANGS).map(x=>`<option value="${x}" ${(k.lang||"en")===x?"selected":""}>${LANGS[x]}</option>`).join("")}</select></div></div>
     <label for="kStage" style="margin-top:10px">Years until kindergarten</label><select id="kStage">${Object.keys(STAGE).map(x=>`<option value="${x}" ${k.stage===x?"selected":""}>${STAGE[x]}</option>`).join("")}</select>
-    <label for="kLang" style="margin-top:10px">Family language</label><select id="kLang">${Object.keys(LANGS).map(x=>`<option value="${x}" ${(k.lang||"en")===x?"selected":""}>${LANGS[x]}</option>`).join("")}</select>
     <div style="font-weight:700;margin:16px 0 6px;font-size:15px;color:var(--ink)">${f}'s photos</div>
-    <p class="tiny">Up to 5. They show up on the characters when ${f} plays. Tap the &times; on a photo to remove it. Photos stay on this device.</p>
+    <p class="tiny">Up to 5. Photos stay on this device.</p>
     <div id="kpWrap">${photosHTML()}</div>
     <div style="font-weight:700;margin:18px 0 6px;font-size:15px;color:var(--ink)">${f}'s voice</div>
     <p class="tiny">Record ${f} saying each letter name and sound. The games and Check-ins can play ${f}'s voice.</p>
@@ -1661,8 +1684,10 @@ function renderSnapshot(){
     return `<div class="card" style="--accent:var(${accents[ki%4]})">
       <div class="kidhead">${avatarHTML(k)}<div><h2>${esc(k.name)}</h2><p class="tiny" style="margin:0">${STAGE[k.stage]||""}</p></div></div>
       ${rows}
-      <div class="note ${ok?"ok":""}" style="margin-top:16px"><b>Reader's License:</b> ${lk} of ${LIC_TOTAL} letters and sounds (goal ${licGoal()}%).
-        ${ok?`<div class="row" style="margin-top:8px"><button class="btn small" data-lic="${k.id}">Print ${esc(first(k))}'s Reader's License</button></div>`:""}</div>
+      <h3 style="margin-top:18px">Reader's License</h3>
+      <div class="rbLines">${MODEKEYS.map(m=>{ const p=Object.values(latest(k.id,m)).filter(v=>v===1).length/26*100;
+        return `<div class="rbRow"><span class="rbLab">${{upper:"Uppercase",lower:"Lowercase",both:"Letter sounds"}[m]}</span><div class="rbTrack"><div class="rbFill" style="width:${p}%;--p:${Math.max(p,1)}"></div></div></div>`; }).join("")}</div>
+      ${ok?`<div class="row" style="margin-top:10px"><button class="btn small" data-lic="${k.id}">Print ${esc(first(k))}'s Reader's License</button></div>`:""}
       <h3 style="margin-top:18px">Check-ins over time</h3>${hist}</div>`;
   }).join("");
   $$("#snapKids [data-lic]").forEach(b=>b.onclick=()=>printLicenses([b.dataset.lic]));
@@ -1674,7 +1699,7 @@ const RES_BUCKET="resources";
 const PRON_URL="https://www.youtube.com/watch?v=wBuA589kfMg";
 const EXTRAS=[
   {f:"Active Alphabet Coloring Pages.pdf",t:"Coloring Pages",d:"All 26 characters with their big uppercase and lowercase letters to color in. Print one at a time or the whole alphabet."},
-  {f:"Active Alphabet Letter Chart.pdf",t:"Letter Chart",d:"Every letter and character on one page, with how to say each sound and do each movement."},
+  {f:"Active Alphabet Letter Chart.pdf",t:"Letter Chart",d:"Every letter and character on one page, with how to say each sound and do each movement. Hang it on the refrigerator or an art table so your child can look at it while writing."},
   {f:"Active Alphabet Character Cards (with letters).pdf",t:"Character Cards (with letters)",d:"All 26 characters with their letters. Print, cut and make your own little cards."},
   {f:"Active Alphabet Character Cards (no letters).pdf",t:"Character Cards (no letters)",d:"All 26 characters without their letters. Great for matching games."}
 ];
@@ -1931,7 +1956,7 @@ function renderPractice(){
   $("#poModes").innerHTML=Object.keys(PO_MODES).map(k=>{ const m=PO_MODES[k];
     return `<button class="mode" data-po="${k}" aria-pressed="${S.opts.poMode===k}"><div class="t">${m.t}</div><div class="d">${m.d}</div><div class="pk">${m.pk}</div></button>`; }).join("");
   $$("#poModes [data-po]").forEach(b=>b.onclick=()=>{ S.opts.poMode=b.dataset.po; save(); renderPractice(); });
-  faceOptions($("#poFace"),S.opts.poFace); $("#poSound").value=S.opts.poSound||"on"; $("#poVoice").value=S.opts.poVoice||"aa"; $("#ciVoice").value=S.opts.poVoice||"aa";
+  faceOptions($("#poFace"),S.opts.poFace); $("#poSound").value=S.opts.poSound||"on"; $("#poVoice").value=S.opts.poVoice||"aa"; $("#poCount").value=String(S.opts.poCount||10); $("#poSpeed").value=String(S.opts.poSpeed||0); $("#lhSpeed").value=String(S.opts.lhSpeed||0); $("#ciVoice").value=S.opts.poVoice||"aa";
   $("#ciModes").innerHTML=MODEKEYS.map(k=>{ const m=MODES[k];
     return `<button class="mode" data-ci="${k}" aria-pressed="${S.opts.ciMode===k}"><div class="t">${m.t}</div><div class="d">${m.d}</div><div class="pk">${m.pk}</div></button>`; }).join("");
   $$("#ciModes [data-ci]").forEach(b=>b.onclick=()=>{ S.opts.ciMode=b.dataset.ci; save(); renderPractice(); });
@@ -1951,6 +1976,9 @@ $("#ciAll").onclick=()=>{ S.opts.picked=ALPHA.slice(); save(); renderPicker(); }
 $("#ciNone").onclick=()=>{ S.opts.picked=[]; save(); renderPicker(); };
 $("#poFace").onchange=e=>{ S.opts.poFace=e.target.value; save(); };
 $("#poSound").onchange=e=>{ S.opts.poSound=e.target.value; save(); };
+$("#poCount").onchange=e=>{ S.opts.poCount=+e.target.value; save(); };
+$("#poSpeed").oninput=e=>{ S.opts.poSpeed=+e.target.value; save(); };
+$("#lhSpeed").oninput=e=>{ S.opts.lhSpeed=+e.target.value; save(); };
 $("#poVoice").onchange=e=>{ S.opts.poVoice=e.target.value; $("#ciVoice").value=e.target.value; save(); };
 $("#ciVoice").onchange=e=>{ S.opts.poVoice=e.target.value; $("#poVoice").value=e.target.value; save(); };
 $("#ciFace").onchange=e=>{ S.opts.ciFace=e.target.value; save(); };
@@ -1969,6 +1997,9 @@ const PO_SLOWDOWN=0.55;                         /* after 5 seconds of chase, thi
 const AGE={two:{m:3.3,pause:[260,520],dist:[200,500],min:300},one:{m:4.7,pause:[150,340],dist:[220,560],min:250},k:{m:6.5,pause:[60,180],dist:[260,640],min:200}};
 /* the red circle: after the ride appears, a thin circle draws around the letter from 12 o'clock in 3 seconds.
    The letter dashes off at 2 seconds (a 1-second head start). Once the circle closes, the child can catch it. */
+/* the speed slider: the middle (0) is the speed for the child's age; each step left or right is about 18% slower or faster */
+const speedK=v=>Math.pow(1.18,Math.max(-4,Math.min(4,+v||0)));
+function speedAge(a,v){ const k=speedK(v); return Object.assign({},a,{m:a.m*k,pause:a.pause.map(x=>x/k),min:a.min/k}); }
 const RING_LEAD=0, RING_MS=3000, RING_GO=1000;   /* 1.9: the circle starts as the letter lands; it moves at 1 second; catchable at 3 */
 /* a shuffled deck: each one shows up once before any repeats, and never twice in a row */
 function deck(name,list,fits){
@@ -2016,14 +2047,14 @@ const CHASES=["glide","hop","zigzag","skateboard","surf","car","skates","pogo","
 $("#poGo").onclick=async()=>{
   const sid=await whoPick(()=>{ soundOn=()=>S.opts.poSound!=="off"; unlockMedia(); });
   if(!sid){ soundOn=()=>$("#optSound").value!=="off"; return; }
-  const m=S.opts.poMode, order=shuffle(ALPHA);
+  const m=S.opts.poMode, order=shuffle(ALPHA).slice(0,Math.min(26,+S.opts.poCount||10));
   /* the letter's color changes 4 times a round, at random letters */
   const swaps=new Set(shuffle(ALPHA.map((_,i)=>i).slice(1)).slice(0,4));
   let col="#16233C";
   const items=order.map((L,i)=>{ if(swaps.has(i)){ let c; do{ c=pickOne(PO_COLORS); }while(c===col); col=c; } return {L,mode:m==="mix"?pickOne(MODEKEYS):m,color:col}; });
   const kid=kidById(sid);
   run={kind:"push",sid,items,i:0,face:null,pid:null,clip:null,faceChoice:S.opts.poFace,busy:false,hints:0,decks:{},last:{},
-       age:AGE[(kid&&kid.stage)||"one"]||AGE.one,voice:null};
+       age:speedAge(AGE[(kid&&kid.stage)||"one"]||AGE.one,S.opts.poSpeed),voice:null};
   if(S.opts.poVoice==="child") loadVoice(sid).then(v=>{ if(run&&run.sid===sid) run.voice=v; });
   openScreen("push");
   playIntro();
@@ -2508,7 +2539,8 @@ function gCleanup(){ gClear(); if(run&&run.raf2) cancelAnimationFrame(run.raf2);
 async function gStart(kind,setup){
   const sid=await whoPick(()=>{ soundOn=()=>S.opts.poSound!=="off"; unlockMedia(); });
   if(!sid){ soundOn=()=>$("#optSound").value!=="off"; return; }
-  run=Object.assign({kind,sid,age:gAge(sid),timers:[],decks:{},last:{},voice:null,faceChoice:S.opts.poFace,i:0},setup(sid));
+  const ga=gAge(sid), sk=speedK(kind==="hunt"?S.opts.lhSpeed:0);
+  run=Object.assign({kind,sid,age:Object.assign({},ga,{spd:ga.spd*sk}),timers:[],decks:{},last:{},voice:null,faceChoice:S.opts.poFace,i:0},setup(sid));
   if(S.opts.poVoice==="child") loadVoice(sid).then(v=>{ if(run&&run.sid===sid) run.voice=v; });
   openScreen(kind); gLayer().innerHTML=""; gLayer().style.visibility="";
   Object.keys(NAME_AUDIO).forEach(nameBuf); ALPHA.forEach(letterBuf);
@@ -3032,7 +3064,7 @@ document.addEventListener("keydown",e=>{
   else if(e.key===" "||e.key==="Enter"){ e.preventDefault(); advance(); }
 });
 
-/* ============ Video: the whole song, with family faces or just the animation ============
+/* ============ Dance: the whole animation, with family faces or without ============
    class-video.mp4 sits next to the app, as it does for the Classroom App. Photos never leave the device. */
 const CV_URL="class-video.mp4?v=5.7", CV_FPS=24, CV_W=1280, CV_H=720, CV_FADE=4;
 const CV_FADE_IN={Y:1};
@@ -3040,7 +3072,7 @@ let cv=null;
 function renderVideoTab(){
   const n=photoCount(), c=Object.keys(CV_TRACK).filter(L=>!NO_FACE.has(L)).length;
   $("#cvWho").innerHTML=!n?"No photos yet. Add photos in Our family to see your family on the characters."
-    :`<b>${n} photo${n===1?"":"s"}</b> will be in the song.`+(n>c?` There are ${c} characters, so some photos sit out each time, picked at random.`:"");
+    :`<b>${n} photo${n===1?"":"s"}</b> will be in the animation.`+(n>c?` There are ${c} characters, so some photos sit out each time, picked at random.`:"");
   $("#cvPlay").disabled=!n; $("#cvMsg").textContent="";
 }
 const cvMasks={};
@@ -3104,7 +3136,7 @@ const TERMS_TEXT=`<h1>Active Alphabet Family App Terms of Use</h1><p>Version 1 (
 <li>The printable pages in the App are for your own family only. Do not share, post or resell them.</li>
 <li>A full refund is available within 14 days of purchase. A refund ends access.</li>
 <li>Your children's information and your family's photos belong to your family, not to Active Alphabet. Photos stay on your Device.</li>
-<li>Please don't post the Active Alphabet animations, songs or video on social media or any public site.</li>
+<li>Please don't post the Active Alphabet animations or video on social media or any public site.</li>
 <li>Active Alphabet shows which letters and sounds a child knows on a given day. It is not a screening or diagnosis.</li>
 <li>These Terms work together with our Privacy Policy.</li></ul>
 <h2>1. About These Terms</h2>
@@ -3144,7 +3176,7 @@ const TERMS_TEXT=`<h1>Active Alphabet Family App Terms of Use</h1><p>Version 1 (
 <h2>6. Acceptable Use</h2>
 <p>You agree not to:</p>
 <ul><li>Share, sell or give away access codes or your account.</li>
-<li>Copy, change or share the Active Alphabet characters, animations, songs or App.</li>
+<li>Copy, change or share the Active Alphabet characters, animations or App.</li>
 <li>Try to break into the App, get around its locks, or reach anyone else's information.</li>
 <li>Use the App for anything other than helping children learn.</li>
 <li>Use the App to run a class, a school, a center or a child care program.</li>
@@ -3152,7 +3184,7 @@ const TERMS_TEXT=`<h1>Active Alphabet Family App Terms of Use</h1><p>Version 1 (
 <h2>7. What the App Is, and What It Is Not</h2>
 <p>Active Alphabet shows which letters and sounds a child knows on a given day. It is not a screening, diagnosis, or evaluation for special education or any learning need. If you have questions about your child's learning, please talk with your child's teacher, pediatrician or another professional.</p>
 <h2>8. Who Owns What</h2>
-<ul><li>Standup to Play LLC owns the Active Alphabet name and logo, the characters, the animations, the songs, the printable pages, and the App.</li>
+<ul><li>Standup to Play LLC owns the Active Alphabet name and logo, the characters, the animations, the printable pages, and the App.</li>
 <li>We give you a personal license, which you may not transfer, to use them only with your own family during your access period.</li>
 <li>Printable pages. The license covers the files you open from the Resources page, such as the Character Cards. You may print them and use them only with your own family. You may not share, post, sell or give the files to anyone else.</li>
 <li>Your family's information belongs to your family, as Section 5 explains.</li>
