@@ -570,7 +570,7 @@
             <option value="en">English</option><option value="es">Spanish</option><option value="zh">Chinese (simplified)</option></select></div>
           <div><label>Photo (optional)</label><button class="btn ghost" id="newPhotoBtn" type="button">Take or choose a photo</button></div>
         </div>
-        <p class="tiny" id="nameNote" style="margin-top:8px">Up to 3 letters of the last name, only if two children share a first name and initial.</p>
+        <p class="tiny" id="nameNote" style="margin-top:8px"></p>
         <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" id="addDone" type="button">Done</button><button class="btn" id="addStudent" type="button">Add student</button></div>
       </div>
     </div>
@@ -728,21 +728,19 @@
 
     <div class="card" style="--accent:var(--c-coral)">
       <div class="cardtop"><h2>Class heat map</h2><button class="btn ghost small noprint" data-save="heat">Save or print</button></div>
-      <p class="muted">Every child, every letter. Green is got it, blue is not yet, grey means not shown.
-         Read down a column to find a letter the whole class is missing. Read across a row to find a child who needs a small group.</p>
       <div class="row noprint" style="margin-top:12px">
         <div><label for="heatMode">Assessment</label><select id="heatMode"></select></div>
         <div><label for="heatView">Show</label><select id="heatView"><option value="T">Total</option><option value="BOY">BOY</option><option value="MOY">MOY</option><option value="EOY">EOY</option></select></div>
       </div>
       <p class="tiny" id="heatAbout" style="margin-top:10px"></p>
-      <div class="gridwrap"><table class="heat" id="heatTable"></table></div>
-      <div class="legend">
+      <div class="legend" style="margin:10px 0 12px">
         <span><span style="width:16px;height:16px;border-radius:4px;background:#3FBF85;display:inline-block"></span> Got it</span>
         <span><span style="width:16px;height:16px;border-radius:4px;background:#9CD4EE;display:inline-block"></span> Not yet</span>
         <span><span style="width:16px;height:16px;border-radius:4px;background:#EEF2F7;display:inline-block"></span> Not shown</span>
         <span><span class="h-o" style="width:16px;height:16px;border-radius:4px;display:inline-block"></span> Seen by teacher</span>
         <span id="heatDotKey"><span class="h-y h-d" style="width:16px;height:16px;border-radius:4px;display:inline-block"></span> Changed on a formative</span>
       </div>
+      <div class="gridwrap"><table class="heat" id="heatTable"></table></div>
     </div>
 
     <div class="card" style="--accent:var(--c-purple)">
@@ -796,15 +794,14 @@
   <!-- ===================== SETTINGS ===================== -->
   <section id="tab-video" class="hide">
     <div class="card" style="--accent:var(--c-purple)">
-      <h2>Class song</h2>
-      <p class="muted">The whole Active Alphabet song, starring your class. Children with the face switch on get characters, picked at random every time you play it.</p>
-      <div style="margin-top:12px"><div class="tiny" style="font-weight:700">Who is in the song</div>
+      <h2>Class animation</h2>
+      <p class="muted">The whole Active Alphabet animation, starring your class. Children with the face switch on get characters, picked at random every time you play it.</p>
+      <div style="margin-top:12px"><div class="tiny" style="font-weight:700">Who is in the animation</div>
         <label class="opt" style="margin-top:6px"><input type="radio" name="cvMode" value="mix"><span><b>Students and characters.</b> Each child gets one character. Any characters left over keep their own faces.</span></label>
         <label class="opt" style="margin-top:6px"><input type="radio" name="cvMode" value="kids"><span><b>Students only.</b> Every character gets a child's face. If there are more characters than children, some children appear more than once.</span></label></div>
       <p id="cvWho" style="margin-top:12px"></p>
-      <div class="row" style="margin-top:12px"><button class="btn" id="cvPlay">Play the class song</button></div>
+      <div class="row" style="margin-top:12px"><button class="btn" id="cvPlay">Play the class animation</button></div>
       <p class="tiny" id="cvMsg" style="margin-top:10px"></p>
-      <p class="tiny" style="margin-top:6px">Children's photos stay on this device. The song plays with sound, so turn the volume up.</p>
     </div>
     <div class="card" style="--accent:var(--c-orange)">
       <h2>Active Alphabet with Mr. Patrick</h2>
@@ -851,8 +848,7 @@
       <h2>Your classroom</h2>
       <p class="muted">You can change any of these whenever you like.</p>
       <div class="row" style="margin-top:14px">
-        <div><label for="teacherFirst">First name</label><input id="teacherFirst" type="text" placeholder="Maria" autocomplete="given-name"></div>
-        <div><label for="teacherLast">Last name</label><input id="teacherLast" type="text" placeholder="Rivera" autocomplete="family-name"></div>
+        <div style="flex:1 1 100%"><label for="teacherName">Teacher name</label><input id="teacherName" type="text" placeholder="Ms. Rivera" autocomplete="off" style="max-width:320px"><p class="tiny" style="margin-top:4px">What do your students and families call you?</p></div>
         <div><label for="teacherEmail">Email (change it below)</label><input id="teacherEmail" type="text" readonly style="background:#F7F9FC;color:var(--ink-soft)"></div>
         <div><label for="schoolName">School, center or program</label><input id="schoolName" type="text" placeholder="Lincoln Early Learning Center"></div>
         <div><label for="className">Classroom</label><input id="className" type="text" placeholder="Room 4"></div>
@@ -952,8 +948,7 @@
     <h2>Welcome to Active Alphabet</h2>
     <p class="muted">Tell us a little about yourself. This takes about a minute.</p>
     <div class="row">
-      <div class="field" style="flex:1 1 180px"><label for="suFirst">First name</label><input id="suFirst" type="text" placeholder="Maria" autocomplete="given-name"></div>
-      <div class="field" style="flex:1 1 180px"><label for="suLast">Last name</label><input id="suLast" type="text" placeholder="Rivera" autocomplete="family-name"></div>
+      <div class="field" style="flex:1 1 180px"><label for="suName">Teacher name</label><input id="suName" type="text" placeholder="Ms. Rivera" autocomplete="off"><p class="tiny" style="margin-top:4px">What do your students and families call you?</p></div>
     </div>
     <div class="field"><label for="suEmail">Email</label><input id="suEmail" type="text" inputmode="email" autocapitalize="off" placeholder="you@school.org"></div>
     <div class="field"><label for="suSchool">School or center</label><input id="suSchool" type="text" placeholder="Lincoln Early Learning Center"></div>
@@ -980,6 +975,15 @@
       <button class="btn ghost small" id="pinBack">Use a different email</button>
     </div>
     <p class="tiny" style="margin-top:12px">The code can take a minute to arrive. Check your spam or promotions folder too.</p>
+  </div>
+  <!-- 6.3: Android devices get their own home screen steps. They don't block the screen: on Android the icon opens in Chrome, which keeps the same saved results. -->
+  <div class="card hide" id="androidGuide" style="--accent:var(--c-orange);margin-top:18px">
+    <h2>First, add the app to your home screen</h2>
+    <ol>
+      <li>Tap the <b>menu</b>, the three dots <b>&#8942;</b> in the top right corner.</li>
+      <li>Tap <b>Add to Home screen</b> (it may say <b>Install app</b>), then <b>Add</b>.</li>
+      <li>Open <b>Active Alphabet</b> from your home screen.</li>
+    </ol>
   </div>
   <div class="card hide" id="acStart" style="--accent:var(--c-green);margin-top:18px">
     <h2>Welcome to Active Alphabet</h2>
@@ -1016,8 +1020,7 @@
     <h2>Join Active Alphabet</h2>
     <p class="muted">Tell us a little about yourself. This takes about a minute.</p>
     <div class="row">
-      <div class="field" style="flex:1 1 180px"><label for="ajFirst">First name</label><input id="ajFirst" type="text" placeholder="Maria" autocomplete="given-name"></div>
-      <div class="field" style="flex:1 1 180px"><label for="ajLast">Last name</label><input id="ajLast" type="text" placeholder="Rivera" autocomplete="family-name"></div>
+      <div class="field" style="flex:1 1 180px"><label for="ajName">Teacher name</label><input id="ajName" type="text" placeholder="Ms. Rivera" autocomplete="off"><p class="tiny" style="margin-top:4px">What do your students and families call you?</p></div>
     </div>
     <div class="field"><label for="ajEmail">Email</label><input id="ajEmail" type="text" inputmode="email" autocapitalize="off" autocomplete="email" placeholder="you@school.org"></div>
     <div class="field pw"><label for="ajPass">Make a password (at least 8 characters)</label><input id="ajPass" type="password" autocomplete="new-password"><button type="button" data-show="ajPass">Show</button></div>
@@ -1645,7 +1648,7 @@ const CLIPS={"A":{"frame":[700,886],"letters":{"A":{"cx":21.71,"cy":84.71,"h":15
 /* ============ state and storage ============ */
 /* Version 4 has its own storage name, so it never reads or overwrites round 1 data on the same iPad. */
 const KEY="aa-assess-v4-round2";
-const APP_VERSION="6.2";
+const APP_VERSION="6.3";
 $("#verShow").textContent=APP_VERSION;
 const SCHEMA=2;                         /* data layout version, so a future version knows how to read this data */
 /* Shared app key. Must match APP_KEY in the Apps Script. */
@@ -1929,7 +1932,7 @@ function renderVideoTab(){
   const kids=cvKids(), n=Object.keys(CV_TRACK).length;
   $("#cvWho").innerHTML=!kids.length
     ?"No children have a face yet. Add a photo and turn on the face switch by tapping a child's name on the Class tab."
-    :`<b>${kids.length} ${kids.length===1?"child":"children"}</b> will be in the song.`+(kids.length>n?` There are ${n} characters, so ${kids.length-n} ${kids.length-n===1?"child sits":"children sit"} out each time, picked at random.`
+    :`<b>${kids.length} ${kids.length===1?"child":"children"}</b> will be in the animation.`+(kids.length>n?` There are ${n} characters, so ${kids.length-n} ${kids.length-n===1?"child sits":"children sit"} out each time, picked at random.`
       :(kids.length<n&&cvMode()==="kids"?` There are ${n} characters, so some children appear more than once.`:""));
   $$('input[name="cvMode"]').forEach(r=>r.checked=r.value===cvMode());
   $("#cvPlay").disabled=!kids.length; $("#cvMsg").textContent="";
@@ -2125,12 +2128,13 @@ async function unlockPhotos(uid){
 
 /* ---------- screens ---------- */
 const AC=["#acStart","#acAccess","#acTerms","#acEnded","#acJoin","#acCode","#acSignin","#acForgot","#acNewPass","#acUnlock","#acRc","#acWait","#signupCard","#codeCard"];
-function acShow(id){ $("#welcome").classList.add("on"); $("#homeGuide").classList.add("hide"); AC.forEach(x=>$(x).classList.toggle("hide",x!==id)); window.scrollTo(0,0); }
+function acShow(id){ $("#welcome").classList.add("on"); $("#homeGuide").classList.add("hide"); AC.forEach(x=>$(x).classList.toggle("hide",x!==id));
+  $("#androidGuide").classList.toggle("hide",!(id==="#acStart"&&isAndroid()&&!isHome())); window.scrollTo(0,0); }
 function acWait(t,p){ $("#acWaitT").textContent=t; $("#acWaitP").textContent=p||""; acShow("#acWait"); }
 function acDone(){ $("#welcome").classList.remove("on"); }
 showWelcome=function(){
   $("#welcome").classList.add("on");
-  AC.forEach(x=>$(x).classList.add("hide"));
+  AC.forEach(x=>$(x).classList.add("hide")); $("#androidGuide").classList.add("hide");
   const guide=isIOS()&&!isHome();
   $("#homeGuide").classList.toggle("hide",!guide);
   if(!guide) acShow("#acStart");
@@ -2141,7 +2145,7 @@ $$("[data-acback]").forEach(b=>b.onclick=()=>acShow("#acStart"));
 $("#acGoJoin").onclick=()=>showAccess("join");
 function openJoin(){
   /* a teacher already using the app: the teacher's details are filled in, and the class moves into the account */
-  splitName(); [["ajFirst","teacherFirst"],["ajLast","teacherLast"],["ajEmail","teacherEmail"],["ajSchool","schoolName"],["ajClass","className"],["ajCity","city"]].forEach(([i,k])=>{ if(!$("#"+i).value) $("#"+i).value=S[k]||""; });
+  [["ajName","teacherName"],["ajEmail","teacherEmail"],["ajSchool","schoolName"],["ajClass","className"],["ajCity","city"]].forEach(([i,k])=>{ if(!$("#"+i).value) $("#"+i).value=S[k]||""; });
   if(S.state) $("#ajState").value=S.state; $("#ajShare").checked=!!(S.share&&!S.optedOut);
   $("#ajErr").textContent=""; termsOk=false; $("#ajTerms").checked=false; $("#ajPriv").checked=false;
   $("#ajUpdates").checked=false; $("#ajApproved").checked=false; showRoleParts();
@@ -2171,12 +2175,11 @@ function codeScreen(kind,email){
 }
 $("#ajGo").onclick=async()=>{
   const role=joinRole(), fam=role==="family";
-  const fn=$("#ajFirst").value.trim(), ln=$("#ajLast").value.trim();
-  const v={first:fn,last:ln,name:(fn+" "+ln).trim(),email:$("#ajEmail").value.trim(),pass:$("#ajPass").value,school:fam?"":$("#ajSchool").value.trim(),
+  const v={name:$("#ajName").value.trim(),email:$("#ajEmail").value.trim(),pass:$("#ajPass").value,school:fam?"":$("#ajSchool").value.trim(),
     cls:fam?"":$("#ajClass").value.trim(),city:$("#ajCity").value.trim(),state:$("#ajState").value,share:$("#ajShare").checked,
     role,updates:$("#ajUpdates").checked};
   const err=t=>$("#ajErr").textContent=t;
-  if(!v.first||!v.last||!v.email||(!fam&&(!v.school||!v.cls))||!v.city||!v.state){ err("Please fill in every box, including first name, last name, city and state."); return; }
+  if(!v.name||!v.email||(!fam&&(!v.school||!v.cls))||!v.city||!v.state){ err("Please fill in every box, including teacher name, city and state."); return; }
   if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v.email)){ err("That email does not look quite right."); return; }
   if(v.pass.length<8){ err("Your password needs at least 8 characters."); return; }
   if(!$("#ajApproved").checked){ err("Please check the box to confirm your school, center or program approved using Active Alphabet, or that you run your own program."); return; }
@@ -2218,11 +2221,11 @@ $("#acPinGo").onclick=async()=>{
 async function finishJoin(user){
   acWait("Setting up your account...");
   const v=flow.v;
-  S.teacherName=v.name; S.teacherFirst=v.first; S.teacherLast=v.last; S.teacherEmail=v.email; S.schoolName=v.school; S.className=v.cls; S.city=v.city; S.state=v.state;
+  S.teacherName=v.name; S.teacherEmail=v.email; S.schoolName=v.school; S.className=v.cls; S.city=v.city; S.state=v.state;
   S.share=v.share; S.emailVerified=true; S.signedUpAt=S.signedUpAt||new Date().toISOString(); S.registered=false;
   S.userType="teacher"; S.updates=!!v.updates; S.schoolApproved=true;
   if(!S.classCode) S.classCode=makeCode();
-  if(S.sample){ /* preview data never goes into a real account */ const keepPhotos=PHOTOS; S=Object.assign(blank(),{teacherName:v.name,teacherFirst:v.first||"",teacherLast:v.last||"",teacherEmail:v.email,schoolName:v.school,className:v.cls,city:v.city,state:v.state,share:v.share,emailVerified:true,signedUpAt:new Date().toISOString(),classCode:makeCode(),userType:v.role||"teacher",updates:!!v.updates,schoolApproved:v.role==="teacher"}); }
+  if(S.sample){ /* preview data never goes into a real account */ const keepPhotos=PHOTOS; S=Object.assign(blank(),{teacherName:v.name,teacherEmail:v.email,schoolName:v.school,className:v.cls,city:v.city,state:v.state,share:v.share,emailVerified:true,signedUpAt:new Date().toISOString(),classCode:makeCode(),userType:v.role||"teacher",updates:!!v.updates,schoolApproved:v.role==="teacher"}); }
   await makeKeys(user.id,flow.pass);
   acctSet({uid:user.id,email:v.email});
   remoteRev=0; S.rev=Math.max(S.rev||0,1); await _save();
@@ -2766,17 +2769,8 @@ function renderBanner(){ $("#sampleBanner").classList.toggle("hide",!S.sample); 
 ["schoolName","className","city"].forEach(k=>{
   $("#"+k).oninput=e=>{S[k]=e.target.value;save();};
 });
-/* 6.1: first and last name, kept together in teacherName for everything that shows the teacher's name */
-["teacherFirst","teacherLast"].forEach(k=>{
-  $("#"+k).oninput=e=>{ S[k]=e.target.value; S.teacherName=[S.teacherFirst,S.teacherLast].map(x=>(x||"").trim()).filter(Boolean).join(" "); save(); };
-});
-/* accounts from before 6.1 have one name: split it once (last word is the last name). The teacher can fix it in Settings. */
-function splitName(){
-  if((S.teacherFirst||S.teacherLast)||!S.teacherName) return false;
-  const p=S.teacherName.trim().split(/\s+/);
-  S.teacherLast=p.length>1?p.pop():""; S.teacherFirst=p.join(" ");
-  return true;
-}
+/* 6.3: one Teacher name again, the name students and families use (it goes on every family letter) */
+$("#teacherName").oninput=e=>{ S.teacherName=e.target.value; save(); };
 $("#state").onchange=e=>{S.state=e.target.value;save();};
 $("#shareBox").onchange=e=>{ S.share=e.target.checked; save(); showLastSync(); register(true);
   if(S.share) pushToSheet(true).then(showLastSync); else removeShared(); };
@@ -2790,6 +2784,7 @@ function makeCode(){
   return "AA-"+s.slice(0,4)+"-"+s.slice(4);
 }
 const isIOS=()=>/iPad|iPhone|iPod/.test(navigator.userAgent)||(navigator.platform==="MacIntel"&&navigator.maxTouchPoints>1);
+const isAndroid=()=>/Android/i.test(navigator.userAgent);
 const isHome=()=>window.navigator.standalone===true||(window.matchMedia&&matchMedia("(display-mode: standalone)").matches);
 function showWelcome(){
   $("#welcome").classList.add("on");
@@ -2813,10 +2808,9 @@ function suggestEmail(email){
 let pending=null;
 const DRAFT_PIN="000000";   /* only while this draft is not connected; a real code is emailed once the script is set up */
 $("#suGo").onclick=async()=>{
-  const sf=$("#suFirst").value.trim(), sl=$("#suLast").value.trim();
-  const v={first:sf,last:sl,name:(sf+" "+sl).trim(),email:$("#suEmail").value.trim(),school:$("#suSchool").value.trim(),cls:$("#suClass").value.trim(),
+  const v={name:$("#suName").value.trim(),email:$("#suEmail").value.trim(),school:$("#suSchool").value.trim(),cls:$("#suClass").value.trim(),
     city:$("#suCity").value.trim(),state:$("#suState").value};
-  if(!v.first||!v.last||!v.email||!v.school||!v.cls||!v.city||!v.state){ $("#suErr").textContent="Please fill in every box, including first name, last name, city and state."; return; }
+  if(!v.name||!v.email||!v.school||!v.cls||!v.city||!v.state){ $("#suErr").textContent="Please fill in every box, including teacher name, city and state."; return; }
   if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v.email)){ $("#suErr").textContent="That email does not look quite right."; return; }
   const sug=suggestEmail(v.email);
   if(sug){
@@ -2857,7 +2851,7 @@ $("#pinGo").onclick=async()=>{
   }
   if(!ok){ $("#pinErr").textContent="That code does not match. Check it, or send a new code."; return; }
   const v=pending;
-  S.teacherName=v.name; S.teacherFirst=v.first||""; S.teacherLast=v.last||""; S.teacherEmail=v.email; S.schoolName=v.school; S.className=v.cls;
+  S.teacherName=v.name; S.teacherEmail=v.email; S.schoolName=v.school; S.className=v.cls;
   S.city=v.city; S.state=v.state; S.share=$("#suShare").checked; S.emailVerified=true;
   S.signedUpAt=new Date().toISOString(); S.registered=false;
   await save();
@@ -2886,13 +2880,13 @@ $("#kitBtn").onclick=async()=>{
   }catch(e){ $("#kitMsg").textContent="Could not reach Active Alphabet right now. Please try again later."; }
 };
 function who(){ return {key:APP_KEY,appVersion:APP_VERSION,schema:SCHEMA,code:S.classCode,
-  teacher:S.teacherName,firstName:S.teacherFirst||"",lastName:S.teacherLast||"",email:S.teacherEmail,school:S.schoolName,classroom:S.className,city:S.city,state:S.state,
+  teacher:S.teacherName,email:S.teacherEmail,school:S.schoolName,classroom:S.className,city:S.city,state:S.state,
   share:!!(S.share&&!S.optedOut),verified:!!S.emailVerified,signedUpAt:S.signedUpAt,
   termsVersion:S.termsVersion||"",termsAgreedAt:S.termsAgreedAt||"",
   userType:"teacher",updates:!!S.updates,schoolApproved:!!S.schoolApproved}; }
 function fillSetup(){
-  if(splitName()){ save(); try{ register(true); }catch(e){} }
-  ["schoolName","className","teacherFirst","teacherLast","teacherEmail","city","state"].forEach(k=>$("#"+k).value=S[k]||"");
+  if(S.teacherFirst!==undefined||S.teacherLast!==undefined){ delete S.teacherFirst; delete S.teacherLast; save(); }
+  ["schoolName","className","teacherName","teacherEmail","city","state"].forEach(k=>$("#"+k).value=S[k]||"");
   $("#shareBox").checked=!!(S.share&&!S.optedOut); $("#shareBox").disabled=!!S.optedOut;
   $("#shareRow").style.opacity=S.optedOut?".5":"1";
   $("#codeShow").textContent=S.classCode||"";
@@ -2992,7 +2986,7 @@ $("#addStudent").onclick=async()=>{
 };
 $("#newInit").onkeydown=e=>{ if(e.key==="Enter") $("#addStudent").click(); };
 /* 6.1: the Add student pop-up */
-const ADD_NOTE="Up to 3 letters of the last name, only if two children share a first name and initial.";
+const ADD_NOTE="";
 $("#openAdd").onclick=()=>{ $("#addSheet").classList.remove("hide"); $("#nameNote").textContent=ADD_NOTE; $("#nameNote").style.color=""; setTimeout(()=>$("#newFirst").focus(),50); };
 $("#addDone").onclick=()=>{ $("#addSheet").classList.add("hide"); newPhoto=null; showNewPhoto(); $("#newFirst").value=""; $("#newInit").value=""; $("#newStage").value=""; $("#newLang").value="en"; };
 $("#addSheet").addEventListener("click",e=>{ if(e.target.id==="addSheet") $("#addDone").click(); });
