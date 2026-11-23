@@ -93,6 +93,19 @@
   .stu:nth-child(5n+4) .avatar{background:var(--c-sky)}
   .stu:nth-child(5n+5) .avatar{background:var(--c-purple)}
   .stu .name{font-weight:600;flex:1 1 160px;min-width:0}
+  /* 6.1: class list as a grid of names, and the Add student pop-up */
+  #studentList{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:10px}
+  #studentList .stu{border:1.5px solid var(--line);border-radius:14px;padding:8px 10px;gap:10px;flex-wrap:nowrap;background:#fff;cursor:pointer}
+  #studentList .stu:hover{border-color:var(--c-sky)}
+  #studentList .stu .name{flex:1 1 auto;overflow:hidden}
+  #studentList .stu .linkname{text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+  #studentList>p{grid-column:1/-1}
+  .sheet{position:fixed;inset:0;background:rgba(22,35,60,.42);z-index:60;display:flex;align-items:flex-start;justify-content:center;padding:6vh 16px;overflow:auto}
+  .sheet.hide{display:none}
+  .sheetbox{background:#fff;border-radius:20px;max-width:560px;width:100%;padding:22px 22px 18px;box-shadow:0 20px 60px rgba(22,35,60,.25)}
+  .addform{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;margin-top:14px}
+  .addform>div{min-width:0} .addform select,.addform input{width:100%;min-width:0}
+  @media (max-width:520px){ .addform{grid-template-columns:1fr} }
   .stu .famboxes{display:flex;gap:14px;flex-wrap:wrap} .stu .famboxes .pcheck{margin:0;font-size:13px;align-items:center}
   .linkname{background:none;border:0;font:inherit;font-weight:600;color:var(--blue);cursor:pointer;padding:0;text-align:left}
   .linkname:hover{text-decoration:underline}
@@ -295,6 +308,25 @@
   #printArea .crec .obs{border:0;background:none;padding:0}
   #printArea .plangrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
   #printArea .plan{margin-top:0}
+  #famPages .repwrap .ppage{background:#fff;color:#16233C;page-break-after:always;break-after:page}
+  #famPages .repwrap .ppage:last-child{page-break-after:auto;break-after:auto}
+  #famPages .repwrap .phead{display:flex;justify-content:space-between;align-items:flex-end;border-bottom:3px solid #EEF2F7;padding-bottom:6px;margin-bottom:10px}
+  #famPages .repwrap .phead h2{font-size:20px} #famPages .repwrap .phead small{font-size:11.5px;color:#5B6B85}
+  #famPages .repwrap .gridwrap{overflow:visible;border:0;margin-top:4px}
+  #famPages .repwrap th{position:static}
+  #famPages .repwrap .linkname{color:#16233C}
+  #famPages .repwrap table.heat td{width:22px;height:20px}
+  #famPages .repwrap .crec{display:grid;grid-template-columns:1fr 1.05fr;gap:22px;align-items:start}
+  #famPages .repwrap .crec h3{font-size:15px;margin:0 0 6px}
+  #famPages .repwrap .crec .legend{margin:0 0 6px;gap:12px;font-size:11.5px}
+  #famPages .repwrap .crec .chips{gap:5px} #famPages .repwrap .crec .chip{font-size:12px;padding:3px 8px}
+  #famPages .repwrap .crec td,#famPages .repwrap .crec th{padding-top:3px;padding-bottom:3px}
+  #famPages .repwrap .crec .obs{border:0;background:none;padding:0}
+  #famPages .repwrap .plangrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+  #famPages .repwrap .plan{margin-top:0}
+  #famPages .repwrap{zoom:var(--rz,1)}
+  #famPages .repwrap .ppage{width:980px;margin:0 auto 22px;padding:12px;border-radius:12px;box-shadow:0 2px 10px rgba(22,35,60,.08)}
+  @media print{ #famPages .repwrap{zoom:1} #famPages .repwrap .ppage{margin:0;padding:0;box-shadow:none;border-radius:0} }
   body.measuring #printArea{display:block;position:absolute;left:0;top:0;width:980px;visibility:hidden;z-index:-1}
   body.measuring #printArea .ppage{width:980px}
   body.measuring #printArea .pin{display:inline-block;min-width:960px}
@@ -497,59 +529,45 @@
         <div><h1>Classroom</h1></div>
       </div>
       <nav>
-        <button data-tab="setup" aria-current="true">Class setup</button>
+        <button data-tab="setup" aria-current="true">Class</button>
         <button data-tab="assess">Assess</button>
         <button data-tab="results">Results</button>
         <button data-tab="reports">Reports</button>
-        <button data-tab="video">Class video</button>
+        <button data-tab="video">Class videos</button>
         <button data-tab="resources">Resources</button>
         <button data-tab="settings">Settings</button>
       </nav>
     </div>
   </header>
 
-  <div id="sampleBanner" class="banner hide noprint">Preview data is loaded. Nothing will be sent to Active Alphabet until you clear it on the Class setup tab.</div>
+  <div id="sampleBanner" class="banner hide noprint">Preview data is loaded. Nothing will be sent to Active Alphabet until you clear it in Settings, under More options.</div>
 
   <!-- ===================== SETUP ===================== -->
   <section id="tab-setup">
-    <div class="card" style="--accent:var(--c-coral)">
-      <h2>Your classroom</h2>
-      <p class="muted">You can change any of these whenever you like.</p>
-      <div class="row" style="margin-top:14px">
-        <div><label for="teacherName">Your name</label><input id="teacherName" type="text" placeholder="Ms. Rivera"></div>
-        <div><label for="teacherEmail">Email (change it in Settings)</label><input id="teacherEmail" type="text" readonly style="background:#F7F9FC;color:var(--ink-soft)"></div>
-        <div><label for="schoolName">School or center</label><input id="schoolName" type="text" placeholder="Lincoln Early Learning Center"></div>
-        <div><label for="className">Classroom</label><input id="className" type="text" placeholder="Room 4"></div>
-        <div><label for="city">City</label><input id="city" type="text" placeholder="Chicago"></div>
-        <div><label for="state">State</label><select id="state"></select></div>
-      </div>
-      <p class="tiny" style="margin-top:12px">Your classroom code: <span class="codebox" id="codeShow"></span> You only need this if you ever contact Active Alphabet for help.</p>
-    </div>
-
     <div class="card" style="--accent:var(--c-orange)">
-      <h2>Students</h2>
-      <p class="muted">First name and last initial only. Never a full last name.</p>
-      <div class="row" style="margin-top:14px">
-        <div><label for="newFirst">First name</label><input id="newFirst" type="text" placeholder="Sofia" autocomplete="off"></div>
-        <div><label for="newInit">Last initial</label><input id="newInit" type="text" placeholder="M" maxlength="3" autocomplete="off" style="min-width:0;width:110px"></div>
-        <div><label for="newStage">Years until kindergarten</label><select id="newStage" style="min-width:0">
-          <option value="">Choose one</option><option value="two">Two years until kindergarten</option>
-          <option value="one">One year until kindergarten</option><option value="k">In kindergarten</option></select></div>
-        <div><label for="newLang">Family language</label><select id="newLang" style="min-width:0">
-          <option value="en">English</option><option value="es">Spanish</option><option value="zh">Chinese (simplified)</option></select></div>
-        <div><label>Photo (optional)</label><button class="btn ghost" id="newPhotoBtn" type="button">Take or choose a photo</button></div>
-        <button class="btn" id="addStudent">Add student</button>
-      </div>
-      <p class="tiny" id="nameNote" style="margin-top:8px">Up to 3 letters of the last name, only if two children share a first name and initial. Years until kindergarten picks the message on each child's progress report, and family language picks the language it prints in. Tap a child's name below to change either one.</p>
+      <div class="cardtop"><div><h2>Students</h2><p class="muted" style="margin:2px 0 0">Tap a child's name to change their details.</p></div>
+        <button class="btn" id="openAdd">Add student</button></div>
       <div class="row" style="margin-top:14px;align-items:center;gap:10px"><label for="sortBy" style="margin:0">Sort students by</label>
         <select id="sortBy" style="min-width:0"><option value="last">Last initial, then first name</option><option value="first">First name</option><option value="added">Order added</option></select></div>
       <div id="studentList" style="margin-top:10px"></div>
     </div>
-    <div class="card" style="--accent:var(--c-coral)">
-      <h2>Reader's License</h2>
-      <p class="muted">When a child knows enough of their letters and sounds, the app lets you know their Reader's License is ready to print. It counts the newest answer for all 78: 26 uppercase, 26 lowercase and 26 letter sounds, including your observations.</p>
-      <div class="row" style="margin-top:12px;align-items:center;gap:10px"><label for="licGoal" style="margin:0">Reader's License goal</label>
-        <select id="licGoal" style="min-width:0"><option value="100">100% (all 78)</option><option value="95">95%</option><option value="90">90%</option><option value="85">85%</option><option value="80">80%</option></select></div>
+    <div id="addSheet" class="sheet hide" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+      <div class="sheetbox">
+        <h2 id="addTitle">Add a student</h2>
+        <p class="muted" style="margin:2px 0 0">First name and last initial only. Never a full last name.</p>
+      <div class="addform">
+          <div><label for="newFirst">First name</label><input id="newFirst" type="text" placeholder="Sofia" autocomplete="off"></div>
+          <div><label for="newInit">Last initial</label><input id="newInit" type="text" placeholder="M" maxlength="3" autocomplete="off" style="min-width:0;width:110px"></div>
+          <div><label for="newStage">Years until kindergarten</label><select id="newStage" style="min-width:0">
+            <option value="">Choose one</option><option value="two">Two years until kindergarten</option>
+            <option value="one">One year until kindergarten</option><option value="k">In kindergarten</option></select></div>
+          <div><label for="newLang">Family language</label><select id="newLang" style="min-width:0">
+            <option value="en">English</option><option value="es">Spanish</option><option value="zh">Chinese (simplified)</option></select></div>
+          <div><label>Photo (optional)</label><button class="btn ghost" id="newPhotoBtn" type="button">Take or choose a photo</button></div>
+        </div>
+        <p class="tiny" id="nameNote" style="margin-top:8px">Up to 3 letters of the last name, only if two children share a first name and initial.</p>
+        <div class="row" style="margin-top:16px;justify-content:flex-end"><button class="btn ghost" id="addDone" type="button">Done</button><button class="btn" id="addStudent" type="button">Add student</button></div>
+      </div>
     </div>
 
 
@@ -684,7 +702,7 @@
   <section id="tab-reports" class="hide">
     <div class="card noprint" style="--accent:var(--c-sky)">
       <div class="cardtop"><div><h2>Save or print reports</h2>
-        <p class="muted" style="margin:2px 0 0">Each report fits on one page. Save one report with its own button, or choose several and save them together as one file.</p></div>
+        <p class="muted" style="margin:2px 0 0">Each report fits on one page. Save one report with its own button, or choose several and save them together.</p></div>
         <button class="btn" id="saveAll">Save several reports</button></div>
     </div>
     <div class="card noprint" style="--accent:var(--c-sky)">
@@ -737,7 +755,7 @@
       <h2>Family communication</h2>
       <p class="muted">Everything you send home to families, in the order you'll need it during the year.</p>
       <h3 style="margin:18px 0 4px;font-size:16px">Family permission letters</h3>
-      <p class="muted">A letter that tells each family about Active Alphabet and asks permission to use their child's photo in the app. It prints in each child's family language. If a family says yes, add the child's photo on Class setup.</p>
+      <p class="muted">A letter that tells each family about Active Alphabet and asks permission to use their child's photo in the app. It prints in each child's family language. If a family says yes, add the child's photo on the Class tab.</p>
       <div class="row" style="margin-top:12px">
         <div><label for="permWho">Letters for</label><select id="permWho"></select></div>
         <button class="btn" id="permGo">See the letters</button>
@@ -757,7 +775,9 @@
 
     <div class="card noprint" style="--accent:var(--c-coral)">
       <h2>Reader's Licenses</h2>
-      <p class="muted" id="licIntro"></p>
+      <div class="row" style="margin-top:8px;align-items:center;gap:10px"><label for="licGoal" style="margin:0">Goal for your class</label>
+        <select id="licGoal" style="min-width:0"><option value="100">100% (all 78)</option><option value="95">95%</option><option value="90">90%</option><option value="85">85%</option><option value="80">80%</option></select></div>
+      <p class="muted" id="licIntro" style="margin-top:8px"></p>
       <div id="licList" style="margin-top:10px"></div>
     </div>
 
@@ -771,7 +791,7 @@
   <!-- ===================== SETTINGS ===================== -->
   <section id="tab-video" class="hide">
     <div class="card" style="--accent:var(--c-purple)">
-      <h2>Class video</h2>
+      <h2>Class song</h2>
       <p class="muted">The whole Active Alphabet song, starring your class. Children with the face switch on get characters, picked at random every time you play it.</p>
       <div style="margin-top:12px"><div class="tiny" style="font-weight:700">Who is in the song</div>
         <label class="opt" style="margin-top:6px"><input type="radio" name="cvMode" value="mix"><span><b>Students and characters.</b> Each child gets one character. Any characters left over keep their own faces.</span></label>
@@ -813,6 +833,20 @@
       <p class="tiny" id="syncShow" style="margin-top:6px"></p>
       <div class="row" style="margin-top:10px"><button class="btn ghost small" id="acctSignOut">Sign out</button><button class="btn ghost small" id="acctNewRc">Make a new recovery code</button></div>
       <p class="tiny" style="margin-top:10px">Signing out removes your class from this device. It all comes back when you sign in again. Your children's photos stay on this device, locked, until you sign in here again.</p>
+    </div>
+    <div class="card" style="--accent:var(--c-orange)">
+      <h2>Your classroom</h2>
+      <p class="muted">You can change any of these whenever you like.</p>
+      <div class="row" style="margin-top:14px">
+        <div><label for="teacherFirst">First name</label><input id="teacherFirst" type="text" placeholder="Maria" autocomplete="given-name"></div>
+        <div><label for="teacherLast">Last name</label><input id="teacherLast" type="text" placeholder="Rivera" autocomplete="family-name"></div>
+        <div><label for="teacherEmail">Email (change it below)</label><input id="teacherEmail" type="text" readonly style="background:#F7F9FC;color:var(--ink-soft)"></div>
+        <div><label for="schoolName">School, center or program</label><input id="schoolName" type="text" placeholder="Lincoln Early Learning Center"></div>
+        <div><label for="className">Classroom</label><input id="className" type="text" placeholder="Room 4"></div>
+        <div><label for="city">City</label><input id="city" type="text" placeholder="Chicago"></div>
+        <div><label for="state">State</label><select id="state"></select></div>
+      </div>
+      <p class="tiny" style="margin-top:12px">Your classroom code: <span class="codebox" id="codeShow"></span> You only need this if you ever contact Active Alphabet for help.</p>
     </div>
     <div class="card" style="--accent:var(--c-blue)">
       <h2>Your email</h2>
@@ -904,7 +938,10 @@
   <div class="card" id="signupCard" style="--accent:var(--c-green);margin-top:18px">
     <h2>Welcome to Active Alphabet</h2>
     <p class="muted">Tell us a little about yourself. This takes about a minute.</p>
-    <div class="field"><label for="suName">Your name</label><input id="suName" type="text" placeholder="Ms. Rivera"></div>
+    <div class="row">
+      <div class="field" style="flex:1 1 180px"><label for="suFirst">First name</label><input id="suFirst" type="text" placeholder="Maria" autocomplete="given-name"></div>
+      <div class="field" style="flex:1 1 180px"><label for="suLast">Last name</label><input id="suLast" type="text" placeholder="Rivera" autocomplete="family-name"></div>
+    </div>
     <div class="field"><label for="suEmail">Email</label><input id="suEmail" type="text" inputmode="email" autocapitalize="off" placeholder="you@school.org"></div>
     <div class="field"><label for="suSchool">School or center</label><input id="suSchool" type="text" placeholder="Lincoln Early Learning Center"></div>
     <div class="field"><label for="suClass">Classroom</label><input id="suClass" type="text" placeholder="Room 4"></div>
@@ -965,7 +1002,10 @@
   <div class="card hide" id="acJoin" style="--accent:var(--c-green);margin-top:18px">
     <h2>Join Active Alphabet</h2>
     <p class="muted">Tell us a little about yourself. This takes about a minute.</p>
-    <div class="field"><label for="ajName">Your name</label><input id="ajName" type="text" placeholder="Ms. Rivera" autocomplete="name"></div>
+    <div class="row">
+      <div class="field" style="flex:1 1 180px"><label for="ajFirst">First name</label><input id="ajFirst" type="text" placeholder="Maria" autocomplete="given-name"></div>
+      <div class="field" style="flex:1 1 180px"><label for="ajLast">Last name</label><input id="ajLast" type="text" placeholder="Rivera" autocomplete="family-name"></div>
+    </div>
     <div class="field"><label for="ajEmail">Email</label><input id="ajEmail" type="text" inputmode="email" autocapitalize="off" autocomplete="email" placeholder="you@school.org"></div>
     <div class="field pw"><label for="ajPass">Make a password (at least 8 characters)</label><input id="ajPass" type="password" autocomplete="new-password"><button type="button" data-show="ajPass">Show</button></div>
     <div id="ajSchoolRow">
@@ -1170,7 +1210,7 @@ const CLIPS={"A":{"frame":[700,886],"letters":{"A":{"cx":21.71,"cy":84.71,"h":15
 /* ============ state and storage ============ */
 /* Version 4 has its own storage name, so it never reads or overwrites round 1 data on the same iPad. */
 const KEY="aa-assess-v4-round2";
-const APP_VERSION="5.12";
+const APP_VERSION="6.1";
 $("#verShow").textContent=APP_VERSION;
 const SCHEMA=2;                         /* data layout version, so a future version knows how to read this data */
 /* Shared app key. Must match APP_KEY in the Apps Script. */
@@ -1453,7 +1493,7 @@ const cvKids=()=>S.students.filter(s=>usesFace(s.id));
 function renderVideoTab(){
   const kids=cvKids(), n=Object.keys(CV_TRACK).length;
   $("#cvWho").innerHTML=!kids.length
-    ?"No children have a face yet. Add a photo and turn on the face switch by tapping a child's name on Class setup."
+    ?"No children have a face yet. Add a photo and turn on the face switch by tapping a child's name on the Class tab."
     :`<b>${kids.length} ${kids.length===1?"child":"children"}</b> will be in the song.`+(kids.length>n?` There are ${n} characters, so ${kids.length-n} ${kids.length-n===1?"child sits":"children sit"} out each time, picked at random.`
       :(kids.length<n&&cvMode()==="kids"?` There are ${n} characters, so some children appear more than once.`:""));
   $$('input[name="cvMode"]').forEach(r=>r.checked=r.value===cvMode());
@@ -1666,7 +1706,7 @@ $$("[data-acback]").forEach(b=>b.onclick=()=>acShow("#acStart"));
 $("#acGoJoin").onclick=()=>showAccess("join");
 function openJoin(){
   /* a teacher already using the app: the teacher's details are filled in, and the class moves into the account */
-  [["ajName","teacherName"],["ajEmail","teacherEmail"],["ajSchool","schoolName"],["ajClass","className"],["ajCity","city"]].forEach(([i,k])=>{ if(!$("#"+i).value) $("#"+i).value=S[k]||""; });
+  splitName(); [["ajFirst","teacherFirst"],["ajLast","teacherLast"],["ajEmail","teacherEmail"],["ajSchool","schoolName"],["ajClass","className"],["ajCity","city"]].forEach(([i,k])=>{ if(!$("#"+i).value) $("#"+i).value=S[k]||""; });
   if(S.state) $("#ajState").value=S.state; $("#ajShare").checked=!!(S.share&&!S.optedOut);
   $("#ajErr").textContent=""; termsOk=false; $("#ajTerms").checked=false; $("#ajPriv").checked=false;
   $("#ajUpdates").checked=false; $("#ajApproved").checked=false; showRoleParts();
@@ -1696,11 +1736,12 @@ function codeScreen(kind,email){
 }
 $("#ajGo").onclick=async()=>{
   const role=joinRole(), fam=role==="family";
-  const v={name:$("#ajName").value.trim(),email:$("#ajEmail").value.trim(),pass:$("#ajPass").value,school:fam?"":$("#ajSchool").value.trim(),
+  const fn=$("#ajFirst").value.trim(), ln=$("#ajLast").value.trim();
+  const v={first:fn,last:ln,name:(fn+" "+ln).trim(),email:$("#ajEmail").value.trim(),pass:$("#ajPass").value,school:fam?"":$("#ajSchool").value.trim(),
     cls:fam?"":$("#ajClass").value.trim(),city:$("#ajCity").value.trim(),state:$("#ajState").value,share:$("#ajShare").checked,
     role,updates:$("#ajUpdates").checked};
   const err=t=>$("#ajErr").textContent=t;
-  if(!v.name||!v.email||(!fam&&(!v.school||!v.cls))||!v.city||!v.state){ err("Please fill in every box, including city and state."); return; }
+  if(!v.first||!v.last||!v.email||(!fam&&(!v.school||!v.cls))||!v.city||!v.state){ err("Please fill in every box, including first name, last name, city and state."); return; }
   if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v.email)){ err("That email does not look quite right."); return; }
   if(v.pass.length<8){ err("Your password needs at least 8 characters."); return; }
   if(!$("#ajApproved").checked){ err("Please check the box to confirm your school, center or program approved using Active Alphabet, or that you run your own program."); return; }
@@ -1742,11 +1783,11 @@ $("#acPinGo").onclick=async()=>{
 async function finishJoin(user){
   acWait("Setting up your account...");
   const v=flow.v;
-  S.teacherName=v.name; S.teacherEmail=v.email; S.schoolName=v.school; S.className=v.cls; S.city=v.city; S.state=v.state;
+  S.teacherName=v.name; S.teacherFirst=v.first; S.teacherLast=v.last; S.teacherEmail=v.email; S.schoolName=v.school; S.className=v.cls; S.city=v.city; S.state=v.state;
   S.share=v.share; S.emailVerified=true; S.signedUpAt=S.signedUpAt||new Date().toISOString(); S.registered=false;
   S.userType="teacher"; S.updates=!!v.updates; S.schoolApproved=true;
   if(!S.classCode) S.classCode=makeCode();
-  if(S.sample){ /* preview data never goes into a real account */ const keepPhotos=PHOTOS; S=Object.assign(blank(),{teacherName:v.name,teacherEmail:v.email,schoolName:v.school,className:v.cls,city:v.city,state:v.state,share:v.share,emailVerified:true,signedUpAt:new Date().toISOString(),classCode:makeCode(),userType:v.role||"teacher",updates:!!v.updates,schoolApproved:v.role==="teacher"}); }
+  if(S.sample){ /* preview data never goes into a real account */ const keepPhotos=PHOTOS; S=Object.assign(blank(),{teacherName:v.name,teacherFirst:v.first||"",teacherLast:v.last||"",teacherEmail:v.email,schoolName:v.school,className:v.cls,city:v.city,state:v.state,share:v.share,emailVerified:true,signedUpAt:new Date().toISOString(),classCode:makeCode(),userType:v.role||"teacher",updates:!!v.updates,schoolApproved:v.role==="teacher"}); }
   await makeKeys(user.id,flow.pass);
   acctSet({uid:user.id,email:v.email});
   remoteRev=0; S.rev=Math.max(S.rev||0,1); await _save();
@@ -1836,7 +1877,7 @@ $("#auGo").onclick=async()=>{
 };
 $("#auLost").onclick=async()=>{
   const r=await ask("Start fresh with your names?",`<p>Without your recovery code, your children's names cannot be unlocked. Your results are all still there.</p>
-    <p>Each child will show as <b>Child 01</b>, <b>Child 02</b> and so on, and you can type their names back in on Class setup. Notes and progress report messages you wrote will be cleared.</p>`,
+    <p>Each child will show as <b>Child 01</b>, <b>Child 02</b> and so on, and you can type their names back in on the Class tab. Notes and progress report messages you wrote will be cleared.</p>`,
     [{t:"Go back",v:0,ghost:true},{t:"Continue",v:1}]);
   if(!r.v) return;
   acWait("Setting up a new recovery code...");
@@ -2269,7 +2310,9 @@ $("#sortBy").onchange=async e=>{ S.sortBy=e.target.value; await save(); refreshA
 
 /* ============ tabs ============ */
 $$("nav button").forEach(b=>b.onclick=()=>tab(b.dataset.tab));
+let curTab="setup";
 function tab(t){
+  curTab=t;
   $$("nav button").forEach(b=>b.setAttribute("aria-current", String(b.dataset.tab===t)));
   ["setup","assess","results","reports","video","resources","settings","student","family"].forEach(x=>$("#tab-"+x).classList.toggle("hide",x!==t));
   if(t!=="video"){ const mv=$("#mpVideo"); if(mv&&!mv.paused) mv.pause(); }
@@ -2280,15 +2323,25 @@ function tab(t){
   if(t==="results") renderResults();
   if(t==="reports") renderReports();
   if(t==="settings"){ showLastSync(); renderAcct(); }
-  if(t==="setup") $("#licGoal").value=String(licGoal());
   window.scrollTo(0,0);
 }
 function renderBanner(){ $("#sampleBanner").classList.toggle("hide",!S.sample); }
 
 /* ============ setup ============ */
-["schoolName","className","teacherName","city"].forEach(k=>{
+["schoolName","className","city"].forEach(k=>{
   $("#"+k).oninput=e=>{S[k]=e.target.value;save();};
 });
+/* 6.1: first and last name, kept together in teacherName for everything that shows the teacher's name */
+["teacherFirst","teacherLast"].forEach(k=>{
+  $("#"+k).oninput=e=>{ S[k]=e.target.value; S.teacherName=[S.teacherFirst,S.teacherLast].map(x=>(x||"").trim()).filter(Boolean).join(" "); save(); };
+});
+/* accounts from before 6.1 have one name: split it once (last word is the last name). The teacher can fix it in Settings. */
+function splitName(){
+  if((S.teacherFirst||S.teacherLast)||!S.teacherName) return false;
+  const p=S.teacherName.trim().split(/\s+/);
+  S.teacherLast=p.length>1?p.pop():""; S.teacherFirst=p.join(" ");
+  return true;
+}
 $("#state").onchange=e=>{S.state=e.target.value;save();};
 $("#shareBox").onchange=e=>{ S.share=e.target.checked; save(); showLastSync(); register(true);
   if(S.share) pushToSheet(true).then(showLastSync); else removeShared(); };
@@ -2325,9 +2378,10 @@ function suggestEmail(email){
 let pending=null;
 const DRAFT_PIN="000000";   /* only while this draft is not connected; a real code is emailed once the script is set up */
 $("#suGo").onclick=async()=>{
-  const v={name:$("#suName").value.trim(),email:$("#suEmail").value.trim(),school:$("#suSchool").value.trim(),cls:$("#suClass").value.trim(),
+  const sf=$("#suFirst").value.trim(), sl=$("#suLast").value.trim();
+  const v={first:sf,last:sl,name:(sf+" "+sl).trim(),email:$("#suEmail").value.trim(),school:$("#suSchool").value.trim(),cls:$("#suClass").value.trim(),
     city:$("#suCity").value.trim(),state:$("#suState").value};
-  if(!v.name||!v.email||!v.school||!v.cls||!v.city||!v.state){ $("#suErr").textContent="Please fill in every box, including city and state."; return; }
+  if(!v.first||!v.last||!v.email||!v.school||!v.cls||!v.city||!v.state){ $("#suErr").textContent="Please fill in every box, including first name, last name, city and state."; return; }
   if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v.email)){ $("#suErr").textContent="That email does not look quite right."; return; }
   const sug=suggestEmail(v.email);
   if(sug){
@@ -2368,7 +2422,7 @@ $("#pinGo").onclick=async()=>{
   }
   if(!ok){ $("#pinErr").textContent="That code does not match. Check it, or send a new code."; return; }
   const v=pending;
-  S.teacherName=v.name; S.teacherEmail=v.email; S.schoolName=v.school; S.className=v.cls;
+  S.teacherName=v.name; S.teacherFirst=v.first||""; S.teacherLast=v.last||""; S.teacherEmail=v.email; S.schoolName=v.school; S.className=v.cls;
   S.city=v.city; S.state=v.state; S.share=$("#suShare").checked; S.emailVerified=true;
   S.signedUpAt=new Date().toISOString(); S.registered=false;
   await save();
@@ -2397,12 +2451,13 @@ $("#kitBtn").onclick=async()=>{
   }catch(e){ $("#kitMsg").textContent="Could not reach Active Alphabet right now. Please try again later."; }
 };
 function who(){ return {key:APP_KEY,appVersion:APP_VERSION,schema:SCHEMA,code:S.classCode,
-  teacher:S.teacherName,email:S.teacherEmail,school:S.schoolName,classroom:S.className,city:S.city,state:S.state,
+  teacher:S.teacherName,firstName:S.teacherFirst||"",lastName:S.teacherLast||"",email:S.teacherEmail,school:S.schoolName,classroom:S.className,city:S.city,state:S.state,
   share:!!(S.share&&!S.optedOut),verified:!!S.emailVerified,signedUpAt:S.signedUpAt,
   termsVersion:S.termsVersion||"",termsAgreedAt:S.termsAgreedAt||"",
   userType:"teacher",updates:!!S.updates,schoolApproved:!!S.schoolApproved}; }
 function fillSetup(){
-  ["schoolName","className","teacherName","teacherEmail","city","state"].forEach(k=>$("#"+k).value=S[k]||"");
+  if(splitName()){ save(); try{ register(true); }catch(e){} }
+  ["schoolName","className","teacherFirst","teacherLast","teacherEmail","city","state"].forEach(k=>$("#"+k).value=S[k]||"");
   $("#shareBox").checked=!!(S.share&&!S.optedOut); $("#shareBox").disabled=!!S.optedOut;
   $("#shareRow").style.opacity=S.optedOut?".5":"1";
   $("#codeShow").textContent=S.classCode||"";
@@ -2497,24 +2552,27 @@ $("#addStudent").onclick=async()=>{
   if(newPhoto){ PHOTOS[nid]=newPhoto; if(!savePhotos()){ delete PHOTOS[nid]; S.students[S.students.length-1].face=false; } }
   newPhoto=null; showNewPhoto();
   $("#newLang").value="en"; $("#newFirst").value=""; $("#newInit").value="";
-  $("#nameNote").textContent="Up to 3 letters of the last name, only if two children share a first name and initial. Years until kindergarten picks the message on each child's progress report, and family language picks the language it prints in. Tap a child's name below to change either one."; $("#nameNote").style.color="";
+  $("#nameNote").textContent=`${v} was added. Add another child, or tap Done.`; $("#nameNote").style.color="var(--c-green-dk, #2E7D32)";
   save(); renderStudents(); $("#newFirst").focus();
 };
 $("#newInit").onkeydown=e=>{ if(e.key==="Enter") $("#addStudent").click(); };
+/* 6.1: the Add student pop-up */
+const ADD_NOTE="Up to 3 letters of the last name, only if two children share a first name and initial.";
+$("#openAdd").onclick=()=>{ $("#addSheet").classList.remove("hide"); $("#nameNote").textContent=ADD_NOTE; $("#nameNote").style.color=""; setTimeout(()=>$("#newFirst").focus(),50); };
+$("#addDone").onclick=()=>{ $("#addSheet").classList.add("hide"); newPhoto=null; showNewPhoto(); $("#newFirst").value=""; $("#newInit").value=""; $("#newStage").value=""; $("#newLang").value="en"; };
+$("#addSheet").addEventListener("click",e=>{ if(e.target.id==="addSheet") $("#addDone").click(); });
 $("#newFirst").onkeydown=e=>{ if(e.key==="Enter") $("#newInit").focus(); };
 
 function renderStudents(){
   sortStudents(); if($("#sortBy")) $("#sortBy").value=S.sortBy||"last";
   const el=$("#studentList");
-  if(!S.students.length){ el.innerHTML='<p class="muted">No students yet. Add your first one above.</p>'; return; }
+  if(!S.students.length){ el.innerHTML='<p class="muted">No students yet. Tap Add student to add your first one.</p>'; return; }
   el.innerHTML=S.students.map(s=>{
-    const n=S.sessions.filter(x=>x.sid===s.id).length;
-    return `<div class="stu">${hasPhoto(s.id)?`<div class="avatar photo" style="background-image:url(${PHOTOS[s.id]})">${esc(initials(s.name))}</div>`:`<div class="avatar">${esc(initials(s.name))}</div>`}
+    return `<div class="stu" data-row="${s.id}">${hasPhoto(s.id)?`<div class="avatar photo" style="background-image:url(${PHOTOS[s.id]})">${esc(initials(s.name))}</div>`:`<div class="avatar">${esc(initials(s.name))}</div>`}
       <div class="name"><button class="linkname" data-stage="${s.id}">${esc(s.name)}</button></div>
-      <div class="tiny" style="flex:1 1 auto">${n?`${n} assessment${n===1?"":"s"}`:"Not assessed yet"} &middot; ${s.stage?STAGE[s.stage]:`<span style="color:var(--magenta)">Years until kindergarten not set</span>`}${s.lang&&s.lang!=="en"?` &middot; ${LANGS[s.lang]}`:""}${usesFace(s.id)?" &middot; Face in animations":""}</div>
       </div>`;
   }).join("");
-  el.querySelectorAll("[data-stage]").forEach(b=>b.onclick=()=>openChild(b.dataset.stage));
+  el.querySelectorAll("[data-row]").forEach(b=>b.onclick=()=>openChild(b.dataset.row));
 }
 
 /* 5.11: one page per child on Class setup: years until kindergarten, family language, the family permission letter
@@ -2623,7 +2681,7 @@ function renderAssess(){
 function renderBench(){
   const el=$("#benchTable");
   if(!S.students.length){ $("#benchTitle").textContent=cp; $("#benchBar").style.width="0";
-    el.innerHTML='<tbody><tr><td class="tiny" style="padding:14px">Add students on the Class setup tab first.</td></tr></tbody>'; return; }
+    el.innerHTML='<tbody><tr><td class="tiny" style="padding:14px">Add students on the Class tab first.</td></tr></tbody>'; return; }
   const doneAll=S.students.filter(s=>MODEKEYS.every(m=>bench(s.id,m,cp))).length;
   $("#benchTitle").textContent=`${cp} · ${doneAll} of ${S.students.length} children finished`;
   $("#benchBar").style.width=(doneAll/S.students.length*100)+"%";
@@ -2657,7 +2715,7 @@ function renderModes(){
 }
 function renderRoster(){
   const el=$("#roster");
-  if(!S.students.length){ el.innerHTML='<p class="muted">Add students on the Class setup tab first.</p>'; $("#fcLetters").classList.add("hide"); return; }
+  if(!S.students.length){ el.innerHTML='<p class="muted">Add students on the Class tab first.</p>'; $("#fcLetters").classList.add("hide"); return; }
   el.innerHTML=S.students.map(s=>{
     const last=S.sessions.filter(x=>x.sid===s.id&&x.mode===mode&&x.cp==="F").sort(byNew)[0];
     const info=last?`Last check-in: ${last.correct} of ${last.total} on ${fmtDate(last.ts)}`:"No check-ins yet";
@@ -2679,7 +2737,7 @@ function renderRoster(){
 
 /* ---- enter an assessment done without the app ---- */
 $("#manualOpen").onclick=async()=>{
-  if(!S.students.length){ await ask("Add students first","Add your students on the Class setup tab, then come back.",[{t:"OK",v:0}]); return; }
+  if(!S.students.length){ await ask("Add students first","Add your students on the Class tab, then come back.",[{t:"OK",v:0}]); return; }
   const today=new Date(), iso=new Date(today.getTime()-today.getTimezoneOffset()*60000).toISOString().slice(0,10);
   const chips=m=>ALPHA.map(L=>`<button type="button" class="lchip" data-l="${L}" aria-pressed="false">${MODES[m].face(L)}</button>`).join("");
   const p=ask("Enter results by hand",`
@@ -3468,12 +3526,14 @@ function printPages(pages){
     el.style.zoom=String(Math.floor(z*100)/100);
   });
   document.body.classList.remove("measuring");
-  setPage("landscape");
-  document.body.classList.add("printing");
-  const done=()=>{ document.body.classList.remove("printing"); window.removeEventListener("afterprint",done); };
-  window.addEventListener("afterprint",done);
-  window.print();
-  setTimeout(done,1500);
+  /* 6.1: show the reports on screen first, with Back and Print (like Reader's Licenses and Passports).
+     Before, the buttons went straight to the print window, and nothing appeared in the home screen app. */
+  const html=area.innerHTML; area.innerHTML="";
+  famReturn=curTab==="student"?"student":curTab;
+  $("#famPages").innerHTML=`<div class="card noprint"><p class="muted">${pages.length===1?"Here is your report.":`Here are ${pages.length} reports, one per page.`} Tap <b>Print</b> at the top, then print it or choose Save as PDF.</p></div><div class="repwrap">${html}</div>`;
+  tab("family"); window.scrollTo(0,0);
+  const fit=()=>{ const w=$("#famPages").clientWidth; $("#famPages .repwrap")&&$("#famPages .repwrap").style.setProperty("--rz",String(Math.min(1,Math.floor((w/1004)*100)/100))); };
+  fit(); window.addEventListener("resize",fit);
 }
 function savePages(keys){
   const pages=[];
@@ -3487,7 +3547,7 @@ $("#saveAll").onclick=async()=>{
   ["grow","heat","plan"].forEach(r=>MODEKEYS.forEach(m=>items.push([r+":"+m,`${REPORTS[r].t}: ${MODES[m].t}${r==="heat"?` (${heatViewName(heatView())})`:""}`])));
   items.push(["child:all",`Child records: one page for each child (${assessedStudents().length})`]);
   const res=await ask("Choose reports to save",
-    `<p>Tick the reports you want. They save together as one file, one report per page. In the print window, choose Save as PDF, or print.</p>
+    `<p>Tick the reports you want. They open together on screen, one report per page. Tap Print, then print them or choose Save as PDF.</p>
      <div class="checklist">${items.map(([k,l])=>`<label><input type="checkbox" value="${k}"> ${esc(l)}</label>`).join("")}</div>
      <button class="btn ghost small" type="button" onclick="document.querySelectorAll('.checklist input').forEach(i=>i.checked=true)">Select all</button>`,
     [{t:"Cancel",v:0,ghost:true},{t:"Save",v:1,pick:true}]);
@@ -3608,7 +3668,7 @@ function familyPage(s,c){
   const head=T?T.head[c](nm):{BOY:`Here is where ${esc(first)} is starting!`,MOY:`Look how ${esc(first)} has grown!`,EOY:`${esc(first)}'s year of growth!`}[c];
   const note=famMsg(s,c), edited=famKey(s.id,c) in (S.famNotes||{});
   const anyB=MODEKEYS.map(m=>bench(s.id,m,c)).find(Boolean);
-  return `<div class="fnote noprint"><label for="fn-${s.id}">Message for ${esc(first)}'s family. ${s.stage?`It starts with the ${STAGE[s.stage].toLowerCase()} message${c==="EOY"?" for the end of the year":""}.`:`Set years until kindergarten on Class setup to fill this in.`} ${lg!=="en"?`This page prints in ${LANGS[lg]}, so write any changes in ${LANGS[lg]} too. `:""}Change it or add your own words. It prints just as you see it.</label>
+  return `<div class="fnote noprint"><label for="fn-${s.id}">Message for ${esc(first)}'s family. ${s.stage?`It starts with the ${STAGE[s.stage].toLowerCase()} message${c==="EOY"?" for the end of the year":""}.`:`Set years until kindergarten on the Class tab to fill this in.`} ${lg!=="en"?`This page prints in ${LANGS[lg]}, so write any changes in ${LANGS[lg]} too. `:""}Change it or add your own words. It prints just as you see it.</label>
       <textarea id="fn-${s.id}" maxlength="700" data-fn="${famKey(s.id,c)}" placeholder="Write a message for ${esc(first)}'s family">${esc(note)}</textarea>
       <button class="btn ghost small ${edited&&s.stage?"":"hide"}" data-fnreset="${famKey(s.id,c)}" style="margin-top:6px">Go back to the original message</button></div>
     <div class="fpage" lang="${LANG_TAG[lg]}"><div class="frame">
@@ -3714,7 +3774,7 @@ function fillPerm(){
 }
 function showPerm(kids,ret){
   famReturn=ret;
-  $("#famPages").innerHTML=kids.length?kids.map(permPage).join(""):`<div class="card"><p class="muted">Add children on Class setup first.</p></div>`;
+  $("#famPages").innerHTML=kids.length?kids.map(permPage).join(""):`<div class="card"><p class="muted">Add children on the Class tab first.</p></div>`;
   tab("family");
 }
 $("#permGo").onclick=()=>{
@@ -3722,8 +3782,8 @@ $("#permGo").onclick=()=>{
 };
 
 $("#famAll").onclick=()=>showFamily(S.students.map(s=>s.id),$("#famCp").value,"reports");
-$("#famBack").onclick=()=>{ if(famReturn==="student") openStudent(spId); else if(famReturn==="setup") tab("setup"); else tab("reports"); };
-$("#famPrint").onclick=()=>{ setPage("portrait"); window.print(); };
+$("#famBack").onclick=()=>{ if(famReturn==="student") openStudent(spId); else if(["setup","results","reports","assess","settings"].includes(famReturn)) tab(famReturn); else tab("reports"); };
+$("#famPrint").onclick=()=>{ setPage($("#famPages .repwrap")?"landscape":"portrait"); window.print(); };
 
 /* ============ 5.10: Resources ============ */
 /* The files live in a private Supabase folder called "resources". Only signed-in teachers with good access can open them. */
@@ -3819,7 +3879,7 @@ const licGoal=()=>[100,95,90,85,80].includes(+S.licGoal)?+S.licGoal:100;
 function licKnown(sid){ let k=0; MODEKEYS.forEach(m=>{ const e=eff(sid,m); if(e) ALPHA.forEach(L=>{ if(e.marks[L]===1) k++; }); }); return k; }
 const LIC_TOTAL=78;
 const licReady=sid=>licKnown(sid)*100>=licGoal()*LIC_TOTAL;
-$("#licGoal").onchange=async e=>{ S.licGoal=+e.target.value; await save(); setTimeout(licCheck,200); };
+$("#licGoal").onchange=async e=>{ S.licGoal=+e.target.value; await save(); renderLicList(); setTimeout(licCheck,200); };
 let licBusy=false;
 async function licCheck(){
   if(licBusy||!S.students.length||$("#modal").classList.contains("on")) return;
@@ -3861,7 +3921,8 @@ function printLicenses(ids,ret){
 }
 function renderLicList(){
   const el=$("#licList"); if(!el) return;
-  $("#licIntro").textContent=`Your goal is ${licGoal()}% of all 78 letters and sounds. You can change it at the bottom of Class setup.`;
+  $("#licGoal").value=String(licGoal());
+  $("#licIntro").textContent="When a child reaches the goal, the app lets you know their Reader's License is ready. It counts the newest answer for all 78: 26 uppercase, 26 lowercase and 26 letter sounds, including your observations.";
   const kids=S.students.filter(x=>licReady(x.id));
   if(!kids.length){ el.innerHTML='<p class="muted">No one has reached the goal yet. Keep going!</p>'; return; }
   el.innerHTML=`<div class="chips" style="margin-bottom:10px">${kids.map(x=>`<button class="btn ghost small" data-lic="${x.id}">${esc(x.name)}</button>`).join("")}</div>
