@@ -452,6 +452,17 @@
   #pStage video{object-fit:cover}
   #pGuide{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
   #pZoomRow{display:flex;align-items:center;gap:10px;margin:2px 0 8px}
+  /* 6.4: Assess tab student list, two children side by side, rows in alternating colors */
+  #roster.rgrid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
+  #roster.rgrid .stu{display:grid;grid-template-columns:auto 1fr auto;column-gap:10px;align-items:center;padding:8px 10px;border-radius:12px;margin:0 0 6px;border:0}
+  #roster.rgrid .stu .avatar{grid-row:1 / span 2;width:38px;height:38px;font-size:14px}
+  #roster.rgrid .stu .name{grid-column:2;grid-row:1;min-width:0}
+  #roster.rgrid .stu .tiny{grid-column:2;grid-row:2}
+  #roster.rgrid .stu .btn{grid-column:3;grid-row:1 / span 2;padding:8px 14px}
+  #roster.rgrid .stu:nth-child(4n+1),#roster.rgrid .stu:nth-child(4n+2){background:#EEF6FF}
+  #roster.rgrid .stu:nth-child(4n+3),#roster.rgrid .stu:nth-child(4n+4){background:#FFF6EA}
+  @media (max-width:620px){ #roster.rgrid{grid-template-columns:1fr}
+    #roster.rgrid .stu:nth-child(odd){background:#EEF6FF} #roster.rgrid .stu:nth-child(even){background:#FFF6EA} }
   #pZoomRow input{flex:1}
   #pBtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end;margin-top:10px}
   .pcheck{display:flex;gap:10px;align-items:flex-start;margin-top:8px;font-size:14px;line-height:1.4}
@@ -538,7 +549,7 @@
         <button data-tab="assess">Assess</button>
         <button data-tab="results">Results</button>
         <button data-tab="reports">Reports</button>
-        <button data-tab="video">Class videos</button>
+        <button data-tab="video">Class video</button>
         <button data-tab="resources">Resources</button>
         <button data-tab="settings">Settings</button>
       </nav>
@@ -614,7 +625,7 @@
       </div>
       <div class="card" style="--accent:var(--c-orange)">
         <h2>2. Choose a student</h2>
-        <div id="roster" style="margin-top:12px"></div>
+        <div id="roster" class="rgrid" style="margin-top:12px"></div>
       </div>
       <div class="card hide" id="fcLetters" style="--accent:var(--c-green)">
         <h2 id="fcTitle">3. Choose the letters</h2>
@@ -658,7 +669,10 @@
     </div>
     <div class="card" style="--accent:var(--c-purple)">
       <div class="cardtop"><h2>Every letter, across the class</h2><button class="btn ghost small noprint" data-save="letters">Save or print</button></div>
-      <p class="muted">How many children got each letter on their newest assessment of each kind. The darker the green, the more of the class knows it.</p>
+      <div class="row noprint" style="margin-top:12px">
+        <div><label for="clView">Show</label><select id="clView"><option value="T">Total</option><option value="BOY">BOY</option><option value="MOY">MOY</option><option value="EOY">EOY</option></select></div>
+      </div>
+      <p class="tiny" id="clAbout" style="margin-top:10px"></p>
       <div id="classLetters"></div>
     </div>
   </section>
@@ -674,14 +688,28 @@
           <p class="muted" id="spSub" style="margin:2px 0 0"></p>
         </div>
       </div>
+      <div class="row noprint hide" id="spYears" style="margin-top:12px;gap:8px">
+        <button class="btn small" data-spy="this">This year</button><button class="btn ghost small" data-spy="last" id="spLastBtn">Last year</button>
+      </div>
+      <div id="spThisTop">
       <div class="gridwrap"><table id="spBench"></table></div>
       <p class="tiny" style="margin-top:6px">* Stopped early. Letters not shown count as not known yet.</p>
       <div class="row noprint" style="margin-top:14px" id="spFamily"></div>
       <div class="row noprint" style="margin-top:10px"><button class="btn ghost small" id="spSave">Save or print this child's record</button></div>
       <div class="row noprint" style="margin-top:10px" id="spLic"></div>
       <div class="row noprint" style="margin-top:10px" id="spPass"></div>
+      </div>
     </div>
-    <div class="card" style="--accent:var(--c-green)">
+    <!-- 6.4: last school year's results, so a new teacher can see where the child ended -->
+    <div class="card hide" id="spLastCard" style="--accent:var(--c-coral)">
+      <h2 id="spLastTitle">Last year</h2>
+      <p class="muted" id="spLastSub"></p>
+      <div class="gridwrap"><table id="spLastBench"></table></div>
+      <div id="spLastTodo" style="margin-top:12px"></div>
+      <h3 style="margin:18px 0 6px;font-size:16px">Every assessment last year</h3>
+      <div id="spLastHistory"></div>
+    </div>
+    <div class="card spThis" style="--accent:var(--c-green)">
       <h2>Letter by letter</h2>
       <p class="muted">The newest answer for every letter. If you see the student show a letter they missed, tap it to add an observation. Observations update your teaching tools and family practice lists. Benchmark scores never change.</p>
       <div class="legend">
@@ -692,12 +720,12 @@
       </div>
       <div class="gridwrap"><table id="spGrid"></table></div>
     </div>
-    <div class="card" style="--accent:var(--c-sky)">
+    <div class="card spThis" style="--accent:var(--c-sky)">
       <h2>Still working on</h2>
       <p class="muted">Straight from the newest answers. This is your small group list for this child.</p>
       <div id="spTodo" style="margin-top:6px"></div>
     </div>
-    <div class="card" style="--accent:var(--c-purple)">
+    <div class="card spThis" style="--accent:var(--c-purple)">
       <h2>Every assessment, every answer</h2>
       <div id="spHistory" style="margin-top:12px"></div>
     </div>
@@ -789,6 +817,15 @@
       <p class="muted">One page per child that shows their whole year: each benchmark, how they grew, and the letters they are still learning. Give it to the family to bring to a new school, or pass it to the next teacher at your school. It fills in once a child has the EOY benchmark and at least one other (BOY or MOY). It prints in English, with an option to add a page in the family's language.</p>
       <div id="passList" style="margin-top:10px"></div>
     </div>
+
+    <!-- 6.4: the teacher's own impact, one column per school year. Numbers only, no names. -->
+    <div class="card" style="--accent:var(--c-purple)">
+      <h2>Your impact over the years</h2>
+      <p class="muted">How your class has grown with Active Alphabet, year by year. Each year is saved before last year's children are cleared in August, so your numbers stay even after the children move on.</p>
+      <div id="impStats" style="margin-top:12px"></div>
+      <div class="gridwrap" style="margin-top:12px"><table id="impTable"></table></div>
+      <p class="tiny" style="margin-top:8px">BOY and EOY averages count only children with both, so it's a fair comparison. Each part of a benchmark (uppercase, lowercase, letter sound) counts as one. Your spreadsheet has these numbers too.</p>
+    </div>
   </section>
 
   <!-- ===================== SETTINGS ===================== -->
@@ -803,24 +840,23 @@
       <div class="row" style="margin-top:12px"><button class="btn" id="cvPlay">Play the class animation</button></div>
       <p class="tiny" id="cvMsg" style="margin-top:10px"></p>
     </div>
-    <div class="card" style="--accent:var(--c-orange)">
-      <h2>Active Alphabet with Mr. Patrick</h2>
-      <p class="muted">See how to bring Active Alphabet to your whole class with the flip chart. Watch Mr. Patrick lead a group of children through the letters, then try it with your own class.</p>
-      <div class="row" style="margin-top:12px"><button class="btn" id="mpPlay">Watch the video</button></div>
-      <video id="mpVideo" class="hide" controls playsinline preload="metadata" style="width:100%;margin-top:12px;border-radius:12px;background:#000"></video>
-      <p class="tiny" id="mpMsg" style="margin-top:10px"></p>
-      <p class="tiny" style="margin-top:6px">About 4 minutes. This video is for teachers with Active Alphabet access. Please don't share or post it.</p>
-    </div>
-    <div class="card" style="--accent:var(--c-green)">
-      <h2>The Interactive Letter Wall</h2>
-      <p class="muted">Watch how children use the interactive letter wall in the classroom. The Teacher Guide has a full description of the interactive letter wall. You'll find it on the Resources tab.</p>
-      <div class="row" style="margin-top:12px"><button class="btn" id="lwPlay">Watch the video</button></div>
-      <video id="lwVideo" class="hide" controls playsinline preload="metadata" style="width:100%;margin-top:12px;border-radius:12px;background:#000"></video>
-      <p class="tiny" id="lwMsg" style="margin-top:10px"></p>
-      <p class="tiny" style="margin-top:6px">About 3 minutes. This video is for teachers with Active Alphabet access. Please don't share or post it.</p>
-    </div>
   </section>
   <section id="tab-resources" class="hide">
+    <!-- 6.4: the teaching videos moved here from the Class video tab -->
+    <div class="card" style="--accent:var(--c-orange)">
+      <h2>Teaching videos</h2>
+      <p class="tiny" style="margin-top:4px">These videos are for teachers with Active Alphabet access. Please don't share or post them.</p>
+      <h3 style="margin:16px 0 4px;font-size:17px">Active Alphabet with Mr. Patrick</h3>
+      <p class="muted">See how to bring Active Alphabet to your whole class with the flip chart. Watch Mr. Patrick lead a group of children through the letters, then try it with your own class. About 4 minutes.</p>
+      <div class="row" style="margin-top:10px"><button class="btn" id="mpPlay">Watch the video</button></div>
+      <video id="mpVideo" class="hide" controls playsinline preload="metadata" style="width:100%;margin-top:12px;border-radius:12px;background:#000"></video>
+      <p class="tiny" id="mpMsg" style="margin-top:8px"></p>
+      <h3 style="margin:18px 0 4px;font-size:17px">The Interactive Letter Wall</h3>
+      <p class="muted">Watch how children use the interactive letter wall in the classroom. The Teacher Guide has a full description of the interactive letter wall. You'll find it below. About 3 minutes.</p>
+      <div class="row" style="margin-top:10px"><button class="btn" id="lwPlay">Watch the video</button></div>
+      <video id="lwVideo" class="hide" controls playsinline preload="metadata" style="width:100%;margin-top:12px;border-radius:12px;background:#000"></video>
+      <p class="tiny" id="lwMsg" style="margin-top:8px"></p>
+    </div>
     <div class="card" style="--accent:var(--c-sky)">
       <h2>Resources</h2>
       <p class="muted">Everything you need to bring Active Alphabet to life. Tap Open to look at a file, or Print or save to print it or keep a copy. Print and laminate them in different sizes to decorate your wall, make flip charts or play games.</p>
@@ -890,8 +926,7 @@
           <b>Delete my classroom's data from Active Alphabet</b><br>
           This removes your classroom's shared results from Active Alphabet's records only. Everything on this device stays exactly as it is.
           After this, this device will never send results to Active Alphabet again.
-          <div class="row" style="margin-top:10px"><div><label for="delWord">Type DELETE to confirm</label><input id="delWord" type="text" autocomplete="off" autocapitalize="characters"></div>
-          <button class="btn danger" id="delGo">Delete my data</button></div>
+          <div class="row" style="margin-top:10px"><button class="btn danger" id="delGo">Delete my data</button></div>
           <div class="tiny" id="delMsg" style="margin-top:8px"></div>
         </div>
         <div class="note warn" style="margin-top:12px">
@@ -993,7 +1028,8 @@
   </div>
   <div class="card hide" id="acAccess" style="--accent:var(--c-orange);margin-top:18px">
     <h2>Enter your access code</h2>
-    <p class="muted">You'll find it in the email you got after buying Active Alphabet. It looks like this: K7QM-3XTP-9WDA</p>
+    <p class="muted">You'll find it on the thank-you page after you buy Active Alphabet, and in the email that follows. It looks like this: K7QM-3XTP-9WDA</p>
+    <p class="tiny" style="margin-top:6px">Don't see the email? Check your spam or promotions folder.</p>
     <div class="field"><label for="axCode">Access code</label><input id="axCode" type="text" autocapitalize="characters" autocomplete="off" spellcheck="false" placeholder="K7QM-3XTP-9WDA" style="font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:2px;width:100%"></div>
     <div class="err" id="axErr"></div>
     <button class="btn" id="axGo" style="width:100%;margin-top:6px">Continue</button>
@@ -1648,7 +1684,7 @@ const CLIPS={"A":{"frame":[700,886],"letters":{"A":{"cx":21.71,"cy":84.71,"h":15
 /* ============ state and storage ============ */
 /* Version 4 has its own storage name, so it never reads or overwrites round 1 data on the same iPad. */
 const KEY="aa-assess-v4-round2";
-const APP_VERSION="6.3";
+const APP_VERSION="6.4";
 $("#verShow").textContent=APP_VERSION;
 const SCHEMA=2;                         /* data layout version, so a future version knows how to read this data */
 /* Shared app key. Must match APP_KEY in the Apps Script. */
@@ -1681,6 +1717,15 @@ async function load(){
 }
 
 /* ============ modal ============ */
+/* 6.4: the last step of every delete asks the teacher to type DELETE; the red button works only after that */
+async function askDelete(title,bodyHtml,btnText){
+  const p=ask(title,`${bodyHtml}<div class="field" style="margin-top:12px"><label for="delType">Type DELETE to confirm</label>
+    <input id="delType" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>`,
+    [{t:"Cancel",v:0,ghost:true},{t:btnText,v:1,danger:true}]);
+  const inp=$("#delType"), go=$("#mBtns .danger"), chk=()=>{ go.disabled=inp.value.trim().toUpperCase()!=="DELETE"; };
+  chk(); inp.oninput=chk; setTimeout(()=>{ try{ inp.focus(); }catch(e){} },50);
+  const r=await p; return !!r.v&&(r.form.delType||"").trim().toUpperCase()==="DELETE";
+}
 function ask(title,bodyHtml,buttons){
   return new Promise(res=>{
     $("#mTitle").textContent=title; $("#mBody").innerHTML=bodyHtml;
@@ -1702,17 +1747,22 @@ const uid=()=>"s"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const initials=n=>n.trim().split(/\s+/).map(w=>w[0]).join("").slice(0,2).toUpperCase();
 const fmtDate=iso=>new Date(iso).toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
 const byNew=(a,b)=>b.ts.localeCompare(a.ts);
+/* 6.4: every tab counts only this school year (August 1 to July 31). Last year's results stay saved,
+   and show on the child's page under Last year. */
+function nowSY(){ return syOf(new Date().toISOString()); }
+function YS(){ const y=nowSY(); return S.sessions.filter(x=>syOf(x.ts)===y); }
+function YO(){ const y=nowSY(); return (S.obs||[]).filter(o=>!o.ts||syOf(o.ts)===y); }
 /* newest assessment of any kind (benchmark or formative): for teaching tools */
-const newest=(sid,m)=>S.sessions.filter(x=>x.sid===sid&&x.mode===m).sort(byNew)[0];
+const newest=(sid,m)=>YS().filter(x=>x.sid===sid&&x.mode===m).sort(byNew)[0];
 /* one benchmark */
-const bench=(sid,m,c)=>S.sessions.find(x=>x.sid===sid&&x.mode===m&&x.cp===c);
+const bench=(sid,m,c)=>YS().find(x=>x.sid===sid&&x.mode===m&&x.cp===c);
 /* a benchmark paused to finish later; it counts nowhere until it is finished */
 const pausedOf=(sid,m,c)=>(S.paused||[]).find(x=>x.sid===sid&&x.mode===m&&x.cp===c);
 /* observations: a teacher saw the child show a letter. Teaching tools only, never benchmark scores. */
-const isObs=(sid,m,L)=>(S.obs||[]).some(o=>o.sid===sid&&o.mode===m&&o.L===L);
+const isObs=(sid,m,L)=>YO().some(o=>o.sid===sid&&o.mode===m&&o.L===L);
 /* newest assessment plus observations, for the teaching tools */
 function eff(sid,m){
-  const n=newest(sid,m), ob=(S.obs||[]).filter(o=>o.sid===sid&&o.mode===m);
+  const n=newest(sid,m), ob=YO().filter(o=>o.sid===sid&&o.mode===m);
   if(!n&&!ob.length) return null;
   const marks={...(n?n.marks:{})}; ob.forEach(o=>marks[o.L]=1);
   return {cp:n?n.cp:"F",ts:n?n.ts:"",marks,total:n?n.total:26,correct:Object.values(marks).filter(v=>v===1).length,obs:new Set(ob.map(o=>o.L))};
@@ -1728,7 +1778,7 @@ function growth(sid,m){
 const gPill=g=>g===null?'<span class="tiny">&ndash;</span>'
   :`<span class="pill ${g>0?"p-hi":g<0?"p-lo":"p-na"}">${g>0?"+":""}${g}</span>`;
 const knownCell=s=>s?`<span class="known">${s.correct}<small> of ${s.total}${s.stopped?"*":""}</small></span>`:'<span class="tiny">&ndash;</span>';
-const assessedStudents=()=>S.students.filter(s=>S.sessions.some(x=>x.sid===s.id));
+const assessedStudents=()=>{ const ys=YS(); return S.students.filter(s=>ys.some(x=>x.sid===s.id)); };
 function suggestCp(d=new Date()){ const m=d.getMonth(); // 0 = Jan
   if(m>=7&&m<=10) return "BOY"; if(m===11||m<=2) return "MOY"; return "EOY"; }
 
@@ -1894,12 +1944,26 @@ function drawEdit(){
   x.drawImage(ph.img,(OUT_W/2-w/2+ph.dx)*u,(OUT_H/2-h/2+ph.dy)*u,w*u,h*u);
 }
 $("#pZoom").oninput=e=>{ if(ph&&ph.img){ ph.zoom=+e.target.value; drawEdit(); } };
-(function(){ let drag=null;
+/* 6.4: one finger moves the photo; two fingers pinch to zoom (the Smaller / Bigger slider still works too) */
+(function(){ let drag=null, pinch=null; const pts=new Map();
   const st=$("#pStage");
-  st.addEventListener("pointerdown",e=>{ if(!ph||!ph.img) return; drag={x:e.clientX,y:e.clientY,dx:ph.dx,dy:ph.dy}; st.setPointerCapture(e.pointerId); });
-  st.addEventListener("pointermove",e=>{ if(!drag) return; const r=st.getBoundingClientRect(), u=OUT_W/r.width;
-    ph.dx=drag.dx+(e.clientX-drag.x)*u; ph.dy=drag.dy+(e.clientY-drag.y)*u; drawEdit(); });
-  ["pointerup","pointercancel"].forEach(t=>st.addEventListener(t,()=>drag=null));
+  const two=()=>{ const [a,b]=[...pts.values()]; return {d:Math.hypot(a.x-b.x,a.y-b.y)||1,x:(a.x+b.x)/2,y:(a.y+b.y)/2}; };
+  const startDrag=()=>{ const p=[...pts.values()][0]; drag=p?{x:p.x,y:p.y,dx:ph.dx,dy:ph.dy}:null; };
+  st.addEventListener("pointerdown",e=>{ if(!ph||!ph.img) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY}); try{ st.setPointerCapture(e.pointerId); }catch(x){}
+    if(pts.size===2){ const t=two(); pinch={d:t.d,x:t.x,y:t.y,zoom:ph.zoom,dx:ph.dx,dy:ph.dy}; drag=null; } else if(pts.size===1) startDrag(); });
+  st.addEventListener("pointermove",e=>{ if(!pts.has(e.pointerId)||!ph||!ph.img) return; pts.set(e.pointerId,{x:e.clientX,y:e.clientY});
+    const r=st.getBoundingClientRect(), u=OUT_W/r.width;
+    if(pinch&&pts.size>=2){ const t=two(), z=Math.min(4,Math.max(1,pinch.zoom*t.d/pinch.d)), k=z/pinch.zoom;
+      /* keep the spot between the fingers under the fingers */
+      const cx=(pinch.x-r.left)*u-OUT_W/2, cy=(pinch.y-r.top)*u-OUT_H/2;
+      ph.zoom=z; ph.dx=cx-(cx-pinch.dx)*k+(t.x-pinch.x)*u; ph.dy=cy-(cy-pinch.dy)*k+(t.y-pinch.y)*u;
+      $("#pZoom").value=z; drawEdit(); return; }
+    if(drag){ ph.dx=drag.dx+(e.clientX-drag.x)*u; ph.dy=drag.dy+(e.clientY-drag.y)*u; drawEdit(); } });
+  ["pointerup","pointercancel","pointerleave"].forEach(t=>st.addEventListener(t,e=>{ if(!pts.has(e.pointerId)) return; pts.delete(e.pointerId);
+    if(pts.size<2) pinch=null; if(pts.size===1) startDrag(); else if(!pts.size) drag=null; }));
+  /* a mouse wheel or trackpad pinch on a computer zooms too */
+  st.addEventListener("wheel",e=>{ if(!ph||!ph.img) return; e.preventDefault();
+    ph.zoom=Math.min(4,Math.max(1,ph.zoom*Math.exp(-e.deltaY*0.002))); $("#pZoom").value=ph.zoom; drawEdit(); },{passive:false});
 })();
 function usePhoto(){
   if(!$("#pOk").checked){ $("#pMsg").textContent="Check the box to show the family said yes."; return; }
@@ -2564,10 +2628,8 @@ $("#delAcct").onclick=async()=>{
     [{t:"Cancel",v:0,ghost:true},{t:"Skip",v:2,ghost:true},{t:"Download first",v:1}]);
   if(!r1.v) return;
   if(r1.v===1) $("#btnXlsx").click();
-  const r2=await ask("Delete your account?",`<p>This deletes your account and your class from Active Alphabet, and removes your class and photos from this device. It cannot be undone.</p>
-    <p class="tiny">Results you shared without names stay in Active Alphabet's research, because they cannot be linked back to you or any child.</p>`,
-    [{t:"Cancel",v:0,ghost:true},{t:"Delete my account",v:1,danger:true}]);
-  if(!r2.v) return;
+  if(!await askDelete("Delete your account?",`<p>This deletes your account and your class from Active Alphabet, and removes your class and photos from this device. It cannot be undone.</p>
+    <p class="tiny">Results you shared without names stay in Active Alphabet's research, because they cannot be linked back to you or any child.</p>`,"Delete my account")) return;
   $("#delAcct").disabled=true; msg("Deleting...");
   try{
     const x=await sb.rpc("aa_delete_my_account"); if(x.error||x.data!=="ok") throw (x.error||new Error(String(x.data)));
@@ -2591,6 +2653,7 @@ async function afterReady(){
     await waitModal(); await showReady();
     await waitModal(); await ensureXkey();
     await waitModal(); await checkTransfers();
+    try{ updateImpact(); }catch(e){}
     await waitModal(); await checkYear();
     await waitModal(); await licCheck();
   }finally{ readyBusy=false; }
@@ -2753,7 +2816,7 @@ function tab(t){
   curTab=t;
   $$("nav button").forEach(b=>b.setAttribute("aria-current", String(b.dataset.tab===t)));
   ["setup","assess","results","reports","video","resources","settings","student","family"].forEach(x=>$("#tab-"+x).classList.toggle("hide",x!==t));
-  if(t!=="video"){ ["#mpVideo","#lwVideo"].forEach(id=>{ const o=$(id); if(o&&!o.paused) o.pause(); }); }
+  if(t!=="resources"){ ["#mpVideo","#lwVideo"].forEach(id=>{ const o=$(id); if(o&&!o.paused) o.pause(); }); }
   if(t==="resources"){ renderResources(); showKit(); }
   setTimeout(licCheck,400);
   if(t==="video") renderVideoTab();
@@ -3146,12 +3209,12 @@ function renderRoster(){
   const el=$("#roster");
   if(!S.students.length){ el.innerHTML='<p class="muted">Add students on the Class tab first.</p>'; $("#fcLetters").classList.add("hide"); return; }
   el.innerHTML=S.students.map(s=>{
-    const last=S.sessions.filter(x=>x.sid===s.id&&x.mode===mode&&x.cp==="F").sort(byNew)[0];
+    const last=YS().filter(x=>x.sid===s.id&&x.mode===mode&&x.cp==="F").sort(byNew)[0];
     const info=last?`Last check-in: ${last.correct} of ${last.total} on ${fmtDate(last.ts)}`:"No check-ins yet";
     const on=s.id===fcSid;
     return `<div class="stu">${hasPhoto(s.id)?`<div class="avatar photo" style="background-image:url(${PHOTOS[s.id]})">${esc(initials(s.name))}</div>`:`<div class="avatar">${esc(initials(s.name))}</div>`}
       <div class="name"><button class="linkname" data-who="${s.id}">${esc(s.name)}</button></div>
-      <div class="tiny" style="flex:1 1 auto">${info}</div>
+      <div class="tiny">${info}</div>
       <button class="btn ${on?"":"ghost"}" data-pick="${s.id}">${on?"Chosen":"Choose"}</button></div>`;
   }).join("");
   el.querySelectorAll("[data-pick]").forEach(b=>b.onclick=()=>{
@@ -3197,7 +3260,7 @@ $("#manualOpen").onclick=async()=>{
     [{t:"Keep the first one",v:0,ghost:true},{t:"Replace it",v:1}]); if(!ok.v) return; }
   const marks={}; ALPHA.forEach(L=>marks[L]=r.chips.includes(L)?1:0);
   const ts=new Date(d+"T12:00:00").toISOString();
-  S.sessions=S.sessions.filter(x=>!(x.sid===sid&&x.mode===m&&x.cp===c));
+  S.sessions=S.sessions.filter(x=>!(x.sid===sid&&x.mode===m&&x.cp===c&&syOf(x.ts)===syOf(ts)));
   S.sessions.push({id:"h"+Date.now(),sid,mode:m,cp:c,ts,marks,attempted:26,total:26,correct:r.chips.length,stopped:false,anim:"",note:"",manual:true});
   await save(); pushToSheet(true).then(showLastSync); renderAssess();
   await ask("Saved",`${esc(s.name)}: ${c} ${MODES[m].t}, ${r.chips.length} of 26, entered by hand for ${fmtDate(ts)}.`,[{t:"OK",v:0}]);
@@ -3415,7 +3478,7 @@ async function finish(withFirework){
   const sess={id:"x"+Date.now(),sid:run.sid,mode:run.mode,cp:run.cp,ts:new Date().toISOString(),
     marks:{...run.marks},attempted:done.length,total,correct,stopped:run.stopped,anim:run.anim,note:"",secs:secsSoFar()};
   /* only one of each benchmark ever counts */
-  if(run.cp!=="F") S.sessions=S.sessions.filter(x=>!(x.sid===run.sid&&x.mode===run.mode&&x.cp===run.cp));
+  if(run.cp!=="F") S.sessions=S.sessions.filter(x=>!(x.sid===run.sid&&x.mode===run.mode&&x.cp===run.cp&&syOf(x.ts)===syOf(sess.ts)));
   S.sessions.push(sess);
   const stu=S.students.find(s=>s.id===run.sid);
   await save();                           /* saved before the firework, so nothing is lost if the app closes */
@@ -3642,7 +3705,7 @@ function renderResults(){
 
   let h="<thead><tr><th class='l'>Student</th>"+MODEKEYS.map(m=>`<th>${MODES[m].t}</th><th>Growth</th>`).join("")+"<th>Last assessed</th></tr></thead><tbody>";
   assessed.forEach(s=>{
-    const last=S.sessions.filter(x=>x.sid===s.id).sort(byNew)[0];
+    const last=YS().filter(x=>x.sid===s.id).sort(byNew)[0];
     h+=`<tr><td class="l"><button class="linkname" data-who="${s.id}">${esc(s.name)}</button></td>`+
       MODEKEYS.map(m=>{const b=lastBench(s.id,m);
         return `<td>${knownCell(b)}${b?` <span class="tag ${b.cp}">${b.cp}</span>`:""}</td><td>${gPill(growth(s.id,m))}</td>`;}).join("")+
@@ -3666,11 +3729,19 @@ function renderResults(){
       <div class="tiny" style="width:160px">missed on ${t.miss} of ${t.seen} chances</div></div>`).join("")
     : '<p class="muted">Nothing is standing out yet. Assess a few more children.</p>';
 
-  $("#classLetters").innerHTML=classLettersHTML();
+  $("#classLetters").innerHTML=classLettersHTML(); $("#clAbout").textContent=CL_ABOUT[clView()];
 }
+$("#clView").onchange=()=>{ $("#classLetters").innerHTML=classLettersHTML(); $("#clAbout").textContent=CL_ABOUT[clView()]; };
 /* three shades of green: 50% or less of the children, 51 to 84%, 85% and up */
 const SHADE=pct=>pct<=50?"s1":pct<85?"s2":"s3";
-function classLettersHTML(){
+/* 6.4: counted exactly like the class heat map. Each child counts once for a letter when that letter was shown to them. */
+const CL_ABOUT={T:"How many children know each letter right now, counted the same way as the class heat map's Total: each child's most recent benchmark, updated by any check-ins and observations since. A child counts for a letter only if that letter was shown to them.",
+  BOY:"How many children knew each letter on their BOY. A child counts for a letter only if that letter was shown to them.",
+  MOY:"How many children knew each letter on their MOY. A child counts for a letter only if that letter was shown to them.",
+  EOY:"How many children knew each letter on their EOY. A child counts for a letter only if that letter was shown to them."};
+const clView=()=>($("#clView")&&$("#clView").value)||"T";
+function classLettersHTML(v){
+  v=v||clView();
   const assessed=assessedStudents();
   let c="<table class='cl'><thead><tr><th class='l'>Letter</th>"+MODEKEYS.map(m=>`<th>${MODES[m].t}</th>`).join("")+"</tr></thead><tbody>";
   let any=false;
@@ -3678,7 +3749,7 @@ function classLettersHTML(){
     const L=a.letter;
     const cells=MODEKEYS.map(m=>{
       let right=0,seen=0;
-      assessed.forEach(s=>{const ss=eff(s.id,m); if(!ss||!(L in ss.marks))return; seen++; if(ss.marks[L]===1)right++;});
+      assessed.forEach(s=>{const ss=heatRow(s.id,m,v); if(!ss||!(L in ss.marks)||(ss.marks[L]!==0&&ss.marks[L]!==1))return; seen++; if(ss.marks[L]===1)right++;});
       if(!seen) return {html:`<td><span class="tiny">&ndash;</span></td>`,seen:0};
       const pct=Math.round(right/seen*100);
       return {html:`<td class="${SHADE(right/seen*100)}"><b>${right}</b> of ${seen} <small>${pct}%</small></td>`,seen};
@@ -3687,7 +3758,7 @@ function classLettersHTML(){
     any=true;
     c+=`<tr><td class="l lcell">${L}${L.toLowerCase()}</td>`+cells.map(x=>x.html).join("")+`</tr>`;
   });
-  if(!any) return "<p class='tiny'>Nothing assessed yet.</p>";
+  if(!any) return `<p class='tiny'>${v==="T"?"Nothing assessed yet.":`No one has a ${v} yet.`}</p>`;
   return `<div class="shkey"><span><i class="s1"></i>50% or less of the class</span><span><i class="s2"></i>51 to 84%</span><span><i class="s3"></i>85% or more</span></div>
     <div class="gridwrap">${c}</tbody></table></div>`;
 }
@@ -3695,11 +3766,12 @@ function classLettersHTML(){
 /* ============ student profile ============ */
 let spId=null, famReturn="results";
 $("#backToResults").onclick=()=>tab("results");
-function openStudent(sid){ spId=sid; renderStudent(); tab("student"); }
+function openStudent(sid){ spId=sid; spYear="this"; renderStudent(); tab("student"); }
 
 function renderStudent(){
   const s=S.students.find(x=>x.id===spId); if(!s) return tab("results");
-  const mine=S.sessions.filter(x=>x.sid===spId).sort(byNew);
+  const mine=YS().filter(x=>x.sid===spId).sort(byNew);
+  renderLastYear(s);
   $("#spAv").textContent=initials(s.name);
   $("#spName").textContent=s.name;
   $("#spSub").textContent=mine.length
@@ -3758,19 +3830,59 @@ function renderStudent(){
   }).join("");
 }
 
+/* ---- 6.4: Last year on the child's page ---- */
+let spYear="this";
+function lastSYWith(sid){
+  const y=nowSY(), ys=[...new Set(S.sessions.filter(x=>x.sid===sid).map(x=>syOf(x.ts)))].filter(v=>v<y).sort();
+  return ys.length?ys[ys.length-1]:null;
+}
+function showSpYear(){
+  const last=spYear==="last";
+  $("#spThisTop").classList.toggle("hide",last); $$(".spThis").forEach(c=>c.classList.toggle("hide",last));
+  $("#spLastCard").classList.toggle("hide",!last);
+  $$("#spYears [data-spy]").forEach(b=>b.classList.toggle("ghost",b.dataset.spy!==spYear));
+}
+$$("#spYears [data-spy]").forEach(b=>b.onclick=()=>{ spYear=b.dataset.spy; showSpYear(); });
+function renderLastYear(s){
+  const ly=lastSYWith(s.id);
+  $("#spYears").classList.toggle("hide",!ly);
+  if(!ly){ spYear="this"; showSpYear(); return; }
+  const full=`${ly.slice(0,4)}-20${ly.slice(5)}`;
+  const mine=S.sessions.filter(x=>x.sid===s.id&&syOf(x.ts)===ly).sort(byNew);
+  const lb=(m,c)=>mine.find(x=>x.mode===m&&x.cp===c);
+  $("#spLastBtn").textContent=`Last year (${full})`;
+  $("#spLastTitle").textContent=`Last year · ${full}`;
+  $("#spLastSub").textContent=`${s.name.split(" ")[0]}'s results from the ${full} school year. They don't count toward this year.`;
+  let bt="<thead><tr><th class='l'>Letters known</th><th>BOY</th><th>MOY</th><th>EOY</th><th>Total growth</th></tr></thead><tbody>";
+  MODEKEYS.forEach(m=>{ const [b0,b1,b2]=BENCH.map(c=>lb(m,c)), l=b2||b1, g=b0&&l?l.correct-b0.correct:null;
+    bt+=`<tr><td class="l">${MODES[m].t}</td><td>${knownCell(b0)}</td><td>${knownCell(b1)}</td><td>${knownCell(b2)}</td><td>${gPill(g)}</td></tr>`; });
+  $("#spLastBench").innerHTML=bt+"</tbody>";
+  $("#spLastTodo").innerHTML=MODEKEYS.map(m=>{
+    const b=["EOY","MOY","BOY"].map(c=>lb(m,c)).find(Boolean); if(!b) return null;
+    const missed=ALPHA.filter(L=>b.marks[L]!==1);
+    if(!missed.length) return `<p class="muted"><b>${MODES[m].t}:</b> knew all 26 on the ${b.cp}.</p>`;
+    return `<p class="muted" style="margin-bottom:2px"><b>${MODES[m].t}:</b> not yet known on the ${b.cp} (${missed.length})</p>
+      <div class="chips">${missed.map(L=>`<span class="chip"><span class="lcell">${MODES[m].face(L)}</span></span>`).join("")}</div>`;
+  }).filter(Boolean).join("<div style='height:12px'></div>")||'<p class="muted">No benchmarks last year.</p>';
+  const cell=v=>v===1?'<span class="mk y">&#10003;</span>':v===0?'<span class="mk n">&#10005;</span>':'<span class="mk b">&middot;</span>';
+  $("#spLastHistory").innerHTML=mine.map(x=>`<details><summary><span class="tag ${x.cp}">${cpName(x.cp)}</span> ${fmtDate(x.ts)} &middot; ${MODES[x.mode].t} &middot; ${x.correct} of ${x.total}${x.stopped?" &middot; stopped early":""}</summary>
+      <div class="body"><div class="chips">${ALPHA.filter(L=>L in x.marks).map(L=>`<span class="chip">${cell(x.marks[L])}<span class="lcell">${MODES[x.mode].face(L)}</span></span>`).join("")}</div></div></details>`).join("");
+  showSpYear();
+}
+
 /* ---- observations ---- */
 async function toggleObs(sid,m,L){
   const s=S.students.find(x=>x.id===sid), first=s.name.split(" ")[0], face=MODES[m].face(L);
   const what=m==="both"?`the sound for <b class="lcell">${face}</b>`:`${MODES[m].t.toLowerCase()} <b class="lcell">${face}</b>`;
   if(isObs(sid,m,L)){
-    const o=S.obs.find(o=>o.sid===sid&&o.mode===m&&o.L===L)||{};
+    const o=YO().find(o=>o.sid===sid&&o.mode===m&&o.L===L)||{};
     const r=await ask("Observation",`<p>Seen on ${fmtDate(o.ts)}: ${esc(first)} knows ${what}.</p>${o.note?`<p class="tiny" style="white-space:pre-wrap"><b>Note:</b> ${esc(o.note)}</p>`:""}
       <p class="tiny">If you remove it, ${esc(first)} goes back to the assessed answer.</p>`,[{t:"Keep it",v:0,ghost:true},{t:"Remove",v:1}]);
-    if(!r.v) return; S.obs=S.obs.filter(o=>!(o.sid===sid&&o.mode===m&&o.L===L));
+    if(!r.v) return; const y=nowSY(); S.obs=S.obs.filter(o=>!(o.sid===sid&&o.mode===m&&o.L===L&&(!o.ts||syOf(o.ts)===y)));
   } else {
     const d=new Date(), today=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
     const r=await ask("Add an observation",`<p>I saw evidence that ${esc(first)} knows ${what}.</p>
-      <label for="obDate">Date</label><input type="date" id="obDate" value="${today}" max="${today}">
+      <label for="obDate">Date Observed:</label><input type="date" id="obDate" value="${today}" max="${today}">
       <label for="obNote">Observation <span style="font-weight:400">(optional)</span></label>
       <textarea id="obNote" rows="5" maxlength="1000" placeholder="What did you see? For example: pointed to M on the snack menu and said its sound."></textarea>
       <p class="tiny" style="margin-top:6px">This updates your heat map, small group plan, and family practice lists. Benchmark scores do not change.</p>`,
@@ -3791,7 +3903,72 @@ function fillModeSelects(){
     if(cur) el.value=cur;
   });
 }
-function renderReports(){ fillModeSelects(); renderGrow(); renderHeat(); renderPlan(); famNote(); fillPerm(); renderFamGuide(); renderLicList(); renderPassList(); }
+function renderReports(){ fillModeSelects(); renderGrow(); renderHeat(); renderPlan(); famNote(); fillPerm(); renderFamGuide(); renderLicList(); renderPassList(); renderImpact(); }
+/* ============ 6.4: the teacher's impact over the years ============
+   Raw counts per school year, so years add up fairly. Saved in S.impact. Numbers only, no names. */
+function impactOf(sy){
+  const ss=S.sessions.filter(x=>syOf(x.ts)===sy);
+  const o={sy,kids:new Set(ss.filter(x=>x.cp!=="F").map(x=>x.sid)).size,benchParts:ss.filter(x=>x.cp!=="F").length,formative:ss.filter(x=>x.cp==="F").length,lic:null,mode:{}};
+  MODEKEYS.forEach(m=>{ const z={bothN:0,boyS:0,eoyS:0,eoyN:0,n20:0,n26:0,lowN:0,lowG:0};
+    new Set(ss.map(x=>x.sid)).forEach(sid=>{
+      const b=ss.find(x=>x.sid===sid&&x.mode===m&&x.cp==="BOY"), e=ss.find(x=>x.sid===sid&&x.mode===m&&x.cp==="EOY");
+      if(e){ z.eoyN++; if(e.correct>=20) z.n20++; if(e.correct>=26) z.n26++; }
+      if(b&&e){ z.bothN++; z.boyS+=b.correct; z.eoyS+=e.correct; if(b.correct<=10){ z.lowN++; z.lowG+=e.correct-b.correct; } }
+    });
+    o.mode[m]=z; });
+  return o;
+}
+function addImpact(list){
+  const t={sy:"Total",kids:0,benchParts:0,formative:0,lic:0,mode:{}};
+  MODEKEYS.forEach(m=>t.mode[m]={bothN:0,boyS:0,eoyS:0,eoyN:0,n20:0,n26:0,lowN:0,lowG:0});
+  list.forEach(y=>{ t.kids+=y.kids; t.benchParts+=y.benchParts; t.formative+=y.formative; t.lic+=y.lic||0;
+    MODEKEYS.forEach(m=>Object.keys(t.mode[m]).forEach(k=>t.mode[m][k]+=(y.mode[m]||{})[k]||0)); });
+  return t;
+}
+/* keep this year's numbers current, and save any past year that is still on the device before it is cleared */
+function updateImpact(){
+  if(S.sample) return false;
+  S.impact=S.impact||{}; const now=nowSY(), before=JSON.stringify(S.impact);
+  const years=[...new Set(S.sessions.map(x=>syOf(x.ts)))];
+  years.forEach(y=>{ if(y>now) return; const n=impactOf(y), old=S.impact[y];
+    if(y===now){ let lic=0; try{ lic=S.students.filter(s=>licReady(s.id)).length; }catch(e){} n.lic=lic; }
+    else n.lic=old&&old.lic!=null?old.lic:null;
+    /* a past year keeps its saved numbers once its children are gone */
+    if(y!==now&&old&&old.kids>n.kids) return;
+    S.impact[y]=n; });
+  if(JSON.stringify(S.impact)!==before){ save(); return true; } return false;
+}
+function impactYears(){
+  updateImpact(); const now=nowSY();
+  return Object.values(S.impact||{}).filter(y=>y.sy<=now&&(y.kids||y.formative)).sort((a,b)=>a.sy.localeCompare(b.sy));
+}
+const impAvg=(s,n)=>n?Math.round(s/n*10)/10:null;
+const impPct=(a,n)=>n?Math.round(a/n*100)+"%":"–";
+function impactRows(y){
+  const R=[["Children assessed",y.kids],["Benchmark assessments given (each part)",y.benchParts],["Check-ins given",y.formative]];
+  MODEKEYS.forEach(m=>{ const z=y.mode[m]||{}, b=impAvg(z.boyS,z.bothN), e=impAvg(z.eoyS,z.bothN), g=b===null?null:Math.round((e-b)*10)/10, lg=impAvg(z.lowG,z.lowN);
+    R.push([`${MODES[m].t}: average letters known, BOY to EOY`,b===null?"–":`${b} to ${e}`]);
+    R.push([`${MODES[m].t}: average letters gained`,g===null?"–":(g>0?"+":"")+g]);
+    R.push([`${MODES[m].t}: children who started with 10 or fewer, letters gained`,lg===null?"–":(lg>0?"+":"")+lg]);
+    R.push([`${MODES[m].t}: know 20 or more at EOY`,impPct(z.n20,z.eoyN)]);
+    R.push([`${MODES[m].t}: know all 26 at EOY`,impPct(z.n26,z.eoyN)]); });
+  R.push(["Reader's Licenses earned",y.lic==null?"–":y.lic]);
+  return R;
+}
+const impLabel=y=>{ const f=`${y.sy.slice(0,4)}-20${y.sy.slice(5)}`; return y.sy===nowSY()?f+" (so far)":f; };
+function renderImpact(){
+  if(!$("#impTable")) return;
+  const ys=impactYears();
+  if(!ys.length){ $("#impStats").innerHTML=""; $("#impTable").innerHTML="<tbody><tr><td class='tiny' style='padding:14px'>Your numbers show up here after your first benchmark.</td></tr></tbody>"; return; }
+  const T=ys.length>1?addImpact(ys):null, cols=T?ys.concat([T]):ys, all=T||ys[0];
+  const big=[["Children",all.kids,"var(--c-coral)"],["Years",ys.length,"var(--c-orange)"],["Benchmark parts",all.benchParts,"var(--c-green)"],["Check-ins",all.formative,"var(--c-sky)"]];
+  $("#impStats").innerHTML=`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px">${big.map(([t,v,c])=>
+    `<div style="text-align:center;padding:10px;border-radius:12px;background:#F6F7F9"><div style="font-size:28px;font-weight:800;color:${c}">${v}</div><div class="tiny">${t}</div></div>`).join("")}</div>`;
+  const rows=cols.map(impactRows);
+  let h=`<thead><tr><th class="l">Measure</th>${cols.map(y=>`<th>${y.sy==="Total"?"Total":impLabel(y)}</th>`).join("")}</tr></thead><tbody>`;
+  rows[0].forEach((r,i)=>{ h+=`<tr><td class="l">${esc(r[0])}</td>${rows.map(R=>`<td>${R[i][1]}</td>`).join("")}</tr>`; });
+  $("#impTable").innerHTML=h+"</tbody>";
+}
 $("#heatMode").onchange=renderHeat;
 $("#growMode").onchange=renderGrow;
 $("#planMode").onchange=renderPlan;
@@ -3810,8 +3987,8 @@ function heatRow(sid,m,v){
   if(v!=="T"){ const b=bench(sid,m,v); if(!b) return null;
     return {cp:b.cp,plusF:false,marks:{...b.marks},chg:new Set(),obs:new Set(),known:b.correct,total:b.total,stopped:b.stopped}; }
   const base=lastBench(sid,m);
-  const fs=S.sessions.filter(x=>x.sid===sid&&x.mode===m&&x.cp==="F"&&(!base||x.ts>base.ts)).sort((a,b)=>a.ts.localeCompare(b.ts));
-  const ob=(S.obs||[]).filter(o=>o.sid===sid&&o.mode===m);
+  const fs=YS().filter(x=>x.sid===sid&&x.mode===m&&x.cp==="F"&&(!base||x.ts>base.ts)).sort((a,b)=>a.ts.localeCompare(b.ts));
+  const ob=YO().filter(o=>o.sid===sid&&o.mode===m);
   if(!base&&!fs.length&&!ob.length) return null;
   const marks={...(base?base.marks:{})};
   fs.forEach(f=>Object.keys(f.marks).forEach(L=>{ const x=f.marks[L]; if(x===0||x===1) marks[L]=x; }));
@@ -3913,7 +4090,7 @@ function summaryHTML(){
 
 /* ============ SAVE OR PRINT: every report fits on one page ============ */
 const REPORTS={
-  letters:{t:"Every letter, across the class",one:()=>[{t:"Every letter, across the class",sub:"How many children got each letter on their newest assessment of each kind",html:classLettersHTML()}]},
+  letters:{t:"Every letter, across the class",one:()=>[{t:"Every letter, across the class",sub:`${clView()==="T"?"Total":clView()}: ${CL_ABOUT[clView()]}`,html:classLettersHTML()}]},
   summary:{t:"Class summary",one:()=>[{t:"Class summary",sub:"Letters known at each child's most recent benchmark",html:`<div class="gridwrap">${summaryHTML()}</div><p class="tiny" style="margin-top:8px">* Stopped early. Letters not shown count as not known yet.</p>`}]},
   grow:{t:"Growth, child by child",each:m=>({t:"Growth, child by child",sub:MODES[m].t,html:`<div class="gridwrap"><table>${growHTML(m)}</table></div><p class="tiny" style="margin-top:8px">* Stopped early. Letters not shown count as not known yet.</p>`})},
   heat:{t:"Class heat map",each:m=>({t:"Class heat map",sub:MODES[m].t+" · "+heatViewName(heatView())+" · green got it, blue not yet, grey not shown"+(heatView()==="T"?", dotted green seen by teacher, dark dot changed on a formative since the last benchmark":""),
@@ -4734,26 +4911,32 @@ function buildWorkbook(){
       });
     });
   });
+  // 6.4: Impact over the years tab
+  const iy=impactYears(), iT=iy.length>1?addImpact(iy):null, icols=iT?iy.concat([iT]):iy;
+  const imp=[[{v:"Your impact over the years",s:6}],[{v:title,s:8}],[]];
+  if(icols.length){ const R=icols.map(impactRows);
+    imp.push([{v:"Measure",s:1},...icols.map(y=>({v:y.sy==="Total"?"Total":impLabel(y),s:1}))]);
+    R[0].forEach((r,i)=>imp.push([r[0],...R.map(x=>({v:x[i][1],s:5}))]));
+    imp.push([]); imp.push([{v:"BOY and EOY averages count only children with both. Each part of a benchmark (uppercase, lowercase, letter sound) counts as one.",s:8}]);
+  } else imp.push([{v:"Your numbers show up here after your first benchmark.",s:8}]);
   const enc=new TextEncoder(), X=s=>enc.encode(s);
   const files=[
-    {name:"[Content_Types].xml",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`)},
+    {name:"[Content_Types].xml",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet3.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`)},
     {name:"_rels/.rels",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`)},
-    {name:"xl/workbook.xml",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Summary" sheetId="1" r:id="rId1"/><sheet name="Letter Grid" sheetId="2" r:id="rId2"/></sheets></workbook>`)},
-    {name:"xl/_rels/workbook.xml.rels",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`)},
+    {name:"xl/workbook.xml",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Summary" sheetId="1" r:id="rId1"/><sheet name="Letter Grid" sheetId="2" r:id="rId2"/><sheet name="Impact over the years" sheetId="3" r:id="rId4"/></sheets></workbook>`)},
+    {name:"xl/_rels/workbook.xml.rels",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/></Relationships>`)},
     {name:"xl/styles.xml",data:X(STYLES)},
     {name:"xl/worksheets/sheet1.xml",data:X(sheetXml(sum,{widths:[18,...Array(12).fill(9)],merges,freeze:4}))},
-    {name:"xl/worksheets/sheet2.xml",data:X(sheetXml(grid,{widths:[18,11,...Array(26).fill(4.2),8]}))}
+    {name:"xl/worksheets/sheet2.xml",data:X(sheetXml(grid,{widths:[18,11,...Array(26).fill(4.2),8]}))},
+    {name:"xl/worksheets/sheet3.xml",data:X(sheetXml(imp,{widths:[58,...Array(icols.length||1).fill(16)]}))}
   ];
   return zip(files);
 }
 /* ---- delete my classroom's data from Active Alphabet ---- */
 $("#delGo").onclick=async()=>{
-  if($("#delWord").value.trim().toUpperCase()!=="DELETE"){ $("#delMsg").textContent="Type the word DELETE in the box first."; return; }
-  const r=await ask("Delete your shared data?","This removes your classroom's results from Active Alphabet's records only. Everything on this device stays. This device will never send results again.",
-    [{t:"Cancel",v:0,ghost:true},{t:"Delete my data",v:1,danger:true}]);
-  if(!r.v) return;
+  $("#delMsg").textContent="";
+  if(!await askDelete("Delete your shared data?","<p>This removes your classroom's results from Active Alphabet's records only. Everything on this device stays. This device will never send results again.</p>","Delete my data")) return;
   S.optedOut=true; S.share=false; S.pendingDelete=true; await save(); fillSetup(); showLastSync();
-  $("#delWord").value="";
   $("#delMsg").textContent=(await sendDelete())?"Done. Your classroom's shared data has been removed from Active Alphabet's records. Everything on this device is still here."
     :"Sending is now off for good. We could not reach Active Alphabet just now, so the app will finish removing your data the next time it is online.";
 };
@@ -4871,9 +5054,7 @@ $("#btnRestore").onchange=e=>{
 };
 
 $("#clearAll").onclick=async()=>{
-  const r=await ask("Clear everything?",acctGet()?"This removes every student and every result from this device and from your account.":"This removes every student and every result saved in this app on this device, and takes you back to the welcome screen.",
-    [{t:"Cancel",v:0,ghost:true},{t:"Clear everything",v:1,danger:true}]);
-  if(!r.v) return;
+  if(!await askDelete("Clear everything?",`<p>${acctGet()?"This removes every student and every result from this device and from your account. It cannot be undone.":"This removes every student and every result saved in this app on this device, and takes you back to the welcome screen."}</p>`,"Clear everything")) return;
   S=blank(); await save(); location.reload();
 };
 
