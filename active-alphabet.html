@@ -551,6 +551,7 @@
         <button data-tab="reports">Reports</button>
         <button data-tab="video">Class video</button>
         <button data-tab="resources">Resources</button>
+        <button data-tab="stats">My Stats</button>
         <button data-tab="settings">Settings</button>
       </nav>
     </div>
@@ -560,6 +561,11 @@
 
   <!-- ===================== SETUP ===================== -->
   <section id="tab-setup">
+    <!-- 7.1: Close out the year (from May 15, and required in a new school year until last year is closed out) -->
+    <div class="card hide" id="closeCard" style="--accent:var(--c-purple)">
+      <div class="cardtop"><div><h2>Close out the year</h2><p class="muted" id="closeText" style="margin:2px 0 0"></p></div>
+        <button class="btn" id="closeGo">Close out the year</button></div>
+    </div>
     <div class="card" style="--accent:var(--c-orange)">
       <div class="cardtop"><div><h2>Students</h2><p class="muted" style="margin:2px 0 0">Tap a child's name to change their details.</p></div>
         <button class="btn" id="openAdd">Add student</button></div>
@@ -700,6 +706,12 @@
       <div class="row noprint" style="margin-top:10px" id="spPass"></div>
       </div>
     </div>
+    <!-- 7.1: end-of-year snapshots from earlier school years, and Start here until the new BOY is done -->
+    <div class="card hide" id="spPrevCard" style="--accent:var(--c-sky)">
+      <h2>Previous classrooms</h2>
+      <p class="muted">Where this child ended each earlier school year. The new BOY is still given, so you can see what changed over the summer.</p>
+      <div id="spPrevBody" style="margin-top:8px"></div>
+    </div>
     <!-- 6.4: last school year's results, so a new teacher can see where the child ended -->
     <div class="card hide" id="spLastCard" style="--accent:var(--c-coral)">
       <h2 id="spLastTitle">Last year</h2>
@@ -785,13 +797,7 @@
     <div class="card noprint" style="--accent:var(--c-green)">
       <h2>Family communication</h2>
       <p class="muted">Everything you send home to families, in the order you'll need it during the year.</p>
-      <h3 style="margin:18px 0 4px;font-size:16px">Family permission letters</h3>
-      <p class="muted">A letter that tells each family about Active Alphabet and asks permission to use their child's photo in the app. It prints in each child's family language. If a family says yes, add the child's photo on the Class tab.</p>
-      <div class="row" style="margin-top:12px">
-        <div><label for="permWho">Letters for</label><select id="permWho"></select></div>
-        <button class="btn" id="permGo">See the letters</button>
-      </div>
-      <h3 style="margin:22px 0 4px;font-size:16px">Beginning-of-year family guide</h3>
+      <h3 style="margin:18px 0 4px;font-size:16px">Beginning-of-year family guide</h3>
       <p class="muted">A two-page guide that tells families how Active Alphabet works and how they can help at home. Send it home at the start of the year. Each button gets the guide in that language, ready to print or save.</p>
       <div class="row" style="margin-top:10px" id="famGuide"></div>
       <div id="famGuideMsg" class="tiny" style="margin-top:8px"></div>
@@ -818,13 +824,25 @@
       <div id="passList" style="margin-top:10px"></div>
     </div>
 
-    <!-- 6.4: the teacher's own impact, one column per school year. Numbers only, no names. -->
+  </section>
+
+  <!-- ===================== 7.1: MY STATS ===================== -->
+  <section id="tab-stats" class="hide">
+    <div class="card" style="--accent:var(--c-coral)">
+      <div class="cardtop"><div><h2>My Stats</h2><p class="muted" style="margin:2px 0 0">Your numbers with Active Alphabet, all years together. They stay with you, even if you change schools. No children's names are kept here.</p></div>
+        <button class="btn" id="stResume">Print my résumé</button></div>
+      <div id="stBig" style="margin-top:12px"></div>
+    </div>
+    <div class="card" style="--accent:#E8B10C">
+      <h2>Awards won</h2>
+      <div id="stAwards" style="margin-top:8px"></div>
+    </div>
     <div class="card" style="--accent:var(--c-purple)">
-      <h2>Your impact over the years</h2>
-      <p class="muted">How your class has grown with Active Alphabet, year by year. Each year is saved before last year's children are cleared in August, so your numbers stay even after the children move on.</p>
+      <h2>Year by year</h2>
+      <p class="muted">Each year is saved when you close it out, so your numbers stay after the children move on.</p>
       <div id="impStats" style="margin-top:12px"></div>
       <div class="gridwrap" style="margin-top:12px"><table id="impTable"></table></div>
-      <p class="tiny" style="margin-top:8px">BOY and EOY averages count only children with both, so it's a fair comparison. Each part of a benchmark (uppercase, lowercase, letter sound) counts as one. Your spreadsheet has these numbers too.</p>
+      <p class="tiny" style="margin-top:8px">BOY and EOY averages count only children with both, so it's a fair comparison. Each part of a benchmark (uppercase, lowercase, letter sound) counts as one.</p>
     </div>
   </section>
 
@@ -900,6 +918,12 @@
       <div class="row" style="margin-top:8px"><button class="btn ghost small" id="btnEmail">Change my email</button></div>
       <div id="emailMsg" class="tiny" style="margin-top:10px"></div>
     </div>
+    <!-- 7.2: the Terms of Use and Privacy Policy the teacher agreed to, always one tap away -->
+    <div class="card" style="--accent:var(--c-purple)">
+      <h2>Terms of Use and Privacy Policy</h2>
+      <p class="muted" id="termsShow"></p>
+      <div class="row" style="margin-top:10px"><button class="btn ghost small" id="btnReadTerms">Read the Terms of Use</button><button class="btn ghost small" id="btnReadPolicy">Read the Privacy Policy</button></div>
+    </div>
     <div class="card" style="--accent:var(--c-orange)">
       <h2>Backup</h2>
       <p class="muted">A backup is a safety copy of everything in the app on this device. Use it to move your class to a new device, or to bring it back if this one is reset. Download one about once a month and email it to yourself.</p>
@@ -915,30 +939,17 @@
     <div class="card" style="--accent:var(--c-purple)">
       <details class="more"><summary>More options</summary>
         <div class="note" style="margin-top:4px">
-          <b>Sharing</b>
-          <p class="muted">Your students' names and results are saved on this device. Children's names are never sent to Active Alphabet.</p>
-          <label class="opt" style="margin-top:8px" id="shareRow"><input type="checkbox" id="shareBox" style="accent-color:var(--blue)"> Share anonymous results with Active Alphabet (no children's names, ever)</label>
+          <b>Results sent to Active Alphabet</b>
+          <p class="muted">Your students' names and results are saved on this device. Active Alphabet never receives children's names. Each child's results are sent only as a number, like Child 07, with your classroom's name, your name and your email.</p>
           <p class="tiny" id="lastSync" style="margin-top:8px"></p>
           <div class="row" style="margin-top:8px"><button class="btn ghost small" id="btnPush">Send now</button></div>
           <div id="dataMsg" class="tiny" style="margin-top:10px"></div>
         </div>
         <div class="note warn" style="margin-top:12px">
-          <b>Delete my classroom's data from Active Alphabet</b><br>
-          This removes your classroom's shared results from Active Alphabet's records only. Everything on this device stays exactly as it is.
-          After this, this device will never send results to Active Alphabet again.
-          <div class="row" style="margin-top:10px"><button class="btn danger" id="delGo">Delete my data</button></div>
-          <div class="tiny" id="delMsg" style="margin-top:8px"></div>
-        </div>
-        <div class="note warn" style="margin-top:12px">
-          <b>Delete my account</b><br>
-          This deletes your account and your class from Active Alphabet, and removes everything from this device. It cannot be undone.
-          <div class="row" style="margin-top:10px"><button class="btn danger" id="delAcct">Delete my account</button></div>
+          <b>Leave Active Alphabet</b><br>
+          For when you want to stop using Active Alphabet. Your account and every child's details are erased from this device and from Active Alphabet. Active Alphabet keeps only combined numbers, with no names. Print your résumé first if you'd like to keep your stats. This cannot be undone.
+          <div class="row" style="margin-top:10px"><button class="btn danger" id="delAcct">Leave Active Alphabet</button></div>
           <div class="tiny" id="delAcctMsg" style="margin-top:8px"></div>
-        </div>
-        <div class="note warn" style="margin-top:12px">
-          <b>Clear everything</b><br>
-          This removes every student and every result from this device and from your account. It cannot be undone.
-          <div class="row" style="margin-top:10px"><button class="btn danger" id="clearAll">Clear everything</button></div>
         </div>
       </details>
     </div>
@@ -992,8 +1003,6 @@
       <div class="field" style="flex:1 1 200px"><label for="suCity">City</label><input id="suCity" type="text" placeholder="Chicago"></div>
       <div class="field" style="flex:1 1 200px"><label for="suState">State</label><select id="suState" style="width:100%"></select></div>
     </div>
-    <label class="opt" style="margin-top:18px;align-items:flex-start;font-size:13.5px;color:var(--ink)"><input type="checkbox" id="suShare" style="margin-top:2px;accent-color:var(--blue)">
-      <span style="font-weight:400"><b>Share anonymous results with Active Alphabet?</b><br>Children's names are never collected. We use only letter scores, with no names attached, to see how well the program works and for educational research.</span></label>
     <p class="tiny" style="margin-top:14px">By tapping Get started, you agree to our <button class="linkname" style="font-size:12.5px" data-policy>Privacy Policy</button>.</p>
     <div class="err" id="suErr"></div>
     <button class="btn" id="suGo" style="width:100%;margin-top:6px">Get started</button>
@@ -1068,16 +1077,13 @@
       <div class="field" style="flex:1 1 200px"><label for="ajCity">City</label><input id="ajCity" type="text" placeholder="Chicago"></div>
       <div class="field" style="flex:1 1 200px"><label for="ajState">State</label><select id="ajState" style="width:100%"></select></div>
     </div>
-    <label class="opt" style="margin-top:18px;align-items:flex-start;font-size:13.5px;color:var(--ink)"><input type="checkbox" id="ajShare" style="margin-top:2px;accent-color:var(--blue)">
-      <span style="font-weight:400"><b>Share anonymous results with Active Alphabet?</b><br>Children's names are never collected. We use only letter scores, with no names attached, to see how well the program works and for educational research.</span></label>
     <label class="opt" style="display:flex;margin-top:14px;align-items:flex-start;font-size:13.5px;color:var(--ink)"><input type="checkbox" id="ajUpdates" style="margin-top:2px;accent-color:var(--blue)">
       <span style="font-weight:400">Keep me updated about Active Alphabet</span></label>
-    <label class="opt" style="display:flex;margin-top:14px;align-items:flex-start;font-size:13.5px;color:var(--ink)" id="ajApprovedRow"><input type="checkbox" id="ajApproved" style="margin-top:2px;accent-color:var(--blue)">
-      <span style="font-weight:400">My school, center or program approved using Active Alphabet, or I run my own program.</span></label>
     <label class="opt" style="display:flex;margin-top:14px;align-items:flex-start;font-size:13.5px;color:var(--ink)"><input type="checkbox" id="ajTerms" style="margin-top:2px;accent-color:var(--blue)">
       <span style="font-weight:400">I agree to the <button type="button" class="linkname" style="font-size:13.5px" id="ajTermsRead">Terms of Use</button></span></label>
     <label class="opt" style="display:flex;margin-top:10px;align-items:flex-start;font-size:13.5px;color:var(--ink)"><input type="checkbox" id="ajPriv" style="margin-top:2px;accent-color:var(--blue)">
       <span style="font-weight:400">I have read the <button type="button" class="linkname" style="font-size:13.5px" data-policy>Privacy Policy</button></span></label>
+    <p class="tiny" style="margin-top:8px">By agreeing, you confirm your school, center or program gave you permission to use Active Alphabet (or, for a home child care provider, the families did). Your combined numbers stay with you in My Stats, and your students' details are erased when you close out each year or leave Active Alphabet.</p>
     <div class="err" id="ajErr"></div>
     <button class="btn" id="ajGo" style="width:100%;margin-top:6px">Join</button>
     <div class="acrow"><button class="aclink" data-acback>Back</button></div>
@@ -1189,7 +1195,7 @@
       </svg>
     </div>
     <div id="pZoomRow" class="hide"><span class="tiny">Smaller</span><input type="range" id="pZoom" min="1" max="4" step="0.01" value="1" aria-label="Zoom"><span class="tiny">Bigger</span></div>
-    <label class="pcheck"><input type="checkbox" id="pOk"><span>This child's family said yes to using their photo in Active Alphabet. The photo stays on this device and is never sent to Active Alphabet.</span></label>
+    <label class="pcheck" id="pOkRow"><input type="checkbox" id="pOk"><span>I'll only add a child's photo when the child's family has said it's okay to use it in Active Alphabet, for classroom use only. Photos stay on this device and are never sent to Active Alphabet.</span></label>
     <p class="tiny" id="pMsg" style="color:var(--magenta);min-height:18px;margin-top:6px"></p>
     <div id="pBtns"></div>
     <input type="file" id="pFile" accept="image/*" hidden>
@@ -1684,7 +1690,7 @@ const CLIPS={"A":{"frame":[700,886],"letters":{"A":{"cx":21.71,"cy":84.71,"h":15
 /* ============ state and storage ============ */
 /* Version 4 has its own storage name, so it never reads or overwrites round 1 data on the same iPad. */
 const KEY="aa-assess-v4-round2";
-const APP_VERSION="6.4";
+const APP_VERSION="7.2";
 $("#verShow").textContent=APP_VERSION;
 const SCHEMA=2;                         /* data layout version, so a future version knows how to read this data */
 /* Shared app key. Must match APP_KEY in the Apps Script. */
@@ -1693,7 +1699,7 @@ const APP_KEY="aa-r2-042e724ec7993cbcb9a541d7";
 const SCRIPT_URL="https://script.google.com/macros/s/AKfycbwrtQigIcqTjTVNQM0AlgET2dNf3oBpQJ3h0s-E67boozziDch4zj4CCCslPmHTGG-l/exec";   /* Active Alphabet Master */
 const blank=()=>({schema:SCHEMA,appVersion:APP_VERSION,classCode:"",signedUpAt:"",registered:false,
   schoolName:"",className:"",teacherName:"",teacherEmail:"",city:"",state:"",
-  share:false,optedOut:false,pendingDelete:false,
+  share:true,optedOut:false,pendingDelete:false,
   students:[],nextNum:1,letters:ALPHA.slice(),sessions:[],paused:[],obs:[],lastSync:"",sample:false});
 const STATES=["Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware","District of Columbia","Florida","Georgia",
   "Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Kentucky","Louisiana","Maine","Maryland","Massachusetts","Michigan","Minnesota",
@@ -1713,7 +1719,9 @@ async function save(){
 }
 async function load(){
   try{ const raw=localStorage.getItem(KEY); if(raw) S=Object.assign(blank(),JSON.parse(raw)); }catch(e){}
-  S.students.forEach(s=>{ if(!s.num) s.num=S.nextNum++; });
+  S.students.forEach(s=>{ if(!s.num) s.num=S.nextNum++; delete s.familyYes; });
+  /* 7.0: there is no sharing box. Every classroom sends results, unless it deleted its data from Active Alphabet. */
+  if(!S.optedOut) S.share=true;
 }
 
 /* ============ modal ============ */
@@ -1872,6 +1880,8 @@ let ph=null;                            /* the photo step in progress */
 function photoStep(title,onDone){
   ph={title,onDone,stream:null,facing:"environment",img:null,zoom:1,dx:0,dy:0,tok:0};
   $("#pTitle").textContent=title; $("#pOk").checked=false; $("#pMsg").textContent="";
+  /* 7.0: the teacher checks the photo box once, the first time they add a photo */
+  $("#pOkRow").classList.toggle("hide",!!S.photoAgreedAt);
   $("#photoUI").classList.remove("hide");
   pickWay();
 }
@@ -1966,7 +1976,10 @@ $("#pZoom").oninput=e=>{ if(ph&&ph.img){ ph.zoom=+e.target.value; drawEdit(); } 
     ph.zoom=Math.min(4,Math.max(1,ph.zoom*Math.exp(-e.deltaY*0.002))); $("#pZoom").value=ph.zoom; drawEdit(); },{passive:false});
 })();
 function usePhoto(){
-  if(!$("#pOk").checked){ $("#pMsg").textContent="Check the box to show the family said yes."; return; }
+  if(!S.photoAgreedAt){
+    if(!$("#pOk").checked){ $("#pMsg").textContent="Check the box first."; return; }
+    S.photoAgreedAt=new Date().toISOString(); save();
+  }
   /* save only the oval's box, small, so many photos fit on the device */
   const c=document.createElement("canvas"); c.width=OUT_W; c.height=OUT_H; const x=c.getContext("2d");
   x.fillStyle="#fff"; x.fillRect(0,0,OUT_W,OUT_H);
@@ -2210,16 +2223,15 @@ $("#acGoJoin").onclick=()=>showAccess("join");
 function openJoin(){
   /* a teacher already using the app: the teacher's details are filled in, and the class moves into the account */
   [["ajName","teacherName"],["ajEmail","teacherEmail"],["ajSchool","schoolName"],["ajClass","className"],["ajCity","city"]].forEach(([i,k])=>{ if(!$("#"+i).value) $("#"+i).value=S[k]||""; });
-  if(S.state) $("#ajState").value=S.state; $("#ajShare").checked=!!(S.share&&!S.optedOut);
+  if(S.state) $("#ajState").value=S.state;
   $("#ajErr").textContent=""; termsOk=false; $("#ajTerms").checked=false; $("#ajPriv").checked=false;
-  $("#ajUpdates").checked=false; $("#ajApproved").checked=false; showRoleParts();
+  $("#ajUpdates").checked=false; showRoleParts();
   acShow("#acJoin");
 }
 /* 5.10: families have no school or classroom, and only teachers at a school or center confirm the school's approval */
 /* 5.11: teachers only. Home child care providers sign up as teachers. */
 function joinRole(){ return "teacher"; }
 function showRoleParts(){}
-$("#ajApproved").onchange=()=>{ $("#ajErr").textContent=""; };
 $("#acGoSignin").onclick=()=>{ $("#asErr").textContent=""; acShow("#acSignin"); };
 $("#asForgot").onclick=()=>{ $("#afEmail").value=$("#asEmail").value; $("#afErr").textContent=""; acShow("#acForgot"); };
 function friendly(e){
@@ -2240,13 +2252,12 @@ function codeScreen(kind,email){
 $("#ajGo").onclick=async()=>{
   const role=joinRole(), fam=role==="family";
   const v={name:$("#ajName").value.trim(),email:$("#ajEmail").value.trim(),pass:$("#ajPass").value,school:fam?"":$("#ajSchool").value.trim(),
-    cls:fam?"":$("#ajClass").value.trim(),city:$("#ajCity").value.trim(),state:$("#ajState").value,share:$("#ajShare").checked,
+    cls:fam?"":$("#ajClass").value.trim(),city:$("#ajCity").value.trim(),state:$("#ajState").value,share:true,
     role,updates:$("#ajUpdates").checked};
   const err=t=>$("#ajErr").textContent=t;
   if(!v.name||!v.email||(!fam&&(!v.school||!v.cls))||!v.city||!v.state){ err("Please fill in every box, including teacher name, city and state."); return; }
   if(!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(v.email)){ err("That email does not look quite right."); return; }
   if(v.pass.length<8){ err("Your password needs at least 8 characters."); return; }
-  if(!$("#ajApproved").checked){ err("Please check the box to confirm your school, center or program approved using Active Alphabet, or that you run your own program."); return; }
   if(!termsOk){ err("Please read the Terms of Use and check the box to agree."); return; }
   if(!$("#ajPriv").checked){ err("Please check the box to show you have read the Privacy Policy."); return; }
   v.code=accessCode;
@@ -2399,7 +2410,15 @@ async function enterApp(){
   setTimeout(afterReady,2200);
 }
 /* ---------- Settings ---------- */
-function renderAcct(){ const a=acctGet(); const el=$("#acctShow"); if(el) el.textContent=a?`Signed in as ${a.email}.`:"Not signed in."; const sy=$("#syncShow"); if(sy) sy.textContent=syncNote; }
+/* 7.2: which Terms the teacher agreed to, and when */
+function renderTermsShow(){
+  const el=$("#termsShow"); if(!el) return;
+  const d=S.termsAgreedAt?new Date(S.termsAgreedAt):null;
+  el.textContent=S.termsVersion===TERMS_V&&d&&!isNaN(d)
+    ?`You agreed to Terms of Use Version ${TERMS_V} and read Privacy Policy Version ${PRIVACY_V} on ${d.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}.`
+    :`The current Terms of Use (Version ${TERMS_V}) and Privacy Policy (Version ${PRIVACY_V}).`;
+}
+function renderAcct(){ renderTermsShow(); const a=acctGet(); const el=$("#acctShow"); if(el) el.textContent=a?`Signed in as ${a.email}.`:"Not signed in."; const sy=$("#syncShow"); if(sy) sy.textContent=syncNote; }
 $("#acctSignOut").onclick=async()=>{
   const r=await ask("Sign out?",`<p>Your class will be removed from this device. It all comes back when you sign in again, here or on another device.</p><p>Children's photos stay on this device, locked, until you sign in here again.</p>`,
     [{t:"Cancel",v:0,ghost:true},{t:"Sign out",v:1}]);
@@ -2463,8 +2482,8 @@ const changeEmailAcct=async()=>{
    Join starts with the access code from the purchase email. The code is checked first, then used for this teacher
    right after the email is confirmed. Every sign-in asks Supabase whether this teacher still has access (a refund
    ends it) and whether the newest Terms of Use were agreed to. Supabase keeps the record of each agreement. */
-const TERMS_V="1", PRIVACY_V="5";
-const TERMS_TEXT=`<h1>Active Alphabet Terms of Use</h1><p>Version 1 · Effective Date: December 1, 2026</p><h2>Summary of the Terms of Use</h2><p>This summary highlights the key points of these Terms. It does not replace the full Terms that follow.</p><ul><li>You must be 18 or older. Teachers must have their school's, center's or program's approval, unless they run their own program.</li><li>One purchase covers one person. Access codes work once and may not be shared or resold.</li><li>The printable resources in the App are for your own class only. Do not share, post or resell them.</li><li>A full refund is available within 14 days of purchase. A refund ends access.</li><li>Children's information belongs to the school, center or family, not to Active Alphabet.</li><li>Families are told about the App with the Active Alphabet family permission letter, and photos are used only with a family's written permission.</li><li>Never post screenshots, recordings or the class video on social media or any public site.</li><li>Active Alphabet shows which letters and sounds a child knows on a given day. It is not a screening or diagnosis.</li><li>These Terms work together with our Privacy Policy.</li></ul><h2>1. About These Terms</h2><p>These Terms of Use (the "Terms") are an agreement between you and Standup to Play LLC ("Active Alphabet," "we," "us," or "our") about your use of the Active Alphabet Classroom App (the "App"). You accept these Terms when you check the box to agree to them in the App.</p><p>Our Privacy Policy explains what information the App collects, how we use it, and how we protect it. Please read it with these Terms. In these Terms, "you" means the person who joins and uses the App, and "Device" means the tablet, computer or other device on which the App is used.</p><h2>2. Who May Use the App</h2><ul><li>You must be 18 or older.</li><li>The App is for teachers. This includes teachers at a school or center and home child care providers.</li><li>Your school, center or program must approve your use of the App, unless you run your own program. You confirm this with its own checkbox when you join. If that approval ends, you must stop using the App with that school's, center's or program's children.</li><li>The App is meant only for helping children learn their letters and letter sounds.</li></ul><h2>3. Your Account</h2><ul><li><b>One account per person.</b> Each access code works once and opens one account. You may not share, sell or give away an access code or your account.</li><li><b>Your password and recovery code.</b> Keep your password private. Keep your recovery code somewhere safe. We cannot see or recover it, as our Privacy Policy explains.</li><li><b>Others in your classroom.</b> You may let other staff who work with the same children in your classroom, such as a co-teacher or an assistant, use the App with you. You are responsible for how they use it. A teacher from another classroom needs their own account.</li><li><b>Keep the Device safe.</b> Keep the Device locked with a passcode. Sign out of the App on any Device that is shared with another classroom.</li><li><b>Tell us about a problem.</b> You are responsible for what happens in your account. If you think someone else has used it, please tell us right away.</li></ul><h2>4. Purchases, Access and Refunds</h2><ul><li><b>What a purchase covers.</b> One purchase covers one person. Unless a different end date is shown when you buy, access lasts through June 30, 2028.</li><li><b>Where you buy.</b> Purchases are made on our website, activealphabet.com. Payments are processed by Stripe through our Wix store. We never see or store your full card number. Your access code is emailed to you after checkout.</li><li><b>Refunds.</b> You may ask for a full refund within 14 days of purchase by emailing us. A refund ends access to the App for that purchase, even if the access code has already been used.</li><li><b>When access ends.</b> When access ends, because of a refund, the end of the access period, or Section 10 below, you have 30 days to download your records from the App. After 30 days, the class saved in your account is deleted.</li><li><b>Prices may change.</b> We may change prices or what is offered. A change does not affect a purchase you have already made.</li></ul><h2>5. Children's Information</h2><h3>Whose information it is</h3><p>Children's information belongs to the school, center or family, not to Active Alphabet. We use it only as our Privacy Policy describes. We never sell it or use it for advertising.</p><h3>Telling families</h3><p>Your classroom, school or center decides to use Active Alphabet. You must send the Active Alphabet family permission letter, which you can print from the App, home to each child's family. The letter tells families about Active Alphabet and asks only for permission to use their child's photo in the App. Please follow each family's choice.</p><h3>Photos</h3><ul><li>Use a child's photo only with written permission from the child's family, given on the family permission letter.</li><li>Keep the signed family permission letter for as long as the child's photo is in the App. You may take a picture of the signed letter in the App, where it is saved on the Device with the photo.</li><li>If a family changes its mind, remove the photo right away.</li><li>The App does not scan, measure or recognize faces.</li></ul><h3>What to enter</h3><ul><li>Enter only each child's first name and last initial.</li><li>Do not put health, disability, diagnosis or family details in notes about a child.</li></ul><h3>Families' requests</h3><p>Only you and your school or center can read the children's names. If a family asks to see or correct a child's records, please handle the request through your school or center. We will help when asked.</p><h3>Keeping records safe</h3><ul><li>Downloaded spreadsheets, reports and backup files contain children's names. Store them only on devices or accounts approved by your school, center or program, not in personal email or personal cloud storage.</li><li>Share each child's family page only with that child's own family.</li><li>You may give a child's Active Alphabet Passport to that child's family or to the child's next teacher. Do not share it with anyone else.</li><li>Do not record video or audio of children during assessments unless your school or center allows it.</li></ul><h3>Moving children to another classroom</h3><p>You may send children's records to a colleague at the same school or center using the App's transfer feature. Before sending, make sure the email address belongs to that colleague. Photos and photo permission letters never move with the children. The new classroom asks the family for permission again.</p><h3>The end of the school year</h3><p>Each August, the App asks you to download the past year's records and then clear the children who have left your classroom. If they are not cleared by September 30, the App clears them automatically, after several reminders.</p><h2>6. Acceptable Use</h2><p>You agree not to:</p><ul><li>Share, sell or give away access codes or your account.</li><li>Copy, change or share the Active Alphabet characters, animations, songs or App.</li><li>Try to break into the App, get around its locks, or reach anyone else's information.</li><li>Use the App for anything other than teaching children.</li><li>Use children's information for anything other than supporting their learning, such as sharing it with people outside the school or family, or selling it.</li><li>Post screenshots, recordings or the class video on social media or any public site.</li></ul><h2>7. What the App Is, and What It Is Not</h2><p>Active Alphabet shows which letters and sounds a child knows on a given day. It is not a screening, diagnosis, or evaluation for special education or any learning need. Please use your own professional judgment, and your school's or center's guidance, when making decisions about a child.</p><h2>8. Who Owns What</h2><ul><li>Standup to Play LLC owns the Active Alphabet name and logo, the characters, the animations, the songs, the printable resources, and the App.</li><li>We give you a personal license, which you may not transfer, to use them only for teaching children during your access period.</li><li><b>Printable resources.</b> The license covers the files you download from the Resources tab in the App, such as the Teacher Guide, Character Cards and Letter Chart. You may print them and use them only with your own class, including sending family materials home to your class's families. You may not share, post, sell or give the files to anyone else.</li><li>Children's information belongs to the school, center or family, as Section 5 explains.</li><li>If you send us feedback or ideas, we may use them to improve Active Alphabet.</li></ul><h2>9. How the App Is Provided</h2><p>The App is provided "as is." We will do our best to keep it running and to protect your records, but we cannot promise that it will always be available or that information will never be lost. Please download your records and make backups regularly.</p><h2>10. If These Terms Are Broken</h2><ul><li>For smaller problems, we will warn you first. If a problem continues, we may end your access.</li><li>For serious problems, such as sharing children's information, we may end your access right away, without a refund.</li><li>When access ends, the 30-day download period in Section 4 applies.</li><li>You may stop using the App at any time, and you may delete your account with the "Delete my account" button on the Settings tab.</li></ul><h2>11. Limits on Our Responsibility</h2><p>To the fullest extent the law allows, our total responsibility for any claim about the App is limited to the amount you paid for Active Alphabet in the 12 months before the claim. We are not responsible for indirect losses, such as lost time or lost records, that come from using or being unable to use the App.</p><h2>12. Disputes</h2><p>If you have a concern, please email us first and give us 30 days to try to work it out. These Terms are governed by the laws of the State of Illinois. Any dispute about these Terms or the App will be handled in the courts of Cook County, Illinois.</p><h2>13. Changes to These Terms</h2><p>We may update these Terms. If we make a material change, we will tell you in the App or by email at least 30 days before it takes effect. When the new Terms take effect, the App will ask you to read and agree to them before you continue.</p><h2>14. Contact Us</h2><p>Questions about these Terms may be sent to:</p><p>Standup to Play LLC (Active Alphabet)</p><p>10244 South Longwood Drive, Chicago, Illinois 60643</p><p>Email: patrick@activealphabet.com</p>`;
+const TERMS_V="3", PRIVACY_V="7";
+const TERMS_TEXT=`<h1>Active Alphabet Terms of Use</h1><p>Version 3 · Effective Date: December 1, 2026</p><h2>Summary of the Terms of Use</h2><p>This summary highlights the key points of these Terms. It does not replace the full Terms that follow.</p><ul><li>You must be 18 or older. Before you use the App, your school, center or program must give you permission. A home child care provider must ask the families of the children in their care.</li><li>One purchase covers one person. Access codes work once and may not be shared or resold.</li><li>The printable resources in the App are for your own class only. Do not share, post or resell them.</li><li>A full refund is available within 14 days of purchase. A refund ends access.</li><li>Children's information belongs to the school, center or family, not to Active Alphabet.</li><li>Add a child's photo only when the child's family has said it's okay, and use photos for classroom use only.</li><li>Active Alphabet never receives children's names, and never shares or sells them. We receive each child's results only as a number, such as Child 07, along with your classroom's name, your name and your email.</li><li>At the end of each school year, you close out your class. Your combined numbers stay with you in My Stats, and every child's details are erased.</li><li>Never post screenshots, recordings or the class video on social media or any public site.</li><li>Active Alphabet shows which letters and sounds a child knows on a given day. It is not a screening or diagnosis.</li><li>These Terms work together with our Privacy Policy.</li></ul><h2>1. About These Terms</h2><p>These Terms of Use (the "Terms") are an agreement between you and Standup to Play LLC ("Active Alphabet," "we," "us," or "our") about your use of the Active Alphabet Classroom App (the "App"). You accept these Terms when you check the box to agree to them in the App. Checking that box has the same effect as signing these Terms.</p><p>Our Privacy Policy explains what information the App collects, how we use it, and how we protect it. Please read it with these Terms. In these Terms, "you" means the person who joins and uses the App, and "Device" means the tablet, computer or other device on which the App is used.</p><h2>2. Who May Use the App</h2><ul><li>You must be 18 or older.</li><li>The App is for teachers. This includes teachers at a school or center and home child care providers.</li><li><b>School, center or program permission.</b> Before you use the App, you must tell your school, center or program that you plan to use Active Alphabet and the Active Alphabet Classroom App in your classroom, and it must give you permission. By agreeing to these Terms, you confirm that it has, that you are allowed to agree to these Terms for that use, and that your school, center or program allows the children's information described in our Privacy Policy to be used in the App to support their learning. If that permission ends, you must stop using the App with that school's, center's or program's children.</li><li><b>Home child care providers.</b> If you are a home child care provider, you must ask the families of the children in your care for permission before you use the App with their children.</li><li><b>Written agreements.</b> If your school, center or program requires a written data privacy agreement with the companies whose apps it uses, ask it to contact us before you use the App.</li><li>The App is meant only for helping children learn their letters and letter sounds.</li></ul><h2>3. Your Account</h2><ul><li><b>One account per person.</b> Each access code works once and opens one account. You may not share, sell or give away an access code or your account.</li><li><b>Your password and recovery code.</b> Keep your password private. Keep your recovery code somewhere safe. We cannot see or recover it, as our Privacy Policy explains.</li><li><b>Others in your classroom.</b> You may let other staff who work with the same children in your classroom, such as a co-teacher or an assistant, use the App with you. You are responsible for how they use it. A teacher from another classroom needs their own account.</li><li><b>Keep the Device safe.</b> Keep the Device locked with a passcode. Sign out of the App on any Device that is shared with another classroom.</li><li><b>Tell us about a problem.</b> You are responsible for what happens in your account. If you think someone else has used it, please tell us right away.</li></ul><h2>4. Purchases, Access and Refunds</h2><ul><li><b>What a purchase covers.</b> One purchase covers one person. Unless a different end date is shown when you buy, access lasts through June 30, 2028.</li><li><b>Where you buy.</b> Purchases are made on our website, activealphabet.com. Payments are processed by Stripe through our Wix store. We never see or store your full card number. Your access code is emailed to you after checkout.</li><li><b>Refunds.</b> You may ask for a full refund within 14 days of purchase by emailing us. A refund ends access to the App for that purchase, even if the access code has already been used.</li><li><b>When access ends.</b> When access ends, because of a refund, the end of the access period, or Section 10 below, you have 30 days to download your records from the App. After 30 days, the class saved in your account is deleted.</li><li><b>Prices may change.</b> We may change prices or what is offered. A change does not affect a purchase you have already made.</li></ul><h2>5. Children's Information</h2><h3>Whose information it is</h3><p>Children's information belongs to the school, center or family, not to Active Alphabet. We use it only as our Privacy Policy describes. We never sell it or use it for advertising.</p><h3>What Active Alphabet receives</h3><ul><li>Active Alphabet never receives children's names. Names are scrambled on the Device before anything is saved to your account, and we cannot read them.</li><li>Children's names are never shared with or sold by Active Alphabet.</li><li>We receive only de-identified results for each child: a number, such as Child 07, in place of the child's name. These results are sent with your classroom's name, your name and your email, so we can see how each classroom is doing and reach out to you. Our Privacy Policy lists everything we receive.</li><li>Sending these results is part of using the App. There is no box to check.</li><li>We keep combined numbers, such as how many children were assessed and how much they grew, even after a class is closed out or a teacher leaves Active Alphabet. These numbers never name a child, teacher or classroom. We use them for program evaluation and improvement.</li></ul><h3>Your school's permission</h3><p>Your school, center or program decides whether Active Alphabet may be used in your classroom, as Section 2 explains. Follow its rules for telling families about the programs used in your classroom. A home child care provider asks the families directly.</p><h3>Photos</h3><ul><li>Add a child's photo only when the child's family has said it's okay to use their child's photo in the App, for classroom use only. You confirm this with a checkbox the first time you add a photo.</li><li>Use children's photos only in your classroom: inside the App, and on the pages the App prints for your class and its families. Never post or share them anywhere else.</li><li>If a family changes its mind, remove the photo right away.</li><li>The App does not scan, measure or recognize faces.</li></ul><h3>What to enter</h3><ul><li>Enter only each child's first name and last initial.</li><li>Do not put health, disability, diagnosis or family details in notes about a child.</li></ul><h3>Families' requests</h3><p>Only you and your school or center can read the children's names. If a family asks to see or correct a child's records, please handle the request through your school or center. We will help when asked.</p><h3>Keeping records safe</h3><ul><li>Downloaded spreadsheets, reports and backup files contain children's names. Store them only on devices or accounts approved by your school, center or program, not in personal email or personal cloud storage.</li><li>Share each child's family page only with that child's own family.</li><li>You may give a child's Active Alphabet Passport to that child's family or to the child's next teacher. Do not share it with anyone else.</li><li>Do not record video or audio of children during assessments unless your school or center allows it.</li></ul><h3>Moving children to another classroom</h3><p>You may send children's records to a colleague at the same school or center using the App's transfer feature. Before sending, make sure the email address belongs to that colleague. Photos never move with the children. The new teacher adds a photo only when the family says it's okay.</p><h3>Closing out the school year</h3><ul><li>From May 15, you can close out your school year in the App. Before you can add children or assess in a new school year, you must close out the year before.</li><li>When you close out, you choose whether each child is staying in your class, going to a new school, or moving to another classroom at your school.</li><li>Your year's combined numbers and any awards are saved in My Stats. Then every child's details are erased from the Device, your account and Active Alphabet's records. A child staying in your class keeps their name, photo and a short end-of-year snapshot. A child moving to a colleague goes to that teacher with the same snapshot.</li><li>If you have not closed out the year by September 30, the App closes it out automatically, and every child's details are erased.</li><li>Closing out does not change spreadsheets you downloaded earlier. Keep or delete them as your school, center or program requires.</li></ul><h3>Changing schools</h3><p>Children's records never move to a new school, center or program. Before you change schools, close out your class or move your children to a colleague. Your My Stats and awards stay with your account.</p><h2>6. Acceptable Use</h2><p>You agree not to:</p><ul><li>Share, sell or give away access codes or your account.</li><li>Copy, change or share the Active Alphabet characters, animations, songs or App.</li><li>Try to break into the App, get around its locks, or reach anyone else's information.</li><li>Use the App for anything other than teaching children.</li><li>Use children's information for anything other than supporting their learning, such as sharing it with people outside the school or family, or selling it.</li><li>Post screenshots, recordings or the class video on social media or any public site.</li></ul><h2>7. What the App Is, and What It Is Not</h2><p>Active Alphabet shows which letters and sounds a child knows on a given day. It is not a screening, diagnosis, or evaluation for special education or any learning need. Please use your own professional judgment, and your school's or center's guidance, when making decisions about a child.</p><h2>8. Who Owns What</h2><ul><li>Standup to Play LLC owns the Active Alphabet name and logo, the characters, the animations, the songs, the printable resources, and the App.</li><li>We give you a personal license, which you may not transfer, to use them only for teaching children during your access period.</li><li><b>Printable resources.</b> The license covers the files you download from the Resources tab in the App, such as the Teacher Guide, Character Cards and Letter Chart. You may print them and use them only with your own class, including sending family materials home to your class's families. You may not share, post, sell or give the files to anyone else.</li><li>Children's information belongs to the school, center or family, as Section 5 explains.</li><li>If you send us feedback or ideas, we may use them to improve Active Alphabet.</li></ul><h2>9. How the App Is Provided</h2><p>The App is provided "as is." We will do our best to keep it running and to protect your records, but we cannot promise that it will always be available or that information will never be lost. Please download your records and make backups regularly.</p><h2>10. If These Terms Are Broken</h2><ul><li>For smaller problems, we will warn you first. If a problem continues, we may end your access.</li><li>For serious problems, such as sharing children's information, we may end your access right away, without a refund.</li><li>When access ends, the 30-day download period in Section 4 applies.</li><li>You may stop using the App at any time with the "Leave Active Alphabet" button on the Settings tab. It erases your account and every child's details. Active Alphabet keeps only the combined numbers described in Section 5.</li></ul><h2>11. Limits on Our Responsibility</h2><p>To the fullest extent the law allows, our total responsibility for any claim about the App is limited to the amount you paid for Active Alphabet in the 12 months before the claim. We are not responsible for indirect losses, such as lost time or lost records, that come from using or being unable to use the App.</p><p>You are responsible for having the permissions these Terms ask you to have, including your school's, center's or program's permission to use the App (or, for a home child care provider, the families' permission) and each family's okay before you add a child's photo. Active Alphabet relies on what you confirm.</p><h2>12. Disputes</h2><p>If you have a concern, please email us first and give us 30 days to try to work it out. These Terms are governed by the laws of the State of Illinois. Any dispute about these Terms or the App will be handled in the courts of Cook County, Illinois.</p><h2>13. Changes to These Terms</h2><p>We may update these Terms. If we make a material change, we will tell you in the App or by email at least 30 days before it takes effect. When the new Terms take effect, the App will ask you to read and agree to them before you continue.</p><h2>14. General Terms</h2><ul><li><b>The whole agreement.</b> These Terms and our Privacy Policy are the whole agreement between you and Active Alphabet about the App.</li><li><b>If part is not valid.</b> If a court decides that any part of these Terms can't be enforced, the rest of these Terms still applies.</li><li><b>If Active Alphabet changes hands.</b> If Active Alphabet or Standup to Play LLC is sold or joins another company, these Terms carry over, and our Privacy Policy still protects children's information.</li><li><b>Events outside our control.</b> We are not responsible for delays or failures caused by events outside our reasonable control, such as power or internet outages, natural disasters, or problems with the services we rely on.</li><li><b>Not giving up our rights.</b> If we don't enforce part of these Terms right away, we can still enforce it later.</li></ul><h2>15. Contact Us</h2><p>Questions about these Terms may be sent to:</p><p>Standup to Play LLC (Active Alphabet)</p><p>10244 South Longwood Drive, Chicago, Illinois 60643</p><p>Email: patrick@activealphabet.com</p>`;
 const ACCESS_MSG={not_found:"We couldn't find that code. Check it and try again.",
   used:"This code has already been used. Each code works for one teacher.",
   canceled:"This code is no longer active. If you think this is a mistake, email patrick@activealphabet.com."};
@@ -2500,7 +2519,7 @@ $("#axGo").onclick=async()=>{
 /* the Terms of Use page: the box unlocks once the teacher scrolls to the bottom */
 function showTerms(m){
   termsMode=m; const b=$("#tmBody");
-  b.innerHTML=TERMS_TEXT+`<div style="height:110vh"></div><p class="tiny">End of the Terms of Use.</p>`;
+  b.innerHTML=TERMS_TEXT+`<p class="tiny" style="margin-top:14px">End of the Terms of Use.</p>`;
   $("#tmOk").checked=false; $("#tmOk").disabled=true; $("#tmHint").classList.remove("hide"); $("#tmErr").textContent="";
   $("#tmBack").textContent=m==="join"?"Back":"Sign out";
   acShow("#acTerms"); b.scrollTop=0; setTimeout(termsScrolled,50);
@@ -2624,13 +2643,13 @@ $("#aeDl").onclick=async()=>{
 $("#delAcct").onclick=async()=>{
   const msg=t=>$("#delAcctMsg").textContent=t; msg("");
   if(!acctGet()){ msg("You are not signed in."); return; }
-  const r1=await ask("Download your records first?","Your spreadsheet has every child's results. Once your account is deleted, they cannot be brought back.",
-    [{t:"Cancel",v:0,ghost:true},{t:"Skip",v:2,ghost:true},{t:"Download first",v:1}]);
+  const r1=await ask("Leave Active Alphabet?","<p>Once you leave, your stats and awards can't be brought back. Would you like to print your Active Alphabet résumé first?</p>",
+    [{t:"Cancel",v:0,ghost:true},{t:"Print my résumé first",v:1,ghost:true},{t:"Continue",v:2}]);
   if(!r1.v) return;
-  if(r1.v===1) $("#btnXlsx").click();
-  if(!await askDelete("Delete your account?",`<p>This deletes your account and your class from Active Alphabet, and removes your class and photos from this device. It cannot be undone.</p>
-    <p class="tiny">Results you shared without names stay in Active Alphabet's research, because they cannot be linked back to you or any child.</p>`,"Delete my account")) return;
-  $("#delAcct").disabled=true; msg("Deleting...");
+  if(r1.v===1){ famReturn="stats"; $("#famPages").innerHTML=resumePage(); tab("family"); return; }
+  if(!await askDelete("Leave Active Alphabet?",`<p>This erases your account, your class and every child's details from this device and from Active Alphabet. It cannot be undone.</p>
+    <p class="tiny">Active Alphabet keeps only combined numbers, with no names of children, teachers or classrooms.</p>`,"Leave Active Alphabet")) return;
+  $("#delAcct").disabled=true; msg("Erasing...");
   try{
     const x=await sb.rpc("aa_delete_my_account"); if(x.error||x.data!=="ok") throw (x.error||new Error(String(x.data)));
     try{ await post(Object.assign(who(),{action:"delete_account"})); }catch(e){}
@@ -2654,7 +2673,7 @@ async function afterReady(){
     await waitModal(); await ensureXkey();
     await waitModal(); await checkTransfers();
     try{ updateImpact(); }catch(e){}
-    await waitModal(); await checkYear();
+    await waitModal(); await checkCloseOut();
     await waitModal(); await licCheck();
   }finally{ readyBusy=false; }
 }
@@ -2733,12 +2752,14 @@ async function openYear(old,err){
   if(moving.length) await ask("Sent",`${moving.length} child${moving.length===1?"":"ren"} sent. Your colleague will see them the next time they open Active Alphabet.`,[{t:"OK",v:0}]);
 }
 /* pack the children, lock the pack with a new key, and lock that key with the colleague's public lock */
-async function sendKids(email,kids){
+async function sendKids(email,kids,snapOnly){
   const pk=await sb.rpc("aa_transfer_pubkey",{p_email:email}); if(pk.error) throw pk.error;
   if(!pk.data) return "no_account";
   const pub=await crypto.subtle.importKey("jwk",pk.data,{name:"RSA-OAEP",hash:"SHA-256"},false,["encrypt"]);
   const ids=new Set(kids.map(k=>k.id));
-  const pack={v:1,students:kids.map(k=>({oldId:k.id,name:k.name,stage:k.stage,lang:k.lang,familyYes:!!k.familyYes})),
+  /* 7.1: at close-out, children move with their end-of-year snapshot only */
+  const pack=snapOnly?{v:2,students:kids.map(k=>({oldId:k.id,name:k.name,stage:k.stage,lang:k.lang,prev:k.prev||[]})),sessions:[],paused:[],obs:[],fam:{}}
+   :{v:1,students:kids.map(k=>({oldId:k.id,name:k.name,stage:k.stage,lang:k.lang,prev:k.prev||[]})),
     sessions:S.sessions.filter(x=>ids.has(x.sid)),paused:(S.paused||[]).filter(x=>ids.has(x.sid)),obs:(S.obs||[]).filter(x=>ids.has(x.sid)),
     fam:Object.fromEntries(Object.entries(S.famNotes||{}).filter(([k])=>ids.has(k.split("|")[0])))};
   const raw=rnd(32), e=await enc(await aesKey(raw),te.encode(JSON.stringify(pack)));
@@ -2749,7 +2770,7 @@ async function sendKids(email,kids){
 function mergeKids(pack){
   const map={}, now=new Date().toISOString(), taken=new Set(S.sessions.map(x=>x.id));
   pack.students.forEach(k=>{ const id=uid()+Math.random().toString(36).slice(2,4); map[k.oldId]=id;
-    S.students.push({id,name:k.name,num:S.nextNum++,stage:k.stage,lang:k.lang||"en",face:false,photoOk:false,familyYes:!!k.familyYes,addedAt:now}); });
+    S.students.push({id,name:k.name,num:S.nextNum++,stage:k.stage,lang:k.lang||"en",face:false,photoOk:false,addedAt:now,prev:Array.isArray(k.prev)?k.prev.slice(-3):[]}); });
   const fresh=x=>{ let i=x.id; while(taken.has(i)) i=i+"t"; taken.add(i); return i; };
   (pack.sessions||[]).forEach(x=>S.sessions.push(Object.assign({},x,{id:fresh(x),sid:map[x.sid]})));
   S.paused=S.paused||[]; (pack.paused||[]).forEach(x=>S.paused.push(Object.assign({},x,{id:fresh(x),sid:map[x.sid]})));
@@ -2762,7 +2783,7 @@ async function checkTransfers(){
   for(const t of list){
     const n=t.child_count, kids=`${n} child${n===1?"":"ren"}`;
     const r=await ask("Children waiting for you",`<p><b>${esc(t.from_label)}</b> wants to send you ${kids}.</p>
-      <p class="tiny">Their results come with them. Photos stay with the other classroom, so ask each family again before adding a photo.</p>`,
+      <p class="tiny">Their records come with them, including each child's end-of-year snapshot. Photos stay with the other classroom.</p>`,
       [{t:"Not now",v:0,ghost:true},{t:"Decline",v:2,ghost:true},{t:"Accept",v:1}]);
     if(!r.v) continue;
     try{
@@ -2815,7 +2836,7 @@ let curTab="setup";
 function tab(t){
   curTab=t;
   $$("nav button").forEach(b=>b.setAttribute("aria-current", String(b.dataset.tab===t)));
-  ["setup","assess","results","reports","video","resources","settings","student","family"].forEach(x=>$("#tab-"+x).classList.toggle("hide",x!==t));
+  ["setup","assess","results","reports","video","resources","stats","settings","student","family"].forEach(x=>$("#tab-"+x).classList.toggle("hide",x!==t));
   if(t!=="resources"){ ["#mpVideo","#lwVideo"].forEach(id=>{ const o=$(id); if(o&&!o.paused) o.pause(); }); }
   if(t==="resources"){ renderResources(); showKit(); }
   setTimeout(licCheck,400);
@@ -2824,6 +2845,7 @@ function tab(t){
   if(t==="results") renderResults();
   if(t==="reports") renderReports();
   if(t==="settings"){ showLastSync(); renderAcct(); }
+  if(t==="stats") renderStats();
   window.scrollTo(0,0);
 }
 function renderBanner(){ $("#sampleBanner").classList.toggle("hide",!S.sample); }
@@ -2832,11 +2854,18 @@ function renderBanner(){ $("#sampleBanner").classList.toggle("hide",!S.sample); 
 ["schoolName","className","city"].forEach(k=>{
   $("#"+k).oninput=e=>{S[k]=e.target.value;save();};
 });
+/* 7.1: changing schools. Children's records never go to a new school, so the class must be handed off or removed first. */
+let schoolOk=false;
+$("#schoolName").onfocus=async()=>{
+  if(schoolOk||!S.students.length) return;
+  $("#schoolName").blur();
+  const r=await ask("Changing schools?",`<p>If you're moving to a new school, center or program, your children's records can't come with you. First close out your class: move your children to a colleague or remove them on the Class tab. Then change your school here.</p>
+    <p class="tiny">Your stats and awards stay with you in My Stats.</p>`,[{t:"OK",v:0,ghost:true},{t:"Just fixing the name",v:1}]);
+  if(r.v){ schoolOk=true; setTimeout(()=>$("#schoolName").focus(),50); }
+};
 /* 6.3: one Teacher name again, the name students and families use (it goes on every family letter) */
 $("#teacherName").oninput=e=>{ S.teacherName=e.target.value; save(); };
 $("#state").onchange=e=>{S.state=e.target.value;save();};
-$("#shareBox").onchange=e=>{ S.share=e.target.checked; save(); showLastSync(); register(true);
-  if(S.share) pushToSheet(true).then(showLastSync); else removeShared(); };
 
 /* ============ sign up ============ */
 /* A permanent, unique classroom code the app makes for itself. Teachers never pick or type it. */
@@ -2915,7 +2944,7 @@ $("#pinGo").onclick=async()=>{
   if(!ok){ $("#pinErr").textContent="That code does not match. Check it, or send a new code."; return; }
   const v=pending;
   S.teacherName=v.name; S.teacherEmail=v.email; S.schoolName=v.school; S.className=v.cls;
-  S.city=v.city; S.state=v.state; S.share=$("#suShare").checked; S.emailVerified=true;
+  S.city=v.city; S.state=v.state; S.share=true; S.emailVerified=true;
   S.signedUpAt=new Date().toISOString(); S.registered=false;
   await save();
   $("#welcome").classList.remove("on"); $("#codeCard").classList.add("hide"); $("#signupCard").classList.remove("hide");
@@ -2950,8 +2979,6 @@ function who(){ return {key:APP_KEY,appVersion:APP_VERSION,schema:SCHEMA,code:S.
 function fillSetup(){
   if(S.teacherFirst!==undefined||S.teacherLast!==undefined){ delete S.teacherFirst; delete S.teacherLast; save(); }
   ["schoolName","className","teacherName","teacherEmail","city","state"].forEach(k=>$("#"+k).value=S[k]||"");
-  $("#shareBox").checked=!!(S.share&&!S.optedOut); $("#shareBox").disabled=!!S.optedOut;
-  $("#shareRow").style.opacity=S.optedOut?".5":"1";
   $("#codeShow").textContent=S.classCode||"";
   if($("#emailShow")) $("#emailShow").textContent=S.teacherEmail||"Not set yet";
   showLastBackup();
@@ -3040,7 +3067,7 @@ $("#addStudent").onclick=async()=>{
     if(!r.v) return;
   }
   const nid=uid();
-  S.students.push({id:nid,name:v,num:S.nextNum++,stage,lang,face:!!newPhoto,photoOk:!!newPhoto,familyYes:false,addedAt:new Date().toISOString()});
+  S.students.push({id:nid,name:v,num:S.nextNum++,stage,lang,face:!!newPhoto,photoOk:!!newPhoto,addedAt:new Date().toISOString()});
   if(newPhoto){ PHOTOS[nid]=newPhoto; if(!savePhotos()){ delete PHOTOS[nid]; S.students[S.students.length-1].face=false; } }
   newPhoto=null; showNewPhoto();
   $("#newLang").value="en"; $("#newFirst").value=""; $("#newInit").value="";
@@ -3050,7 +3077,7 @@ $("#addStudent").onclick=async()=>{
 $("#newInit").onkeydown=e=>{ if(e.key==="Enter") $("#addStudent").click(); };
 /* 6.1: the Add student pop-up */
 const ADD_NOTE="";
-$("#openAdd").onclick=()=>{ $("#addSheet").classList.remove("hide"); $("#nameNote").textContent=ADD_NOTE; $("#nameNote").style.color=""; setTimeout(()=>$("#newFirst").focus(),50); };
+$("#openAdd").onclick=async()=>{ if(await closeGate()) return; $("#addSheet").classList.remove("hide"); $("#nameNote").textContent=ADD_NOTE; $("#nameNote").style.color=""; setTimeout(()=>$("#newFirst").focus(),50); };
 $("#addDone").onclick=()=>{ $("#addSheet").classList.add("hide"); newPhoto=null; showNewPhoto(); $("#newFirst").value=""; $("#newInit").value=""; $("#newStage").value=""; $("#newLang").value="en"; };
 $("#addSheet").addEventListener("click",e=>{ if(e.target.id==="addSheet") $("#addDone").click(); });
 $("#newFirst").onkeydown=e=>{ if(e.key==="Enter") $("#newInit").focus(); };
@@ -3058,13 +3085,14 @@ $("#newFirst").onkeydown=e=>{ if(e.key==="Enter") $("#newInit").focus(); };
 function renderStudents(){
   sortStudents(); if($("#sortBy")) $("#sortBy").value=S.sortBy||"last";
   const el=$("#studentList");
-  if(!S.students.length){ el.innerHTML='<p class="muted">No students yet. Tap Add student to add your first one.</p>'; return; }
+  if(!S.students.length){ el.innerHTML='<p class="muted">No students yet. Tap Add student to add your first one.</p>'; try{ renderCloseCard(); }catch(e){} return; }
   el.innerHTML=S.students.map(s=>{
     return `<div class="stu" data-row="${s.id}">${hasPhoto(s.id)?`<div class="avatar photo" style="background-image:url(${PHOTOS[s.id]})">${esc(initials(s.name))}</div>`:`<div class="avatar">${esc(initials(s.name))}</div>`}
       <div class="name"><button class="linkname" data-stage="${s.id}">${esc(s.name)}</button></div>
       </div>`;
   }).join("");
   el.querySelectorAll("[data-row]").forEach(b=>b.onclick=()=>openChild(b.dataset.row));
+  try{ renderCloseCard(); }catch(e){}
 }
 
 /* 5.11: one page per child on Class setup: years until kindergarten, family language, the family permission letter
@@ -3089,28 +3117,22 @@ async function openChild(sid){
       if(ra) $("#stRmNo").onclick=()=>{ ra.classList.add("hide"); rm.classList.remove("hide"); };
       if(ra) $("#stRmYes").onclick=()=>{ pend=null; removed=true; pendLetter=null;   /* the letter picture always goes with its photo */
         if(PHOTOS[s.id]||PHOTOS[LETTER(s.id)]){ delete PHOTOS[s.id]; delete PHOTOS[LETTER(s.id)]; savePhotos(); } s.face=false; save(); renderStudents();
-        $("#stFaceWrap").innerHTML=faceBox(); $("#stLetterWrap").innerHTML=letterBox(); wire(); };
-      $("#stLetter").onclick=()=>pickLetter(d=>{ pendLetter=d; $("#stLetterWrap").innerHTML=letterBox(); wire(); });
-      const lr=$("#stLetterRm"); if(lr) lr.onclick=()=>{ pendLetter=null; $("#stLetterWrap").innerHTML=letterBox(); wire(); };
-      $("#stPermPrint").onclick=()=>{ after="perm"; $$("#mBtns button")[1].click(); };
+        $("#stFaceWrap").innerHTML=faceBox(); wire(); };
       $("#stRemove").onclick=()=>{ after="remove"; $$("#mBtns button")[0].click(); }; };
     setTimeout(wire,0);
     const r=await ask(s.name,`<label for="stStage">Years until kindergarten</label><select id="stStage">${Object.keys(STAGE).map(k=>`<option value="${k}" ${s.stage===k?"selected":""}>${STAGE[k]}</option>`).join("")}</select>
       <label for="stLang">Family language</label><select id="stLang">${Object.keys(LANGS).map(k=>`<option value="${k}" ${(s.lang||"en")===k?"selected":""}>${LANGS[k]}</option>`).join("")}</select>
-      ${sec("Family permission letter")}
-      <button type="button" class="btn ghost small" id="stPermPrint">Print ${first}'s family permission letter</button>
-      <div id="stLetterWrap" style="margin-top:10px">${letterBox()}</div>
       ${sec(first+"'s photo")}
       <div id="stFaceWrap">${faceBox()}</div>
       <p class="tiny">Only add a photo if the family said yes to photos. It stays on this device.</p>
       ${sec("Remove from class")}
-      <p class="tiny">Takes ${first} off your class list and deletes ${first}'s results, photo and letter picture. This cannot be undone.</p>
+      <p class="tiny">Takes ${first} off your class list and deletes ${first}'s results and photo. This cannot be undone.</p>
       <button type="button" class="btn danger small" id="stRemove" style="margin-top:6px">Remove ${first}</button>`,
       [{t:"Cancel",v:0,ghost:true},{t:"Save",v:1}]);
     if(after==="remove"){ removeChild(s.id); return; }
     if(!r.v) return; s.stage=r.form.stStage; s.lang=r.form.stLang||"en";
     const faceOn=!!($("#stFace")&&$("#stFace").checked);
-    s.photoOk=!!pend;   /* the photo step asked the teacher to confirm the family said yes */
+    s.photoOk=!!pend;   /* 7.0: the teacher confirmed once, the first time they added a photo, that families said it's okay */
     s.face=!!(pend&&faceOn);
     const prev=PHOTOS[s.id], prevL=PHOTOS[LETTER(s.id)];
     if(removed||!pend) delete PHOTOS[s.id]; else PHOTOS[s.id]=pend;
@@ -3330,6 +3352,7 @@ function paint(){
 }
 
 function start(sid,m,c,replaceId,resume){
+  if(needClose()){ closeGate(); return; }   /* 7.1: close out last year first */
   const prior=resume?{...resume.marks}:{};
   const order=(c==="F"?S.letters.filter(L=>ALPHA.includes(L)):ALPHA.slice()).filter(L=>!(L in prior));
   if(!order.length) return;
@@ -3908,7 +3931,10 @@ function renderReports(){ fillModeSelects(); renderGrow(); renderHeat(); renderP
    Raw counts per school year, so years add up fairly. Saved in S.impact. Numbers only, no names. */
 function impactOf(sy){
   const ss=S.sessions.filter(x=>syOf(x.ts)===sy);
-  const o={sy,kids:new Set(ss.filter(x=>x.cp!=="F").map(x=>x.sid)).size,benchParts:ss.filter(x=>x.cp!=="F").length,formative:ss.filter(x=>x.cp==="F").length,lic:null,mode:{}};
+  const o={sy,kids:new Set(ss.filter(x=>x.cp!=="F").map(x=>x.sid)).size,benchParts:ss.filter(x=>x.cp!=="F").length,formative:ss.filter(x=>x.cp==="F").length,lic:null,mode:{},secsSum:0,secsN:0};
+  /* 7.1: minutes per child for a benchmark: one sitting is all three parts, when every part was timed */
+  new Set(ss.map(x=>x.sid)).forEach(sid=>["BOY","MOY","EOY"].forEach(c=>{ const p=ss.filter(x=>x.sid===sid&&x.cp===c);
+    if(p.length===3&&p.every(x=>x.secs>0)){ o.secsSum+=p.reduce((a,x)=>a+x.secs,0); o.secsN++; } }));
   MODEKEYS.forEach(m=>{ const z={bothN:0,boyS:0,eoyS:0,eoyN:0,n20:0,n26:0,lowN:0,lowG:0};
     new Set(ss.map(x=>x.sid)).forEach(sid=>{
       const b=ss.find(x=>x.sid===sid&&x.mode===m&&x.cp==="BOY"), e=ss.find(x=>x.sid===sid&&x.mode===m&&x.cp==="EOY");
@@ -3935,6 +3961,8 @@ function updateImpact(){
     else n.lic=old&&old.lic!=null?old.lic:null;
     /* a past year keeps its saved numbers once its children are gone */
     if(y!==now&&old&&old.kids>n.kids) return;
+    /* 7.1: a closed-out year keeps the numbers saved when it was closed out */
+    if(old&&(S.closedYears||[]).includes(y)) return;
     S.impact[y]=n; });
   if(JSON.stringify(S.impact)!==before){ save(); return true; } return false;
 }
@@ -4383,12 +4411,12 @@ function showPerm(kids,ret){
   $("#famPages").innerHTML=kids.length?kids.map(permPage).join(""):`<div class="card"><p class="muted">Add children on the Class tab first.</p></div>`;
   tab("family");
 }
-$("#permGo").onclick=()=>{
+if($("#permGo")) $("#permGo").onclick=()=>{
   const v=$("#permWho").value; showPerm(v==="all"?S.students:S.students.filter(x=>x.id===v),"reports");
 };
 
 $("#famAll").onclick=()=>showFamily(S.students.map(s=>s.id),$("#famCp").value,"reports");
-$("#famBack").onclick=()=>{ if(famReturn==="student") openStudent(spId); else if(["setup","results","reports","assess","settings"].includes(famReturn)) tab(famReturn); else tab("reports"); };
+$("#famBack").onclick=()=>{ if(famReturn==="student") openStudent(spId); else if(["setup","results","reports","assess","settings","stats"].includes(famReturn)) tab(famReturn); else tab("reports"); };
 $("#famPrint").onclick=async()=>{
   /* 6.2: a home screen app on an iPad ignores the print command, so there the app makes a PDF and opens the Share menu
      (Print, Save to Files, Mail). In a regular browser the print window opens as before. */
@@ -4749,14 +4777,14 @@ const yearSessions=()=>S.sessions.filter(x=>syOf(x.ts)===thisSY());
 /* ============ sending to Active Alphabet ============ */
 /* one row per assessment; marks holds every letter: 1 got it, 0 not yet, . not shown */
 /* Children's names and teacher notes never leave this device. Each child is sent as a number only, like Child 07. */
-const SESSION_HEADERS=["Research number","Student ID","Child","School year","Checkpoint","Assessment","Date","Timestamp",
+const SESSION_HEADERS=["Classroom code","Student ID","Child","School year","Checkpoint","Assessment","Date","Timestamp",
   "Known","Out of","Stopped early","Animation","Entered by hand","Seconds assessing","Marks A-Z"];
 const ANIM_LABEL={every:"Every time",correct:"Only when correct",never:"Never",true:"Every time",false:"Never"};
 const marksStr=x=>ALPHA.map(L=>x.marks[L]===1?"1":x.marks[L]===0?"0":".").join("");
 function sessionRows(){
   return yearSessions().slice().sort((a,b)=>a.ts.localeCompare(b.ts)).map(x=>{
     const stu=S.students.find(s=>s.id===x.sid); if(!stu) return null;
-    return [researchId(),stu.id,childNo(stu),syOf(x.ts),cpName(x.cp),MODES[x.mode].t,x.ts.slice(0,10),x.ts,
+    return [S.classCode,stu.id,childNo(stu),syOf(x.ts),cpName(x.cp),MODES[x.mode].t,x.ts.slice(0,10),x.ts,
       x.correct,x.total,x.stopped?"Yes":"No",x.manual?"":(ANIM_LABEL[x.anim]||""),x.manual?"Yes":"No",x.secs||"",marksStr(x)];
   }).filter(Boolean);
 }
@@ -4771,11 +4799,16 @@ function summary(){
     MODEKEYS.forEach(m=>{ o[m]={}; BENCH.forEach(c=>{const b=yBench(s.id,m,c); if(b) o[m][c]=[b.correct,b.stopped?1:0];});
       const lb=["EOY","MOY","BOY"].map(c=>yBench(s.id,m,c)).find(Boolean);
       if(lb) o.grid[m]={cp:lb.cp,s:marksStr(lb)}; });
+    /* 7.1: last year's end-of-year numbers for a returning child (no names), to compare with this year's BOY */
+    const lp=(s.prev||[]).slice(-1)[0];
+    if(lp&&lp.sy===prevSY(thisSY())){ o.prevEoy={}; MODEKEYS.forEach(m=>{ const x=lp.modes&&lp.modes[m]; if(x&&x.cp==="EOY") o.prevEoy[m]=x.n; }); }
     return o;
   });
   const ys=yearSessions();
   return {children,formative:ys.filter(x=>x.cp==="F").length,stopped:ys.filter(x=>x.cp!=="F"&&x.stopped).length,
-    videoPlays:(S.cvPlays||{})[thisSY()]||0};
+    videoPlays:(S.cvPlays||{})[thisSY()]||0,
+    /* 7.0: children on the class list who earned a Reader's License this school year */
+    licenses:S.students.filter(x=>S.licDone&&S.licDone[x.id]&&syOf(S.licDone[x.id])===thisSY()).length};
 }
 async function post(p){
   const r=await fetch(SCRIPT_URL,{method:"POST",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(p)});
@@ -4788,8 +4821,7 @@ function showLastSync(){
   const el=$("#lastSync"); if(!el) return;
   if(S.sample){ el.textContent="Preview data is loaded, so nothing is being sent."; return; }
   if(S.optedOut){ el.textContent="You deleted your shared data. This device no longer sends results to Active Alphabet."; return; }
-  if(!S.share){ el.textContent="Sharing is off. Your results stay only on this device."; return; }
-  if(!S.lastSync){ el.textContent="Sharing is on. Results send after each assessment, with no children's names."; return; }
+  if(!S.lastSync){ el.textContent="Results send to Active Alphabet after each assessment, with no children's names."; return; }
   const mins=Math.round((Date.now()-new Date(S.lastSync).getTime())/60000);
   el.textContent="Last saved to Active Alphabet: "+(mins<1?"just now":mins===1?"1 minute ago":mins<60?mins+" minutes ago":new Date(S.lastSync).toLocaleString());
 }
@@ -4803,21 +4835,24 @@ function researchId(){
   return S.researchId;
 }
 async function removeShared(){
-  if(!S.researchId||!SCRIPT_URL.startsWith("https://")) return true;
-  try{ const r=await post({key:APP_KEY,action:"remove_results",research:S.researchId}); return !!(r&&r.ok); }catch(e){ return false; }
+  if(!S.classCode||!SCRIPT_URL.startsWith("https://")) return true;
+  /* 7.0: results are filed under the classroom code; an older class may also have some under its research number */
+  try{ const r=await post({key:APP_KEY,action:"remove_results",code:S.classCode});
+    if(S.researchId) try{ await post({key:APP_KEY,action:"remove_results",research:S.researchId}); }catch(e){}
+    return !!(r&&r.ok); }catch(e){ return false; }
 }
 async function pushToSheet(quiet){
   if(S.sample){ if(!quiet) dataMsg("Preview data is loaded, so sending is turned off."); return; }
   if(!S.classCode){ if(!quiet) dataMsg("Please finish signing up first."); return; }
   if(!SCRIPT_URL.startsWith("https://")){ if(!quiet) dataMsg("This draft is not connected to Active Alphabet yet."); return; }
   if(S.optedOut){ if(!quiet) dataMsg("This device no longer sends results, because you deleted your shared data."); return; }
-  if(!S.share){ register(true); if(!quiet) dataMsg("Sharing is off, so no results were sent."); return; }
+  /* 7.1: once this school year is closed out, nothing more is sent until the new school year */
+  if(isClosed(thisSY())){ if(!quiet) dataMsg("This school year is closed out, so there's nothing more to send until the new school year."); return; }
   if(!quiet) dataMsg("Sending...");
   try{
     register();
     /* moving from 5.7.1: clear what this class once sent under its classroom code, in its own message */
-    if(!S.ridMoved){ const c=await post({key:APP_KEY,action:"clear_old_results",code:S.classCode}); if(c&&c.ok){ S.ridMoved=true; save(); } }
-    const r=await post({key:APP_KEY,appVersion:APP_VERSION,action:"results",research:researchId(),state:S.state||"",
+    const r=await post({key:APP_KEY,appVersion:APP_VERSION,action:"results",code:S.classCode,state:S.state||"",
       schoolYear:thisSY(),headers:SESSION_HEADERS,sessions:sessionRows(),summary:summary()});
     if(r&&r.ok){ S.lastSync=new Date().toISOString(); save(); showLastSync(); }
     if(!quiet) dataMsg(r&&r.ok?"Sent. Everything is up to date.":"It did not go through this time. Your results are still saved on this device.");
@@ -4921,19 +4956,18 @@ function buildWorkbook(){
   } else imp.push([{v:"Your numbers show up here after your first benchmark.",s:8}]);
   const enc=new TextEncoder(), X=s=>enc.encode(s);
   const files=[
-    {name:"[Content_Types].xml",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet3.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`)},
+    {name:"[Content_Types].xml",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/><Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/worksheets/sheet2.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/></Types>`)},
     {name:"_rels/.rels",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/></Relationships>`)},
-    {name:"xl/workbook.xml",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Summary" sheetId="1" r:id="rId1"/><sheet name="Letter Grid" sheetId="2" r:id="rId2"/><sheet name="Impact over the years" sheetId="3" r:id="rId4"/></sheets></workbook>`)},
-    {name:"xl/_rels/workbook.xml.rels",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet3.xml"/></Relationships>`)},
+    {name:"xl/workbook.xml",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"><sheets><sheet name="Summary" sheetId="1" r:id="rId1"/><sheet name="Letter Grid" sheetId="2" r:id="rId2"/></sheets></workbook>`)},
+    {name:"xl/_rels/workbook.xml.rels",data:X(`<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/><Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet2.xml"/><Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/></Relationships>`)},
     {name:"xl/styles.xml",data:X(STYLES)},
     {name:"xl/worksheets/sheet1.xml",data:X(sheetXml(sum,{widths:[18,...Array(12).fill(9)],merges,freeze:4}))},
-    {name:"xl/worksheets/sheet2.xml",data:X(sheetXml(grid,{widths:[18,11,...Array(26).fill(4.2),8]}))},
-    {name:"xl/worksheets/sheet3.xml",data:X(sheetXml(imp,{widths:[58,...Array(icols.length||1).fill(16)]}))}
+    {name:"xl/worksheets/sheet2.xml",data:X(sheetXml(grid,{widths:[18,11,...Array(26).fill(4.2),8]}))}
   ];
   return zip(files);
 }
 /* ---- delete my classroom's data from Active Alphabet ---- */
-$("#delGo").onclick=async()=>{
+if($("#delGo")) $("#delGo").onclick=async()=>{
   $("#delMsg").textContent="";
   if(!await askDelete("Delete your shared data?","<p>This removes your classroom's results from Active Alphabet's records only. Everything on this device stays. This device will never send results again.</p>","Delete my data")) return;
   S.optedOut=true; S.share=false; S.pendingDelete=true; await save(); fillSetup(); showLastSync();
@@ -5017,7 +5051,9 @@ async function checkSurvey(preview){
 }
 
 /* ---- privacy policy, built into the app ---- */
-const POLICY_HTML=`<h1>Active Alphabet Classroom App Privacy Policy</h1><p>Version 5 · Effective Date: December 1, 2026</p><h2>Summary of the Privacy Policy</h2><p>This summary highlights the key terms of this Privacy Policy. It does not replace the full policy that follows.</p><ul><li>Active Alphabet can never read children's names. Names are scrambled on the User's Device before anything is saved to the User's account.</li><li>Children's photos stay on the User's Device. They are never sent to Active Alphabet. The App does not scan, measure or recognize faces.</li><li>Results are shared with Active Alphabet for research only if the User checks the sharing box. Shared results are de-identified: they contain no names and are never connected to the User, the school, the center or the classroom.</li><li>We do not sell, rent, or trade any information, including the personal information of Users.</li><li>We do not display advertising or track users across other websites or applications.</li><li>We may share summary results in presentations, research and on our website. They never identify a child, User, school, center or classroom.</li><li>We send news about Active Alphabet only to Users who ask for it, and every email has an unsubscribe link.</li><li>A User may turn sharing off, delete the classroom's shared data, or delete the account at any time on the Settings tab.</li></ul><h2>1. Introduction and Scope</h2><p>This Privacy Policy describes how Standup to Play LLC ("Active Alphabet," "we," "us," or "our") collects, uses, stores, and protects information in connection with the Active Alphabet Classroom App (the "App"). The App helps adults see which letters and letter sounds children know and follow each child's growth over the school year.</p><p>In this policy:</p><ul><li>"User" means a teacher who joins and uses the App. This includes teachers at a school or center and home child care providers.</li><li>"Device" means the tablet, computer, or other device on which the App is used.</li><li>"De-identified Results" means assessment results that contain no names and are never connected to any User, school, center or classroom.</li></ul><p>This policy works together with our Terms of Use. When joining, the User checks a box to confirm having read this Privacy Policy.</p><h2>2. Intended Users</h2><p>The App is for adults 18 and older. Children do not create accounts, enter information, or operate the App independently. Each assessment is conducted by a User, who records the child's responses.</p><p>A User confirms, when joining, that their school, center or program has approved their use of the App, or that they run their own program. The User's classroom, school or center decides to use the App. Users send the Active Alphabet family permission letter home to each child's family. The letter explains the App and asks only for the family's permission to use the child's photo in the App.</p><h2>3. Purchases and Access Codes</h2><p>The App is purchased on our website, activealphabet.com, through Wix, which runs our online store. Payments are processed by Stripe through our Wix store. We never see or store the buyer's full card number. Through Wix, we receive the buyer's name, email address, order number, and what was purchased.</p><p>Each purchase creates a one-time access code, which is emailed to the buyer. Our account service, Supabase, keeps a record of each code, the order it came from, the buyer's email address, and the account that used it. This record lets us confirm access, end access after a refund, and end access when the access period is over.</p><h2>4. User Accounts</h2><p>Users sign in with an email and password. We confirm the email with a 6-digit code. Accounts are run by Supabase, a secure database service.</p><p>The User's class is saved to the account so it can be used on more than one Device. Children's names are scrambled on the User's Device before anything is saved to the account. When the User signs in, the App unscrambles them automatically, so the User sees the names as usual. Active Alphabet can never read them. The notes a User writes about a child are scrambled the same way.</p><p>When a User signs out, the class is removed from that Device and comes back when the User signs in again.</p><h3>Recovery code</h3><p>When a User joins, the App gives the User a recovery code, and the User is asked to keep it somewhere safe. If the User forgets the password, it can be reset with a code sent by email, and the recovery code brings back the children's names. Without it, names show as Child 01, Child 02 and so on, and the User types them in again. Active Alphabet cannot see or recover this code.</p><h3>Record of agreement</h3><p>When a User agrees to the Terms of Use and confirms having read this Privacy Policy, Supabase saves a record of which versions the User agreed to and the date and time. This record cannot be changed from the App.</p><h2>5. Children's Photos</h2><p>Users can add a child's photo so the child's face appears on the Active Alphabet characters. A photo is only saved after the User confirms that the child's family has given permission on the family permission letter. Photos are used only inside the App, for learning, and are never shared or posted.</p><p>Photos stay on the User's Device. They are never sent to Active Alphabet, never stored in our database or spreadsheets, and never included in backup files. When a User signs out, the photos stay locked on that Device and come back when the User signs in again.</p><p>The User may take a picture of the family's signed permission letter in the App. That picture is saved on the Device with the child's photo, is never sent to Active Alphabet, and is removed whenever the photo is removed.</p><p>Users can turn the face feature on or off for any child at any time. Users can delete a child's photo at any time, and it is removed from the Device right away. When children move to another classroom, their photos stay behind.</p><p>The App does not scan, measure or recognize faces. It crops the photo to the oval the User lines the face up with, and places it on the character using positions built into the animations.</p><h2>6. What Active Alphabet Receives</h2><p><b>6.1 Sign-up Information.</b> Every User's App sends us the following, so we know who is using the App. This information is kept apart from De-identified Results and is never connected to them.</p><ul><li>The User's name and email address</li><li>The name of the school, center or program, and the classroom, when the User enters them</li><li>The city and state (or that the User is outside the United States)</li><li>The User's choices about sharing results and receiving updates</li><li>Which versions of the Terms of Use and this Privacy Policy the User agreed to, and when</li><li>The App version</li></ul><p><b>6.2 De-identified Results.</b> If the User checks the sharing box, the classroom's results are also sent to help show how well the program works and for educational research. This includes:</p><ul><li>A number assigned to each child (for example, Child 07) in place of the child's name</li><li>Each child's letter results for each assessment, with the date</li><li>The type of assessment (uppercase, lowercase, or letter sound) and the checkpoint (beginning of year, middle of year, end of year, or formative check-in)</li><li>Each child's age group, such as one year until kindergarten</li><li>How long each assessment took</li><li>Whether the assessment ended early, and the animation setting in use</li><li>How many times the class video was played</li><li>The state</li></ul><p>De-identified Results are stored under a random research number. They are never stored with the User's name, email address, school, center, classroom or classroom code, and we cannot tell which User or classroom they came from. Children's names are never sent to Active Alphabet.</p><p><b>6.3 Feedback.</b> If the User submits feedback or answers a check-in survey through the App, we receive the answers, the App version, and the type of Device used, along with the User's sign-up information so we can reply.</p><p><b>6.4 Updates by Email.</b> If the User checks "Keep me updated about Active Alphabet" when joining, we may send news and offers about Active Alphabet to the User's email address. This box is unchecked unless the User checks it. Every update email includes an unsubscribe link and our mailing address. The User may unsubscribe at any time, and we honor each request within 10 business days.</p><p><b>6.5 Classroom Kit Reservations.</b> If the User taps "Reserve your classroom kit now" on the Resources tab and confirms, the App sends us the User's name, email address, school, classroom, city, state and classroom code, so we can let the User know when classroom kits are ready. Nothing is charged. This information is kept with the User's Sign-up Information and is deleted when the User deletes the account.</p><h2>7. Information We Do Not Collect</h2><p>We do not collect:</p><ul><li>Children's names, first or last, in a form we can read</li><li>Children's photos, video, or audio recordings</li><li>Measurements or scans of anyone's face</li><li>Children's dates of birth or exact ages (we receive only the age group the User selects)</li><li>The location of the Device (we collect only the city and state the User enters)</li><li>The notes and observations a User writes about a child, in a form we can read</li></ul><p>The App asks for each child's first name and last initial only, up to three letters, so full last names are not stored anywhere, including on the User's Device.</p><h2>8. Where Information Is Stored</h2><p><b>8.1 On the Device.</b> Children's names, notes, photos, permission letter pictures, and assessment results are stored within the App on the User's Device. Photos and permission letter pictures are stored only on the Device. Removing the App from the home screen or clearing the browser's website data erases the information on that Device. The class comes back when the User signs in again, but photos do not, because they are never saved anywhere else.</p><p><b>8.2 In the User's Account.</b> The class is saved to the User's account with Supabase, with children's names and notes scrambled as described in Section 4. Each account is locked so that a User can see only that User's own class.</p><p><b>8.3 With Active Alphabet.</b> Sign-up Information and De-identified Results are stored in a Google Sheets spreadsheet maintained in Active Alphabet's Google account, in separate places that are never connected. Access to this account is protected by two-step verification and is limited to Active Alphabet personnel who require it. When we show results by state, we show a state only once at least five classrooms there are sharing results.</p><p><b>8.4 With Wix.</b> Purchase information is kept by Wix, which runs our online store.</p><p><b>8.5 Other Services.</b> The App does not use cookies, advertising tools, or tracking technologies, and it does not load fonts or other content from third-party services. The App connects only to Supabase (for accounts and access codes) and Google (for our spreadsheet and for sending email codes). The App's files are hosted on GitHub Pages, which, like any website host, may record standard technical information such as the address of the Device that opens the App.</p><h2>9. How We Use Information</h2><p>We use the information we collect to:</p><ul><li>Operate the App and maintain classroom records, including sending codes by email to confirm the User's email address and to reset a password</li><li>Handle purchases, access codes and refunds</li><li>Evaluate the effectiveness of the Active Alphabet program</li><li>Conduct educational research on early literacy</li><li>Respond to questions and feedback, and notify Users of material changes to the App, the Terms of Use, or this policy</li><li>Send news and offers, only to Users who asked for them</li></ul><p>We use only De-identified Results, shared through the sharing box, for program evaluation and research. We do not use the class saved in a User's account for research.</p><p>We do not share or publish the results of any individual child or any individual classroom. We may share summary results in presentations, research and on our website, such as the average number of letter sounds children learned. These summaries report only combined totals and averages across many classrooms, never identify a child, User, school, center or classroom, and we will not try to re-identify them.</p><h2>10. How We Share Information</h2><p>We do not sell, rent, or trade User information, children's information, or assessment results to any third party, and we do not share information with advertisers.</p><p>We disclose information only:</p><ul><li>To Supabase, which runs User accounts and access codes on our behalf</li><li>To Google, which hosts our spreadsheets and sends our email codes on our behalf</li><li>To Wix, which runs our online store and sends access code emails on our behalf</li><li>When required by law</li><li>To a successor organization in the event of a merger or acquisition, which will be bound by the commitments in this Privacy Policy</li></ul><h2>11. Children's Records and Families' Rights</h2><p>Children's information belongs to the school, center or family, not to Active Alphabet.</p><p>Only the User, and the User's school or center, can read the children's names. If a family asks to see or correct a child's records, the request is handled through the User or the school or center. We will help when asked.</p><p>A User may send children's records to a colleague at the same school or center with the App's transfer feature. The records stay scrambled while they move, and the receiving colleague must accept them. Photos and permission letter pictures are never transferred.</p><h2>12. User Choices</h2><p><b>12.1 Sharing Results.</b> When joining, the User chooses whether to share De-identified Results. This option is turned off by default, and no results are shared unless the User selects it. The User may turn sharing on or off at any time on the Settings tab, unless the classroom's data has been deleted as described in Section 12.2.</p><p><b>12.2 Deleting the Classroom's Data.</b> The User may delete the classroom's data from Active Alphabet's records at any time on the Settings tab. This removes the classroom's De-identified Results from our current records only; all information on the Device and in the User's account remains. Once the data is deleted, the App will no longer send results from that Device.</p><p><b>12.3 Information on the Device.</b> The User keeps full control of the information on the Device. The User may download a spreadsheet, create a backup, delete a child's photo, or clear all data at any time.</p><p><b>12.4 Deleting the Account.</b> The User may delete the account at any time with the "Delete my account" button on the Settings tab. This deletes the account, the class saved in it, and the User's Sign-up Information. When a User deletes the account, we keep De-identified Results that cannot be linked back to the User or any child. To remove them as well, the User should first use "Delete my classroom's data."</p><p><b>12.5 Updates by Email.</b> The User may unsubscribe from update emails at any time with the link in any update email. We honor each request within 10 business days.</p><h2>13. Data Retention</h2><p>We keep information only as long as it is needed for the purposes in this policy. Our full Data Retention Policy explains why each kind of information is collected and kept, and it is reviewed each August.</p><ul><li><b>Children's names, notes and results in the User's account</b> are kept while the account is open and access is active. Each August, the App asks the User to download the past year's records and clear the children who have left. If they are not cleared by September 30, the App clears them automatically, after several reminders.</li><li><b>When access ends,</b> because of a refund or the end of the access period, the class saved in the account is kept for 30 days so the User can download it, and is then deleted.</li><li><b>When the User deletes the account,</b> the account, the saved class and the Sign-up Information are deleted.</li><li><b>Sign-up Information</b> for a User who never deletes the account is deleted two years after access ends.</li><li><b>Feedback and check-in answers</b> are deleted two years after we receive them.</li><li><b>Photos and permission letter pictures</b> stay only on the Device and are removed when the User removes them or clears the child.</li><li><b>De-identified Results</b> are kept for research. Each August 1, we move the prior school year's results into a separate archive and begin the new school year with a clear record.</li><li><b>Purchase and access code records</b> are kept for seven years after the purchase, for accounting and taxes.</li><li><b>Records of agreement</b> to the Terms of Use and this policy are kept while the account is open and for three years after it is closed.</li><li><b>Backups.</b> Deleted information may stay in our service providers' secure backups for up to 30 days before it is erased.</li></ul><h2>14. Schools and Districts</h2><p>We recognize that schools and districts are subject to their own privacy requirements, including the Family Educational Rights and Privacy Act (FERPA), the Children's Online Privacy Protection Act (COPPA), the Illinois Student Online Personal Protection Act (SOPPA), and the student privacy laws of other states. For schools, Active Alphabet acts as a "school official" under FERPA. We use children's information only to provide the App, for the school's purposes and under the school's direction.</p><p>A school or district that requires a signed data privacy agreement may contact us. For Illinois schools, we will sign the Illinois National Data Privacy Agreement (IL-NDPA) from the Student Data Privacy Consortium. For schools in other states, we will sign that state's standard student data privacy agreement when a school asks.</p><h2>15. Users Outside the United States</h2><p>The App may be used outside the United States. Active Alphabet is based in the United States. By using the App, Users outside the United States understand that their information is transferred to, stored and processed in the United States, where privacy laws may differ from those where they live. Users outside the United States who have questions about their rights under local law may contact us.</p><h2>16. Data Security and Breach Notification</h2><p>We take reasonable measures to protect the information we hold. Children's names and notes are scrambled on the User's Device before they are saved, each account is locked to its own User, and our accounts are protected by two-step verification. If we learn that information in our possession has been accessed or acquired without authorization, we will notify affected Users, and their schools or centers when we know them, as promptly as possible and no later than 30 calendar days after we determine that a breach occurred. We will tell them what happened, what information was involved, and what we are doing about it, and we will make any additional notifications required by law.</p><h2>17. Changes to This Policy</h2><p>We may update this Privacy Policy from time to time. When we do, we will revise the Effective Date above. If we make material changes, we will notify Users within the App or by email at least 30 days before the changes take effect.</p><h2>18. Contact Information</h2><p>Questions or requests regarding this Privacy Policy may be directed to:</p><p>Standup to Play LLC (Active Alphabet)</p><p>10244 South Longwood Drive, Chicago, Illinois 60643</p><p>Email: patrick@activealphabet.com</p>`;
+const POLICY_HTML=`<h1>Active Alphabet Classroom App Privacy Policy</h1><p>Version 7 · Effective Date: December 1, 2026</p><h2>Summary of the Privacy Policy</h2><p>This summary highlights the key terms of this Privacy Policy. It does not replace the full policy that follows.</p><ul><li>Active Alphabet can never read children's names. Names are scrambled on the User's Device before anything is saved to the User's account.</li><li>Children's photos stay on the User's Device. They are never sent to Active Alphabet. The App does not scan, measure or recognize faces.</li><li>Every classroom's results are sent to Active Alphabet. Each child appears only as a number, such as Child 07, never by name. The results are sent with the classroom's name and the User's name and email, so we can see how each classroom is doing and reach out to the User.</li><li>We do not sell, rent, or trade any information, including the personal information of Users.</li><li>We do not display advertising or track users across other websites or applications.</li><li>We may share summary results in presentations, research and on our website. They never identify a child, User, school, center or classroom.</li><li>We send news about Active Alphabet only to Users who ask for it, and every email has an unsubscribe link.</li><li>At the end of each school year, the User closes out the class, and every child's details are erased. A User may leave Active Alphabet at any time on the Settings tab.</li><li>We keep only combined numbers after a class is closed out or a User leaves. They never identify a child, User or classroom, and we use them for program evaluation and improvement.</li></ul><h2>1. Introduction and Scope</h2><p>This Privacy Policy describes how Standup to Play LLC ("Active Alphabet," "we," "us," or "our") collects, uses, stores, and protects information in connection with the Active Alphabet Classroom App (the "App"). The App helps adults see which letters and letter sounds children know and follow each child's growth over the school year.</p><p>In this policy:</p><ul><li>"User" means a teacher who joins and uses the App. This includes teachers at a school or center and home child care providers.</li><li>"Device" means the tablet, computer, or other device on which the App is used.</li><li>"Classroom Results" means assessment results in which each child appears only as a number, such as Child 07, never by name. Classroom Results are connected to the User's classroom.</li></ul><p>This policy works together with our Terms of Use. When joining, the User checks a box to confirm having read this Privacy Policy.</p><h2>2. Intended Users</h2><p>The App is for adults 18 and older. Children do not create accounts, enter information, or operate the App independently. Each assessment is conducted by a User, who records the child's responses.</p><p>By agreeing to the Terms of Use, a User confirms that their school, center or program gave permission to use the App and allows children's information to be used in the App to support their learning. A home child care provider asks the families of the children in their care for permission. The school, center or program decides how families are told. A User adds a child's photo only when the child's family has said it's okay, for classroom use only.</p><h2>3. Purchases and Access Codes</h2><p>The App is purchased on our website, activealphabet.com, through Wix, which runs our online store. Payments are processed by Stripe through our Wix store. We never see or store the buyer's full card number. Through Wix, we receive the buyer's name, email address, order number, and what was purchased.</p><p>Each purchase creates a one-time access code, which is emailed to the buyer. Our account service, Supabase, keeps a record of each code, the order it came from, the buyer's email address, and the account that used it. This record lets us confirm access, end access after a refund, and end access when the access period is over.</p><h2>4. User Accounts</h2><p>Users sign in with an email and password. We confirm the email with a 6-digit code. Accounts are run by Supabase, a secure database service.</p><p>The User's class is saved to the account so it can be used on more than one Device. Children's names are scrambled on the User's Device before anything is saved to the account. When the User signs in, the App unscrambles them automatically, so the User sees the names as usual. Active Alphabet can never read them. The notes a User writes about a child are scrambled the same way.</p><p>When a User signs out, the class is removed from that Device and comes back when the User signs in again.</p><h3>Recovery code</h3><p>When a User joins, the App gives the User a recovery code, and the User is asked to keep it somewhere safe. If the User forgets the password, it can be reset with a code sent by email, and the recovery code brings back the children's names. Without it, names show as Child 01, Child 02 and so on, and the User types them in again. Active Alphabet cannot see or recover this code.</p><h3>Record of agreement</h3><p>When a User agrees to the Terms of Use and confirms having read this Privacy Policy, Supabase saves a record of which versions the User agreed to and the date and time. This record cannot be changed from the App.</p><h2>5. Children's Photos</h2><p>Users can add a child's photo so the child's face appears on the Active Alphabet characters. The first time a User adds a photo, the User confirms that a photo is added only when the child's family has said it's okay, for classroom use only. Photos are used only inside the App, for learning, and are never shared or posted.</p><p>Photos stay on the User's Device. They are never sent to Active Alphabet, never stored in our database or spreadsheets, and never included in backup files. When a User signs out, the photos stay locked on that Device and come back when the User signs in again.</p><p>Users can turn the face feature on or off for any child at any time. Users can delete a child's photo at any time, and it is removed from the Device right away. When children move to another classroom, their photos stay behind.</p><p>The App does not scan, measure or recognize faces. It crops the photo to the oval the User lines the face up with, and places it on the character using positions built into the animations.</p><h2>6. What Active Alphabet Receives</h2><p><b>6.1 Sign-up Information.</b> Every User's App sends us the following, so we know who is using the App. This information is connected to the classroom's Classroom Results, as described in Section 6.2.</p><ul><li>The User's name and email address</li><li>The name of the school, center or program, and the classroom, when the User enters them</li><li>The city and state (or that the User is outside the United States)</li><li>The User's choice about receiving updates</li><li>Which versions of the Terms of Use and this Privacy Policy the User agreed to, and when</li><li>The App version</li></ul><p><b>6.2 Classroom Results.</b> Every classroom's results are sent to Active Alphabet, to help show how well the program works, to see how each classroom is doing, and for educational research. This includes:</p><ul><li>A number assigned to each child (for example, Child 07) in place of the child's name</li><li>Each child's letter results for each assessment, with the date</li><li>The type of assessment (uppercase, lowercase, or letter sound) and the checkpoint (beginning of year, middle of year, end of year, or formative check-in)</li><li>Each child's age group, such as one year until kindergarten</li><li>How long each assessment took</li><li>Whether the assessment ended early, and the animation setting in use</li><li>How many times the class video was played</li><li>How many children earned a Reader's License</li><li>The state</li></ul><p>Classroom Results are stored with the classroom code, which connects them to the User's Sign-up Information, so we can see each classroom's results and growth and contact the User. Children's names are never sent to Active Alphabet, and we cannot tell which child a number belongs to.</p><p><b>6.3 Feedback.</b> If the User submits feedback or answers a check-in survey through the App, we receive the answers, the App version, and the type of Device used, along with the User's sign-up information so we can reply.</p><p><b>6.4 Updates by Email.</b> If the User checks "Keep me updated about Active Alphabet" when joining, we may send news and offers about Active Alphabet to the User's email address. This box is unchecked unless the User checks it. Every update email includes an unsubscribe link and our mailing address. The User may unsubscribe at any time, and we honor each request within 10 business days.</p><p><b>6.5 Classroom Kit Reservations.</b> If the User taps "Reserve your classroom kit now" on the Resources tab and confirms, the App sends us the User's name, email address, school, classroom, city, state and classroom code, so we can let the User know when classroom kits are ready. Nothing is charged. This information is kept with the User's Sign-up Information and is deleted when the User deletes the account.</p><h2>7. Information We Do Not Collect</h2><p>We do not collect:</p><ul><li>Children's names, first or last, in a form we can read</li><li>Children's photos, video, or audio recordings</li><li>Measurements or scans of anyone's face</li><li>Children's dates of birth or exact ages (we receive only the age group the User selects)</li><li>The location of the Device (we collect only the city and state the User enters)</li><li>The notes and observations a User writes about a child, in a form we can read</li></ul><p>The App asks for each child's first name and last initial only, up to three letters, so full last names are not stored anywhere, including on the User's Device.</p><h2>8. Where Information Is Stored</h2><p><b>8.1 On the Device.</b> Children's names, notes, photos, and assessment results are stored within the App on the User's Device. Photos are stored only on the Device. Removing the App from the home screen or clearing the browser's website data erases the information on that Device. The class comes back when the User signs in again, but photos do not, because they are never saved anywhere else.</p><p><b>8.2 In the User's Account.</b> The class is saved to the User's account with Supabase, with children's names and notes scrambled as described in Section 4. Each account is locked so that a User can see only that User's own class.</p><p><b>8.3 With Active Alphabet.</b> Sign-up Information and Classroom Results are stored in a Google Sheets spreadsheet maintained in Active Alphabet's Google account. Classroom Results are connected to the User's Sign-up Information through the classroom code. Access to this account is protected by two-step verification and is limited to Active Alphabet personnel who require it. When we show results by state, we show a state only once at least five classrooms there are sending results.</p><p><b>8.4 With Wix.</b> Purchase information is kept by Wix, which runs our online store.</p><p><b>8.5 Other Services.</b> The App does not use cookies, advertising tools, or tracking technologies, and it does not load fonts or other content from third-party services. The App connects only to Supabase (for accounts and access codes) and Google (for our spreadsheet and for sending email codes). The App's files are hosted on GitHub Pages, which, like any website host, may record standard technical information such as the address of the Device that opens the App.</p><h2>9. How We Use Information</h2><p>We use the information we collect to:</p><ul><li>Operate the App and maintain classroom records, including sending codes by email to confirm the User's email address and to reset a password</li><li>Handle purchases, access codes and refunds</li><li>Evaluate the effectiveness of the Active Alphabet program</li><li>Conduct educational research on early literacy</li><li>Respond to questions and feedback, and notify Users of material changes to the App, the Terms of Use, or this policy</li><li>Send news and offers, only to Users who asked for them</li></ul><p>We use Classroom Results for program evaluation and research, to see how each classroom is doing, and to contact Users about their classroom's results. We do not use the class saved in a User's account for research.</p><p>We do not share or publish the results of any individual child or any individual classroom. We may share summary results in presentations, research and on our website, such as the average number of letter sounds children learned. These summaries report only combined totals and averages across many classrooms, never identify a child, User, school, center or classroom, and we will not try to re-identify them.</p><h2>10. How We Share Information</h2><p>We do not sell, rent, or trade User information, children's information, or assessment results to any third party, and we do not share information with advertisers.</p><p>We disclose information only:</p><ul><li>To Supabase, which runs User accounts and access codes on our behalf</li><li>To Google, which hosts our spreadsheets and sends our email codes on our behalf</li><li>To Wix, which runs our online store</li><li>To Resend, which sends access code emails on our behalf</li><li>When required by law</li><li>To a successor organization in the event of a merger or acquisition, which will be bound by the commitments in this Privacy Policy</li></ul><h2>11. Children's Records and Families' Rights</h2><p>Children's information belongs to the school, center or family, not to Active Alphabet.</p><p>Only the User, and the User's school or center, can read the children's names. If a family asks to see or correct a child's records, the request is handled through the User or the school or center. We will help when asked.</p><p>A User may send children's records to a colleague at the same school or center with the App's transfer feature. The records stay scrambled while they move, and the receiving colleague must accept them. Photos are never transferred.</p><h2>12. User Choices</h2><p><b>12.1 Classroom Results.</b> Sending Classroom Results is part of using the App, so there is no sharing box. Each child is sent only as a number, never by name.</p><p><b>12.2 Closing Out the School Year.</b> From May 15, the User closes out the school year in the App. The year's combined numbers and any awards are saved in the User's My Stats, which never includes children's names. Then every child's details are erased from the Device, the User's account and our records, except a short end-of-year snapshot (letters known at the end of the year, growth that year, and whether the child earned a Reader's License) for each child staying in the class or moving to a colleague at the same school or center. If the year is not closed out by September 30, the App closes it out automatically. We keep only combined numbers that identify no child, User or classroom.</p><p><b>12.3 Information on the Device.</b> The User keeps full control of the information on the Device. The User may download a spreadsheet, create a backup, delete a child's photo, or remove a child at any time.</p><p><b>12.4 Leaving Active Alphabet.</b> The User may leave at any time with the "Leave Active Alphabet" button on the Settings tab. This deletes the account, the class saved in it, the User's My Stats, the User's Sign-up Information, and the classroom's Classroom Results. We keep only combined numbers that identify no child, User or classroom.</p><p><b>12.5 Updates by Email.</b> The User may unsubscribe from update emails at any time with the link in any update email. We honor each request within 10 business days.</p><h2>13. Data Retention</h2><p>We keep information only as long as it is needed for the purposes in this policy. Our full Data Retention Policy explains why each kind of information is collected and kept, and it is reviewed each August.</p><ul><li><b>Children's names, notes and results in the User's account</b> are kept while the account is open and access is active. They are erased when the User closes out the school year, as described in Section 12.2, or automatically if the year is not closed out by September 30.</li><li><b>When access ends,</b> because of a refund or the end of the access period, the class saved in the account is kept for 30 days so the User can download it, and is then deleted.</li><li><b>When the User leaves Active Alphabet,</b> the account, the saved class, My Stats, the Sign-up Information and the Classroom Results are deleted.</li><li><b>Sign-up Information</b> for a User who never deletes the account is deleted two years after access ends.</li><li><b>Feedback and check-in answers</b> are deleted two years after we receive them.</li><li><b>Photos</b> stay only on the Device and are removed when the User removes them or clears the child.</li><li><b>Classroom Results</b> are kept for program evaluation and improvement until the User closes out the school year or leaves Active Alphabet. After that, we keep only combined numbers that identify no child, User or classroom. Each August 1, we move the prior school year's results into a separate archive and begin the new school year with a clear record.</li><li><b>Purchase and access code records</b> are kept for seven years after the purchase, for accounting and taxes.</li><li><b>Records of agreement</b> to the Terms of Use and this policy are kept while the account is open and for three years after it is closed.</li><li><b>Backups.</b> Deleted information may stay in our service providers' secure backups for up to 30 days before it is erased.</li></ul><h2>14. Schools and Districts</h2><p>We recognize that schools and districts are subject to their own privacy requirements, including the Family Educational Rights and Privacy Act (FERPA), the Children's Online Privacy Protection Act (COPPA), the Illinois Student Online Personal Protection Act (SOPPA), and the student privacy laws of other states. For schools, Active Alphabet acts as a "school official" under FERPA. We use children's information only to provide the App, for the school's purposes and under the school's direction.</p><p>A school or district that requires a signed data privacy agreement may contact us. For Illinois schools, we will sign the Illinois National Data Privacy Agreement (IL-NDPA) from the Student Data Privacy Consortium. For schools in other states, we will sign that state's standard student data privacy agreement when a school asks.</p><h2>15. Users Outside the United States</h2><p>The App may be used outside the United States. Active Alphabet is based in the United States. By using the App, Users outside the United States understand that their information is transferred to, stored and processed in the United States, where privacy laws may differ from those where they live. Users outside the United States who have questions about their rights under local law may contact us.</p><h2>16. Data Security and Breach Notification</h2><p>We take reasonable measures to protect the information we hold. Children's names and notes are scrambled on the User's Device before they are saved, each account is locked to its own User, and our accounts are protected by two-step verification. If we learn that information in our possession has been accessed or acquired without authorization, we will notify affected Users, and their schools or centers when we know them, as promptly as possible and no later than 30 calendar days after we determine that a breach occurred. We will tell them what happened, what information was involved, and what we are doing about it, and we will make any additional notifications required by law.</p><h2>17. Changes to This Policy</h2><p>We may update this Privacy Policy from time to time. When we do, we will revise the Effective Date above. If we make material changes, we will notify Users within the App or by email at least 30 days before the changes take effect.</p><h2>18. Contact Information</h2><p>Questions or requests regarding this Privacy Policy may be directed to:</p><p>Standup to Play LLC (Active Alphabet)</p><p>10244 South Longwood Drive, Chicago, Illinois 60643</p><p>Email: patrick@activealphabet.com</p>`;
+$("#btnReadTerms").onclick=()=>ask(`Terms of Use, Version ${TERMS_V}`,`<div class="policy">${TERMS_TEXT}</div>`,[{t:"Close",v:0}]);
+$("#btnReadPolicy").onclick=()=>ask(`Privacy Policy, Version ${PRIVACY_V}`,`<div class="policy">${POLICY_HTML}</div>`,[{t:"Close",v:0}]);
 $$("[data-policy]").forEach(b=>b.onclick=e=>{ e.preventDefault(); ask("Privacy Policy",`<div class="policy">${POLICY_HTML}</div>`,[{t:"Close",v:0}]); });
 
 $("#btnXlsx").onclick=()=>{
@@ -5053,10 +5089,326 @@ $("#btnRestore").onchange=e=>{
   r.readAsText(f);
 };
 
-$("#clearAll").onclick=async()=>{
+if($("#clearAll")) $("#clearAll").onclick=async()=>{
   if(!await askDelete("Clear everything?",`<p>${acctGet()?"This removes every student and every result from this device and from your account. It cannot be undone.":"This removes every student and every result saved in this app on this device, and takes you back to the welcome screen."}</p>`,"Clear everything")) return;
   S=blank(); await save(); location.reload();
 };
+
+/* ============ 7.1: Close out the year, My Stats, awards, the Active Alphabet résumé, Leave Active Alphabet ============
+   Close out the year opens May 15. In the new school year (from August 1) a teacher can't add children or assess
+   until last year is closed out, and after September 30 the app closes it out on its own.
+   Closing out saves the year's numbers in My Stats (numbers only, no names), works out the year's awards,
+   keeps a short end-of-year snapshot for each child staying in the class or moving to a colleague,
+   tells Active Alphabet's master to keep the classroom's totals, then erases every child's details. */
+const pad2=n=>String(n).padStart(2,"0");
+const prevSY=sy=>{ const y=+sy.slice(0,4)-1; return y+"-"+pad2((y+1)%100); };
+const syFull=sy=>`${sy.slice(0,4)}-20${sy.slice(5)}`;
+const syEndDate=sy=>new Date(+sy.slice(0,4)+1,7,1);   /* the next August 1 */
+const isClosed=sy=>(S.closedYears||[]).includes(sy);
+const lastSess=(sid,m,c,sy)=>S.sessions.filter(x=>x.sid===sid&&x.mode===m&&x.cp===c&&syOf(x.ts)===sy).sort((a,b)=>b.ts.localeCompare(a.ts))[0]||null;
+function canCloseNow(){
+  const d=new Date(), m=d.getMonth();
+  return ((m===4&&d.getDate()>=15)||m===5||m===6)&&!isClosed(thisSY())&&S.students.length>0;
+}
+/* the new school year has started and last year's class hasn't been closed out */
+function needClose(){
+  if(!S.students.length) return false;
+  const sy=prevSY(thisSY()); if(isClosed(sy)) return false;
+  return lastYearKids().length>0;
+}
+const pastSep30=()=>{ const m=new Date().getMonth(); return m!==7&&m!==8; };
+/* the children who belong to that school year */
+const yearKidsOf=sy=>{ const end=syEndDate(sy); return S.students.filter(k=>new Date(k.addedAt||0)<end); };
+
+/* one child's end-of-year snapshot: what the next teacher (or this teacher next year) sees */
+function snapOf(k,sy){
+  const o={sy,room:S.className||"",school:S.schoolName||"",teacher:S.teacherName||"",modes:{}};
+  MODEKEYS.forEach(m=>{
+    const e=lastSess(k.id,m,"EOY",sy), use=e||lastSess(k.id,m,"MOY",sy)||lastSess(k.id,m,"BOY",sy), b=lastSess(k.id,m,"BOY",sy);
+    if(!use){ o.modes[m]=null; return; }
+    o.modes[m]={cp:use.cp,n:use.correct,known:ALPHA.filter(L=>use.marks&&use.marks[L]===1).join(""),
+      growth:b&&e&&b!==e?e.correct-b.correct:null};
+  });
+  const ld=S.licDone&&S.licDone[k.id]; o.lic=ld&&syOf(ld)===sy?ld:null;
+  return o;
+}
+/* the year's awards */
+const AWARDS={
+  triplebet:{name:"Triplebet Award",desc:"Every child in the class had all three benchmarks (beginning, middle and end of year) recorded."},
+  platinum:{name:"Alphabest Award, Platinum",desc:"Every child in the class knew all 26 uppercase letters, lowercase letters and letter sounds at the end of the year."},
+  gold:{name:"Alphabest Award, Gold",desc:"At least 90% of the class knew all 26 uppercase letters, lowercase letters and letter sounds at the end of the year."},
+  year:{name:"Year badge",desc:""}
+};
+const ordinal=n=>n+(n%100>=11&&n%100<=13?"th":({1:"st",2:"nd",3:"rd"}[n%10]||"th"));
+function awardsFor(sy,kids,yearsCount){
+  const out=[];
+  if(kids.length&&kids.every(k=>MODEKEYS.every(m=>BENCH.every(c=>lastSess(k.id,m,c,sy)))))
+    out.push({id:"triplebet",sy,name:AWARDS.triplebet.name,desc:AWARDS.triplebet.desc});
+  if(kids.length){
+    const all=kids.filter(k=>MODEKEYS.every(m=>{ const e=lastSess(k.id,m,"EOY",sy); return e&&e.correct>=26; })).length;
+    if(all===kids.length) out.push({id:"platinum",sy,name:AWARDS.platinum.name,desc:AWARDS.platinum.desc});
+    else if(all/kids.length>=0.9) out.push({id:"gold",sy,name:AWARDS.gold.name,desc:AWARDS.gold.desc});
+  }
+  if(yearsCount>=2) out.push({id:"year"+yearsCount,sy,name:`${ordinal(yearsCount)} Year Badge`,desc:`${ordinal(yearsCount)} school year teaching with Active Alphabet.`});
+  return out;
+}
+/* tell the master to keep this classroom's totals and remove its results (tried again later if offline) */
+async function sendClose(){
+  const p=S.pendingClose; if(!p||!S.classCode||!SCRIPT_URL.startsWith("https://")) return;
+  try{ const r=await post({...who(),action:"close_year",sy:p.sy,plan:p.plan||""}); if(r&&r.ok){ S.pendingClose=null; save(); } }catch(e){}
+}
+/* the access message after close-out: a year included, or time to renew */
+async function accessCovers(sy){
+  let end=null;
+  try{ const r=await sb.rpc("aa_my_access_end"); if(!r.error&&r.data) end=new Date(r.data); }catch(e){}
+  if(!end||isNaN(end)) end=new Date(2028,6,1);   /* every purchase so far ends June 30, 2028 */
+  const nextEnd=new Date(+sy.slice(0,4)+2,5,30);    /* June 30 at the end of next school year */
+  return {covers:end>=nextEnd,end};
+}
+async function afterCloseMessages(sy,awards){
+  const nx=(()=>{ const y=+sy.slice(0,4)+1; return y+"-"+pad2((y+1)%100); })();   /* the next school year */
+  const a=await accessCovers(sy);
+  if(a.covers) await ask("Good news!",`<p>Your Active Alphabet access includes the <b>${syFull(nx)}</b> school year too, at no extra cost.</p>
+    <p>Now that your year is closed out, you can start your new classroom whenever you're ready.</p>`,[{t:"OK",v:0}]);
+  else await ask("Time to renew",`<p>Your Active Alphabet access ends <b>${a.end.toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}</b>.</p>
+    <p>To keep using Active Alphabet with your class in ${syFull(nx)}, renew at <b>activealphabet.com</b>. Your stats and awards stay with your account.</p>`,[{t:"OK",v:0}]);
+  const r=await ask(`Your year in Active Alphabet, ${syFull(sy)}`,yearSummaryHTML(sy,awards,false),[{t:"Done",v:0,ghost:true},{t:"Print it",v:1}]);
+  if(r.v) showYearPage(sy);
+}
+/* the close-out steps */
+async function openClose(sy,picks,err){
+  sy=sy||thisSY(); picks=picks||{};
+  const kids=yearKidsOf(sy).length?yearKidsOf(sy):S.students.slice();
+  if(!picks.started){
+    const withE=kids.filter(k=>MODEKEYS.some(m=>lastSess(k.id,m,"EOY",sy))), without=kids.filter(k=>!withE.includes(k));
+    const r0=await ask(`Close out the ${syFull(sy)} school year`,`
+      <p><b>${withE.length} of ${kids.length}</b> ${kids.length===1?"child has":"children have"} an end-of-year benchmark.</p>
+      ${without.length?`<div class="note warn" style="margin:8px 0"><b>No end-of-year benchmark yet:</b> ${without.map(k=>esc(k.name)).join(", ")}<br><span class="tiny">You can still close out, or tap Not now and give their EOY first.</span></div>`:""}
+      <p style="margin-top:10px"><b>When you close out the year:</b></p>
+      <ul class="tiny" style="margin:6px 0 0 18px;line-height:1.6">
+        <li>Your year's numbers and any awards go into <b>My Stats</b>. They stay with you, even if you change schools.</li>
+        <li>Children staying in your class keep their name and photo, with a short end-of-year snapshot.</li>
+        <li>Children moving to a colleague's classroom go to that teacher with their snapshot.</li>
+        <li>Every other detail about every child is erased from this device, your account and Active Alphabet. Active Alphabet keeps only combined numbers, with no names.</li>
+        <li>Any spreadsheets you downloaded this year are not changed. Keep or delete them as your school, center or program requires.</li>
+      </ul>`,[{t:"Not now",v:0,ghost:true},{t:"Next",v:1}]);
+    if(!r0.v) return false;
+    picks.started=true;
+  }
+  const opt=k=>`<select id="cl_${k.id}" style="min-width:0;max-width:230px">${[["","Choose"],["stay","Staying in my class"],["school","Going to a new school"],["move","Moving to a classroom here"]]
+    .map(([v,t])=>`<option value="${v}" ${picks[k.id]===v?"selected":""}>${t}</option>`).join("")}</select>`;
+  const p=ask("Where is each child going next year?",`
+    ${kids.map(k=>`<div class="row" style="align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding:6px 0"><b>${esc(k.name)}</b>${opt(k)}</div>`).join("")}
+    <div id="clMove" class="${Object.values(picks).includes("move")?"":"hide"}" style="margin-top:12px">
+      <label for="clEmail">Your colleague's Active Alphabet email</label><input id="clEmail" type="text" inputmode="email" autocapitalize="off" placeholder="colleague@school.org" value="${esc(picks.email||"")}">
+      <p class="tiny" style="margin-top:6px">Make sure this email belongs to a colleague at your school or center. Photos stay here.</p>
+    </div>
+    ${err?`<p class="tiny" style="color:var(--magenta);margin-top:8px">${esc(err)}</p>`:""}`,
+    [{t:"Not now",v:0,ghost:true},{t:"Next",v:1}]);
+  setTimeout(()=>{ const sh=()=>$("#clMove").classList.toggle("hide",!kids.some(k=>($("#cl_"+k.id)||{}).value==="move"));
+    kids.forEach(k=>{ const el=$("#cl_"+k.id); if(el) el.onchange=sh; }); },0);
+  const r=await p; if(!r.v) return false;
+  kids.forEach(k=>picks[k.id]=r.form["cl_"+k.id]||""); picks.email=(r.form.clEmail||"").trim();
+  if(kids.some(k=>!picks[k.id])) return openClose(sy,picks,"Choose where each child is going.");
+  const moving=kids.filter(k=>picks[k.id]==="move");
+  if(moving.length&&!/^[^@\s]+@[^@\s]+\.[a-z]{2,}$/i.test(picks.email)) return openClose(sy,picks,"Type your colleague's Active Alphabet email.");
+  const q=await ask("One quick question","<p>Do you plan to use Active Alphabet again next school year?</p>",
+    [{t:"Not sure",v:"unsure",ghost:true},{t:"No",v:"no",ghost:true},{t:"Yes",v:"yes"}]);
+  const plan=q.v;
+  const cp=ask("Close out the year",`<p>This can't be undone. Every child's details will be erased, except the snapshots for children staying with you or moving to a colleague.</p>
+    <div class="field" style="margin-top:12px"><label for="clWord">Type CLOSE to finish</label><input id="clWord" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false"></div>`,
+    [{t:"Cancel",v:0,ghost:true},{t:"Close out the year",v:1,danger:true}]);
+  const inp=$("#clWord"), go=$("#mBtns .danger"), chk=()=>{ go.disabled=inp.value.trim().toUpperCase()!=="CLOSE"; };
+  chk(); inp.oninput=chk;
+  const c=await cp; if(!c.v||(c.form.clWord||"").trim().toUpperCase()!=="CLOSE") return false;
+  return doClose(sy,kids,picks,plan);
+}
+async function doClose(sy,kids,picks,plan,auto){
+  const staying=kids.filter(k=>picks[k.id]==="stay"), moving=kids.filter(k=>picks[k.id]==="move");
+  /* 1. the snapshots, before anything is erased */
+  staying.concat(moving).forEach(k=>{ k.prev=(k.prev||[]).filter(x=>x.sy!==sy).concat([snapOf(k,sy)]).slice(-3); });
+  /* 2. children moving to a colleague go with their snapshot only */
+  if(moving.length){
+    let res="";
+    try{ res=await sendKids(picks.email,moving,true); }catch(e){ res="error:"+friendly(e); }
+    if(res!=="ok"){
+      moving.concat(staying).forEach(k=>{ k.prev=(k.prev||[]).filter(x=>x.sy!==sy); });
+      return openClose(sy,picks,res==="no_account"?"No Active Alphabet account was found for that email.":res.startsWith("error:")?res.slice(6):"Something went wrong. Please try again in a minute.");
+    }
+  }
+  /* 3. the year's numbers and awards, kept in My Stats */
+  try{ updateImpact(); }catch(e){}
+  S.closedYears=[...new Set((S.closedYears||[]).concat([sy]))];
+  const aw=awardsFor(sy,kids,S.closedYears.length);
+  S.awards=(S.awards||[]).filter(a=>a.sy!==sy).concat(aw);
+  S.plans=S.plans||{}; if(plan) S.plans[sy]=plan;
+  /* 4. erase every child's details; staying children keep their name, photo and snapshot */
+  const stayIds=new Set(staying.map(k=>k.id));
+  removeKids(kids.filter(k=>!stayIds.has(k.id)).map(k=>k.id));
+  S.sessions=S.sessions.filter(x=>!stayIds.has(x.sid));
+  S.paused=(S.paused||[]).filter(x=>!stayIds.has(x.sid));
+  S.obs=(S.obs||[]).filter(x=>!stayIds.has(x.sid));
+  Object.keys(S.famNotes||{}).forEach(k=>{ if(stayIds.has(k.split("|")[0])) delete S.famNotes[k]; });
+  if(S.licDone) stayIds.forEach(id=>delete S.licDone[id]);
+  staying.forEach(k=>k.addedAt=new Date().toISOString());
+  S.yearDone=thisSY();
+  /* 5. Active Alphabet keeps the classroom's totals and removes its results */
+  S.pendingClose={sy,plan:plan||""}; clearTimeout(pushTimer);
+  await save(); refreshAll(); sendClose();
+  if(auto) return true;
+  await ask("Your year is closed out",`<p>${kids.length} ${kids.length===1?"child":"children"} closed out.${moving.length?` ${moving.length} sent to your colleague, who will see them the next time they open Active Alphabet.`:""}</p>
+    ${aw.length?`<p style="margin-top:8px"><b>You earned:</b> ${aw.map(a=>esc(a.name)).join(", ")}!</p>`:""}`,[{t:"Next",v:0}]);
+  await afterCloseMessages(sy,aw);
+  return true;
+}
+/* after September 30: last year's class is closed out on its own */
+async function autoClose(sy){
+  const kids=yearKidsOf(sy); const picks={}; kids.forEach(k=>picks[k.id]="school");
+  await doClose(sy,kids,picks,"",true);
+  await ask("Last year was closed out",`<p>Last school year (${syFull(sy)}) was closed out automatically after September 30. Its numbers are saved in My Stats, and every child's details were erased.</p>`,[{t:"OK",v:0}]);
+}
+/* runs when the app opens */
+async function checkCloseOut(){
+  if(S.pendingClose) sendClose();
+  if(needClose()){
+    const sy=prevSY(thisSY());
+    if(pastSep30()){ await autoClose(sy); return; }
+    await ask("Close out last year first",`<p>A new school year has started. Before you add children or assess, close out the ${syFull(sy)} school year.</p>`,[{t:"Close out now",v:1}]);
+    await openClose(sy); return;
+  }
+  /* May 1: finish end-of-year benchmarks so Passports can be made */
+  const d=new Date();
+  if(d.getMonth()===4&&S.students.length&&S.mayAskSY!==thisSY()){
+    S.mayAskSY=thisSY(); await save();
+    await ask("Time for end-of-year benchmarks",`<p>Finish your end-of-year (EOY) benchmarks so you can make Active Alphabet Passports for your families. A Passport fills in once a child has an EOY.</p>
+      <p class="tiny">Close out the year opens May 15.</p>`,[{t:"OK",v:0}]);
+  }
+}
+/* blocks adding children and assessing in a new school year until last year is closed out */
+async function closeGate(){
+  if(!needClose()) return false;
+  await ask("Close out last year first",`<p>Before you add children or assess in the new school year, close out the ${syFull(prevSY(thisSY()))} school year.</p>`,[{t:"Close out now",v:1}]);
+  await openClose(prevSY(thisSY())); return true;
+}
+function renderCloseCard(){
+  const el=$("#closeCard"); if(!el) return;
+  const show=canCloseNow()||needClose();
+  el.classList.toggle("hide",!show);
+  if(show){ const sy=needClose()?prevSY(thisSY()):thisSY();
+    $("#closeText").textContent=`When your ${syFull(sy)} school year is finished, close it out. Your numbers and awards go into My Stats, and every child's details are erased.`; }
+}
+
+/* ---- the snapshot on the child's page, and Start here until the new BOY is done ---- */
+function startHere(s){
+  const last=(s.prev||[]).slice(-1)[0]; if(!last) return null;
+  if(MODEKEYS.every(m=>lastSess(s.id,m,"BOY",thisSY()))) return null;
+  const out={}; let any=false;
+  MODEKEYS.forEach(m=>{ const x=last.modes&&last.modes[m]; if(!x) return; const left=ALPHA.filter(L=>!x.known.includes(L)); out[m]=left; any=true; });
+  return any?{snap:last,letters:out}:null;
+}
+function prevHTML(s){
+  const list=(s.prev||[]).slice().reverse(); if(!list.length) return "";
+  const first=esc(s.name.split(" ")[0]);
+  const sh=startHere(s);
+  const shBox=sh?`<div class="note" style="margin:6px 0 14px"><b>Start here</b> <span class="tiny">(until ${first}'s new BOY is done)</span>
+    ${MODEKEYS.filter(m=>sh.letters[m]).map(m=>`<div style="margin-top:6px"><b>${MODES[m].t}:</b> ${sh.letters[m].length?sh.letters[m].map(L=>MODES[m].face(L)).join(" "):"knew all 26"}</div>`).join("")}</div>`:"";
+  return shBox+list.map(p=>{
+    const rows=MODEKEYS.map(m=>{ const x=p.modes&&p.modes[m];
+      return `<tr><td class="l">${MODES[m].t}</td><td>${x?`${x.n} of 26${x.cp!=="EOY"?` (${x.cp})`:""}`:"&ndash;"}</td><td>${x&&x.growth!=null?(x.growth>0?"+":"")+x.growth:"&ndash;"}</td>
+        <td class="l">${x?(()=>{ const left=ALPHA.filter(L=>!x.known.includes(L)); return left.length?left.map(L=>MODES[m].face(L)).join(" "):"All 26"; })():"&ndash;"}</td></tr>`; }).join("");
+    return `<h3 style="margin:10px 0 6px;font-size:16px">${esc([p.room,syFull(p.sy)].filter(Boolean).join(" · "))}</h3>
+      <p class="tiny">${esc([p.teacher,p.school].filter(Boolean).join(", "))}</p>
+      <div class="gridwrap"><table><thead><tr><th class="l">End of year</th><th>Letters known</th><th>Growth that year</th><th class="l">Not yet</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <p class="tiny" style="margin-top:6px">${p.lic?`Earned a Reader's License on ${new Date(p.lic).toLocaleDateString("en-US",{month:"long",day:"numeric",year:"numeric"})}.`:"No Reader's License that year."}</p>`;
+  }).join("");
+}
+const _renderStudent71=renderStudent;
+renderStudent=function(){
+  _renderStudent71();
+  const s=S.students.find(x=>x.id===spId), el=$("#spPrevCard"); if(!el) return;
+  const h=s?prevHTML(s):""; el.classList.toggle("hide",!h); $("#spPrevBody").innerHTML=h;
+};
+/* Start here in the small group plan */
+const _renderPlan71=renderPlan;
+renderPlan=function(){
+  _renderPlan71();
+  const kids=S.students.map(s=>[s,startHere(s)]).filter(x=>x[1]); if(!kids.length) return;
+  $("#planOut").insertAdjacentHTML("afterbegin",`<div class="note" style="margin-bottom:12px"><b>Start here, from last year</b>
+    <p class="tiny">Letters these children didn't know at last year's end-of-year benchmark. They show until each child's new BOY is done.</p>
+    ${kids.map(([s,h])=>`<div style="margin-top:6px"><b>${esc(s.name)}:</b> ${MODEKEYS.filter(m=>h.letters[m]).map(m=>`${MODES[m].t} ${h.letters[m].length?h.letters[m].map(L=>MODES[m].face(L)).join(" "):"all 26"}`).join(" · ")}</div>`).join("")}</div>`);
+};
+
+/* ---- My Stats ---- */
+function statsTotals(){
+  const ys=impactYears(); if(!ys.length) return null;
+  const T=addImpact(ys); let gS=0,gN=0; MODEKEYS.forEach(m=>{ const z=T.mode[m]; gS+=z.eoyS-z.boyS; gN+=z.bothN; });
+  let sS=0,sN=0; ys.forEach(y=>{ sS+=y.secsSum||0; sN+=y.secsN||0; });
+  return {years:ys.length,kids:T.kids,given:T.benchParts+T.formative,growth:gN?Math.round(gS/gN*10)/10:null,mins:sN?Math.round(sS/sN/6)/10:null,lic:T.lic};
+}
+const badgeColor=id=>id==="platinum"?"#8E9AAF":id==="gold"?"#E8B10C":id==="triplebet"?"var(--c-purple)":"var(--c-sky)";
+function renderStats(){
+  const t=statsTotals(), aw=(S.awards||[]).slice().sort((a,b)=>b.sy.localeCompare(a.sy));
+  const big=t?[["Children taught",t.kids,"var(--c-coral)"],["Assessments given",t.given,"var(--c-orange)"],
+    ["Average letters gained",t.growth==null?"–":(t.growth>0?"+":"")+t.growth,"var(--c-green)"],["Minutes per child, per benchmark",t.mins==null?"–":t.mins,"var(--c-sky)"],
+    ["Years with Active Alphabet",t.years,"var(--c-purple)"],["Awards won",aw.length,"#E8B10C"]]:[];
+  $("#stBig").innerHTML=t?`<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px">${big.map(([n,v,c])=>
+    `<div style="text-align:center;padding:12px;border-radius:12px;background:#F6F7F9"><div style="font-size:28px;font-weight:800;color:${c}">${v}</div><div class="tiny">${n}</div></div>`).join("")}</div>
+    <p class="tiny" style="margin-top:8px">Average letters gained counts BOY to EOY, across uppercase, lowercase and letter sounds, for children with both.</p>`
+    :`<p class="muted">Your stats show up here after your first benchmark.</p>`;
+  $("#stAwards").innerHTML=aw.length?aw.map(a=>`<div class="row" style="align-items:center;gap:12px;padding:8px 0;border-bottom:1px solid var(--line)">
+      <div style="flex:0 0 46px;height:46px;border-radius:50%;background:${badgeColor(a.id)};color:#fff;font-weight:800;display:flex;align-items:center;justify-content:center">&#9733;</div>
+      <div style="flex:1"><b>${esc(a.name)}</b> <span class="tiny">${syFull(a.sy)}</span><div class="tiny">${esc(a.desc)}</div></div></div>`).join("")
+    :`<p class="muted">Awards are earned when you close out a school year: the Triplebet Award, the Alphabest Award (Gold and Platinum) and year badges.</p>`;
+  renderImpact();
+}
+const stHead=()=>`<img class="logo" src="${$("#logoImg").src}" alt="Active Alphabet">
+  <div class="cbar">${["#ff5e5e","#ff9c41","#eea6a4","#9be759","#41cfff","#b475f2"].map(x=>`<i style="background:${x}"></i>`).join("")}</div>`;
+function resumePage(){
+  const t=statsTotals()||{years:0,kids:0,given:0,growth:null,mins:null,lic:0};
+  const aw=(S.awards||[]).slice().sort((a,b)=>b.sy.localeCompare(a.sy));
+  const since=(impactYears()[0]||{}).sy;
+  return `<div class="fpage pass"><div class="frame">${stHead()}
+    <h1>Active Alphabet Résumé</h1>
+    <div class="pname">${esc(S.teacherName||"")}</div>
+    <p class="pp">${esc([S.className,S.schoolName].filter(Boolean).join(", "))}${since?` &middot; Teaching with Active Alphabet since ${syFull(since)}`:""}</p>
+    <div class="band" style="background:${BANDS[4]}">Teaching with Active Alphabet</div>
+    <table class="ptab"><tbody>
+      <tr><td class="l">Children taught</td><td>${t.kids}</td></tr>
+      <tr><td class="l">Assessments given</td><td>${t.given}</td></tr>
+      <tr><td class="l">Average letters gained, beginning to end of year</td><td>${t.growth==null?"&ndash;":(t.growth>0?"+":"")+t.growth}</td></tr>
+      <tr><td class="l">Minutes per child for a benchmark</td><td>${t.mins==null?"&ndash;":t.mins}</td></tr>
+      <tr><td class="l">Reader's Licenses earned</td><td>${t.lic||0}</td></tr>
+      <tr><td class="l">School years with Active Alphabet</td><td>${t.years}</td></tr>
+    </tbody></table>
+    <div class="band" style="background:${BANDS[3]}">Awards</div>
+    ${aw.length?aw.map(a=>`<div class="srow"><b>${esc(a.name)}, ${syFull(a.sy)}</b><span>${esc(a.desc)}</span></div>`).join(""):`<p class="pp">Awards are earned when a school year is closed out.</p>`}
+    <p class="pnote">Active Alphabet is a letter and letter-sound program for preschool and kindergarten. Learn more at www.activealphabet.com</p>
+  </div></div>`;
+}
+function yearSummaryHTML(sy,awards){
+  const y=(S.impact||{})[sy]||{kids:0,benchParts:0,formative:0,lic:0,mode:{}};
+  let gS=0,gN=0; MODEKEYS.forEach(m=>{ const z=(y.mode||{})[m]||{}; gS+=(z.eoyS||0)-(z.boyS||0); gN+=z.bothN||0; });
+  const g=gN?Math.round(gS/gN*10)/10:null;
+  return `<p><b>${y.kids}</b> children assessed &middot; <b>${(y.benchParts||0)+(y.formative||0)}</b> assessments given &middot; <b>${y.lic||0}</b> Reader's License${(y.lic||0)===1?"":"s"}</p>
+    <p style="margin-top:6px">Average letters gained, BOY to EOY: <b>${g==null?"–":(g>0?"+":"")+g}</b></p>
+    ${awards&&awards.length?`<p style="margin-top:10px"><b>Awards:</b></p>${awards.map(a=>`<div class="tiny" style="margin-top:4px">&#9733; <b>${esc(a.name)}</b>: ${esc(a.desc)}</div>`).join("")}`:""}`;
+}
+function showYearPage(sy){
+  const aw=(S.awards||[]).filter(a=>a.sy===sy);
+  famReturn="stats";
+  $("#famPages").innerHTML=`<div class="fpage pass"><div class="frame">${stHead()}
+    <h1>Your year in Active Alphabet</h1><div class="pname">${esc(S.teacherName||"")} &middot; ${syFull(sy)}</div>
+    <p class="pp">${esc([S.className,S.schoolName].filter(Boolean).join(", "))}</p>
+    <div class="band" style="background:${BANDS[4]}">The year at a glance</div>${yearSummaryHTML(sy,aw)}
+    <p class="pnote">Thank you for helping children move, play and learn their letters. www.activealphabet.com</p></div></div>`;
+  tab("family");
+}
+
+$("#planMode").onchange=()=>renderPlan();
+$("#planN").onchange=()=>renderPlan();
+
+$("#closeGo").onclick=()=>openClose(needClose()?prevSY(thisSY()):thisSY());
+$("#stResume").onclick=()=>{ famReturn="stats"; $("#famPages").innerHTML=resumePage(); tab("family"); };
 
 /* ============ boot ============ */
 (async function boot(){
