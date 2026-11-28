@@ -861,7 +861,7 @@
       <h2>Awards won</h2>
       <div id="stAwards" style="margin-top:8px"></div>
     </div>
-    <p class="tiny" style="margin:4px 4px 0">Benchmarks given counts each part (uppercase, lowercase, letter sounds) as one. Average growth is letters gained from BOY to EOY, for children with both.</p>
+    <p class="tiny" style="margin:4px 4px 0">Benchmarks given counts each child's BOY, MOY and EOY as one benchmark each. Average growth is letters gained from BOY to each child's newest benchmark (MOY, then EOY), in each part.</p>
   </section>
 
   <!-- ===================== SETTINGS ===================== -->
@@ -1724,7 +1724,7 @@ const CLIPS={"A":{"frame":[700,886],"letters":{"A":{"cx":21.71,"cy":84.71,"h":15
 /* ============ state and storage ============ */
 /* Version 4 has its own storage name, so it never reads or overwrites round 1 data on the same iPad. */
 const KEY="aa-assess-v4-round2";
-const APP_VERSION="7.3";
+const APP_VERSION="7.4";
 $("#verShow").textContent=APP_VERSION;
 const SCHEMA=2;                         /* data layout version, so a future version knows how to read this data */
 /* Shared app key. Must match APP_KEY in the Apps Script. */
@@ -2587,6 +2587,7 @@ async function recordTerms(){
     const r=await sb.rpc("aa_agree_terms",{p_terms:TERMS_V,p_privacy:PRIVACY_V,p_app:APP_VERSION}); if(r.error) throw r.error;
     S.termsVersion=TERMS_V; S.termsAgreedAt=r.data||new Date().toISOString();
     try{ localStorage.removeItem(TERMS_PENDING); }catch(x){}
+    setTimeout(()=>{ try{ register(true); }catch(x){} },500);
   }catch(e){
     S.termsVersion=TERMS_V; S.termsAgreedAt=new Date().toISOString();
     try{ localStorage.setItem(TERMS_PENDING,TERMS_V); }catch(x){}
@@ -2715,6 +2716,7 @@ async function afterReady(){
     await waitModal(); await checkTransfers();
     try{ updateImpact(); }catch(e){}
     await waitModal(); await checkCloseOut();
+    await waitModal(); await checkReminders();
     await waitModal(); await licCheck();
   }finally{ readyBusy=false; }
 }
@@ -2999,8 +3001,10 @@ $("#pinGo").onclick=async()=>{
   fillSetup(); register();
 };
 async function register(force){
+  /* 7.4: the master's row is sent again whenever the Terms version changes */
+  if(S.termsVersion&&S.regTerms!==S.termsVersion) force=true;
   if((S.registered&&!force)||!S.classCode||S.sample||!SCRIPT_URL.startsWith("https://")) return;
-  try{ const r=await post({...who(),action:"register"}); if(r&&r.ok){ S.registered=true; save(); } }catch(e){}
+  try{ const r=await post({...who(),action:"register"}); if(r&&r.ok){ S.registered=true; S.regTerms=S.termsVersion||""; save(); } }catch(e){}
 }
 /* 5.12: classroom kit reservations. Sends only the sign-up details, after the teacher says yes. */
 function showKit(){ const b=$("#kitBtn"); if(!b) return;
@@ -4009,12 +4013,17 @@ function renderReports(){ fillModeSelects(); renderGrow(); renderHeat(); renderP
 function impactOf(sy){
   const ss=S.sessions.filter(x=>syOf(x.ts)===sy);
   const o={sy,kids:new Set(ss.filter(x=>x.cp!=="F").map(x=>x.sid)).size,benchParts:ss.filter(x=>x.cp!=="F").length,formative:ss.filter(x=>x.cp==="F").length,lic:null,mode:{},secsSum:0,secsN:0};
+  /* 7.4: a child's BOY, MOY or EOY counts as one benchmark, however many parts were given */
+  o.benchN=new Set(ss.filter(x=>x.cp!=="F").map(x=>x.sid+"|"+x.cp)).size;
   /* 7.1: minutes per child for a benchmark: one sitting is all three parts, when every part was timed */
   new Set(ss.map(x=>x.sid)).forEach(sid=>["BOY","MOY","EOY"].forEach(c=>{ const p=ss.filter(x=>x.sid===sid&&x.cp===c);
     if(p.length===3&&p.every(x=>x.secs>0)){ o.secsSum+=p.reduce((a,x)=>a+x.secs,0); o.secsN++; } }));
-  MODEKEYS.forEach(m=>{ const z={bothN:0,boyS:0,eoyS:0,eoyN:0,n20:0,n26:0,lowN:0,lowG:0};
+  MODEKEYS.forEach(m=>{ const z={bothN:0,boyS:0,eoyS:0,eoyN:0,n20:0,n26:0,lowN:0,lowG:0,soN:0,soG:0};
     new Set(ss.map(x=>x.sid)).forEach(sid=>{
       const b=ss.find(x=>x.sid===sid&&x.mode===m&&x.cp==="BOY"), e=ss.find(x=>x.sid===sid&&x.mode===m&&x.cp==="EOY");
+      /* 7.4: growth so far, from BOY to the child's newest benchmark (EOY, or MOY before then) */
+      const later=e||ss.find(x=>x.sid===sid&&x.mode===m&&x.cp==="MOY");
+      if(b&&later){ z.soN++; z.soG+=later.correct-b.correct; }
       if(e){ z.eoyN++; if(e.correct>=20) z.n20++; if(e.correct>=26) z.n26++; }
       if(b&&e){ z.bothN++; z.boyS+=b.correct; z.eoyS+=e.correct; if(b.correct<=10){ z.lowN++; z.lowG+=e.correct-b.correct; } }
     });
@@ -4022,9 +4031,11 @@ function impactOf(sy){
   return o;
 }
 function addImpact(list){
-  const t={sy:"Total",kids:0,benchParts:0,formative:0,lic:0,mode:{}};
-  MODEKEYS.forEach(m=>t.mode[m]={bothN:0,boyS:0,eoyS:0,eoyN:0,n20:0,n26:0,lowN:0,lowG:0});
+  const t={sy:"Total",kids:0,benchParts:0,benchN:0,formative:0,lic:0,mode:{}};
+  MODEKEYS.forEach(m=>t.mode[m]={bothN:0,boyS:0,eoyS:0,eoyN:0,n20:0,n26:0,lowN:0,lowG:0,soN:0,soG:0});
   list.forEach(y=>{ t.kids+=y.kids; t.benchParts+=y.benchParts; t.formative+=y.formative; t.lic+=y.lic||0;
+    /* 7.4: years saved before 7.4 have no benchN, so each three parts count as one */
+    t.benchN+=y.benchN!=null?y.benchN:Math.round((y.benchParts||0)/3);
     MODEKEYS.forEach(m=>Object.keys(t.mode[m]).forEach(k=>t.mode[m][k]+=(y.mode[m]||{})[k]||0)); });
   return t;
 }
@@ -4657,9 +4668,10 @@ function renderFamGuide(){
 async function showReady(){
   if(S.readyShown||S.sample) return;
   S.readyShown=new Date().toISOString(); await save();
-  await ask("You're all set!",`<p>You're ready to bring Active Alphabet to life in your classroom.</p>
-    <p>Everything you need is in the Resources tab: the Teacher Guide, Character Cards, Letter Chart and more. Print them, laminate them in different sizes, and use them to decorate your wall, make flip charts or play games.</p>
-    <p><b>Coming in 2027-2028:</b> a print version of everything you need, with magnetic uppercase and lowercase letters, magnetic character cards, and an interactive letter wall board. You can reserve your classroom kit on the Resources tab.</p>`,[{t:"Let's Go!",v:1}]);
+  await ask("You're all set! 🎉",`<p>Active Alphabet is the key you need to unlock playful learning in your classroom! Your students will be moving, laughing and learning their letters and sounds before you know it.</p>
+    <p>Everything you need is waiting on the <b>Resources</b> tab: the Teacher Guide, Character Cards, Letter Chart, Bingo and more. Print them, laminate them, hang them on your wall, make flip charts, or turn them into games. There's no wrong way to play!</p>
+    <p>When you're ready, add your students on the <b>Class</b> tab and let the fun begin.</p>
+`,[{t:"Let's Go!",v:1}]);
 }
 
 /* ============ 5.10: Reader's License ============ */
@@ -5365,6 +5377,27 @@ async function checkCloseOut(){
       <p class="tiny">Close out the year opens May 15.</p>`,[{t:"OK",v:0}]);
   }
 }
+/* 7.4: gentle reminders during the year. Each shows once a school year. Names stay on this device. */
+function nameList(kids){ const n=kids.map(k=>esc(k.name)); return n.length<=2?n.join(" and "):n.slice(0,-1).join(", ")+" and "+n[n.length-1]; }
+const hasBench=(sid,cp)=>MODEKEYS.some(m=>bench(sid,m,cp));
+async function checkReminders(){
+  if(S.sample||!S.students.length||needClose()||isClosed(thisSY())) return;
+  const d=new Date(), mo=d.getMonth(), day=d.getDate(), sy=thisSY();
+  S.reminded=S.reminded||{};
+  const once=async(key,title,body,btn,goto)=>{ S.reminded[key]=sy; await save();
+    const r=await ask(title,body,[{t:"Later",v:0,ghost:true},{t:btn,v:1}]); if(r.v) tab(goto); };
+  /* mid-October to December: children who still need a BOY */
+  if((mo===9&&day>=15||mo===10||mo===11)&&S.reminded.boy!==sy){
+    const k=S.students.filter(x=>!hasBench(x.id,"BOY"));
+    if(k.length){ await once("boy","A friendly reminder",`<p>We noticed that ${k.length===1?"1 child still needs their":k.length+" children still need their"} BOY benchmark: <b>${nameList(k)}</b></p><p>Tap Assess to complete.</p>`,"Assess","assess"); return; } }
+  /* mid-February to April: children who still need a MOY */
+  if((mo===1&&day>=15||mo===2||mo===3)&&S.reminded.moy!==sy){
+    const k=S.students.filter(x=>!hasBench(x.id,"MOY"));
+    if(k.length){ await once("moy","A friendly reminder",`<p>We noticed that ${k.length===1?"1 child still needs their":k.length+" children still need their"} MOY benchmark: <b>${nameList(k)}</b></p><p>Tap Assess to complete.</p>`,"Assess","assess"); return; } }
+  /* once every child has a MOY: send progress reports home */
+  if(S.reminded.share!==sy&&S.students.every(x=>hasBench(x.id,"MOY"))){
+    await once("share","Share the progress!","<p>Send progress reports home so families can practice at home. Find them on the Reports tab.</p>","Reports","reports"); return; }
+}
 /* blocks adding children and assessing in a new school year until last year is closed out */
 async function closeGate(){
   if(!needClose()) return false;
@@ -5423,8 +5456,11 @@ renderPlan=function(){
 /* 7.3: the same five numbers for one year, all years (My Career), or any list of years */
 function statsOf(list){
   if(!list.length) return null;
-  const T=addImpact(list); let gS=0,gN=0; MODEKEYS.forEach(m=>{ const z=T.mode[m]; gS+=z.eoyS-z.boyS; gN+=z.bothN; });
-  return {years:list.length,kids:T.kids,bench:T.benchParts,form:T.formative,growth:gN?Math.round(gS/gN*10)/10:null,lic:T.lic||0};
+  const T=addImpact(list); let gS=0,gN=0;
+  /* 7.4: growth so far; a year saved before 7.4 uses its BOY to EOY numbers */
+  list.forEach(y=>MODEKEYS.forEach(m=>{ const z=y.mode[m]||{};
+    if(z.soN!=null){ gS+=z.soG||0; gN+=z.soN||0; } else { gS+=(z.eoyS||0)-(z.boyS||0); gN+=z.bothN||0; } }));
+  return {years:list.length,kids:T.kids,bench:T.benchN,form:T.formative,growth:gN?Math.round(gS/gN*10)/10:null,lic:T.lic||0};
 }
 function statsTotals(){ return statsOf(impactYears()); }
 const fmtGrowth=g=>g==null?"&ndash;":(g>0?"+":"")+g;
