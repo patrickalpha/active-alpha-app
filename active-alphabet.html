@@ -949,24 +949,6 @@
       <div class="row" style="margin-top:8px"><button class="btn ghost small" id="btnEmail">Change my email</button></div>
       <div id="emailMsg" class="tiny" style="margin-top:10px"></div>
     </div>
-    <!-- 7.2: the Terms of Use and Privacy Policy the teacher agreed to, always one tap away -->
-    <div class="card" style="--accent:var(--c-purple)">
-      <h2>Terms of Use and Privacy Policy</h2>
-      <p class="muted" id="termsShow"></p>
-      <div class="row" style="margin-top:10px"><button class="btn ghost small" id="btnReadTerms">Read the Terms of Use</button><button class="btn ghost small" id="btnReadPolicy">Read the Privacy Policy</button></div>
-    </div>
-    <div class="card" style="--accent:var(--c-orange)">
-      <h2>Backup</h2>
-      <p class="muted">A backup is a safety copy of everything in the app on this device. Use it to move your class to a new device, or to bring it back if this one is reset. Download one about once a month and email it to yourself.</p>
-      <div class="row" style="margin-top:12px">
-        <button class="btn ghost" id="btnBackup">Download a backup</button>
-        <label class="btn ghost" style="margin:0">Restore from a backup
-          <input type="file" id="btnRestore" accept="application/json" style="display:none"></label>
-      </div>
-      <p class="tiny" style="margin-top:10px">You won't be able to open this file. It's only for restoring.</p>
-      <p class="tiny" id="lastBackup" style="margin-top:6px"></p>
-      <div id="backupMsg" class="tiny" style="margin-top:6px"></div>
-    </div>
     <div class="card" style="--accent:var(--c-purple)">
       <details class="more"><summary>More options</summary>
         <div class="note hide" style="margin-top:4px">
@@ -976,7 +958,25 @@
           <div class="row" style="margin-top:8px"><button class="btn ghost small" id="btnPush">Send now</button></div>
           <div id="dataMsg" class="tiny" style="margin-top:10px"></div>
         </div>
-        <div class="note warn" style="margin-top:4px">
+        <!-- 7.5: Backup and the Terms of Use and Privacy Policy live under More options -->
+        <div class="note" style="margin-top:4px">
+          <b>Backup</b>
+          <p class="muted">A backup is a safety copy of everything in the app on this device. Use it to move your class to a new device, or to bring it back if this one is reset. Download one about once a month and email it to yourself.</p>
+          <div class="row" style="margin-top:10px">
+            <button class="btn ghost small" id="btnBackup">Download a backup</button>
+            <label class="btn ghost small" style="margin:0">Restore from a backup
+              <input type="file" id="btnRestore" accept="application/json" style="display:none"></label>
+          </div>
+          <p class="tiny" style="margin-top:8px">You won't be able to open this file. It's only for restoring.</p>
+          <p class="tiny" id="lastBackup" style="margin-top:6px"></p>
+          <div id="backupMsg" class="tiny" style="margin-top:6px"></div>
+        </div>
+        <div class="note" style="margin-top:12px">
+          <b>Terms of Use and Privacy Policy</b>
+          <p class="muted" id="termsShow"></p>
+          <div class="row" style="margin-top:10px"><button class="btn ghost small" id="btnReadTerms">Read the Terms of Use</button><button class="btn ghost small" id="btnReadPolicy">Read the Privacy Policy</button></div>
+        </div>
+        <div class="note warn" style="margin-top:12px">
           <b>Leave Active Alphabet</b><br>
           For when you want to stop using Active Alphabet. Your account and every child's details are erased from this device and from Active Alphabet. Active Alphabet keeps only combined numbers, with no names. Print your resume first if you'd like to keep your stats. This cannot be undone.
           <div class="row" style="margin-top:10px"><button class="btn danger" id="delAcct">Leave Active Alphabet</button></div>
@@ -1724,7 +1724,7 @@ const CLIPS={"A":{"frame":[700,886],"letters":{"A":{"cx":21.71,"cy":84.71,"h":15
 /* ============ state and storage ============ */
 /* Version 4 has its own storage name, so it never reads or overwrites round 1 data on the same iPad. */
 const KEY="aa-assess-v4-round2";
-const APP_VERSION="7.4";
+const APP_VERSION="7.5";
 $("#verShow").textContent=APP_VERSION;
 const SCHEMA=2;                         /* data layout version, so a future version knows how to read this data */
 /* Shared app key. Must match APP_KEY in the Apps Script. */
